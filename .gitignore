@@ -88,19 +88,19 @@ stamp-h1
 /po/remove-potcdate.sin
 
 # Project specific files
-/libfole.pc
-/libfole.spec
+/libfwevt.pc
+/libfwevt.spec
 /common/config.h
 /common/config.h.in
 /common/types.h
 /dpkg/changelog
 /dpkg/copyright
-/include/libfole.h
-/include/libfole/definitions.h
-/include/libfole/features.h
-/include/libfole/types.h
-/libfole/libfole.rc
-/libfole/libfole_definitions.h
+/include/libfwevt.h
+/include/libfwevt/definitions.h
+/include/libfwevt/features.h
+/include/libfwevt/types.h
+/libfwevt/libfwevt.rc
+/libfwevt/libfwevt_definitions.h
 /tests/tmp
 
 # Local library dependencies specific files
