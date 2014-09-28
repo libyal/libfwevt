@@ -107,7 +107,6 @@ stamp-h1
 /libcdata
 /libcerror
 /libcnotify
-/libcstring
 /libcthreads
 /libfdatetime
 /libfguid
