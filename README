@@ -1,4 +1,4 @@
-libfwevt is a library for Object Linking and Embedding (OLE) data types.
+libfwevt is a library for Windows XML Event Log (EVTX) data types.
 
 For more information see:
 * Project documentation: https://github.com/libyal/libfwevt/wiki/Home
