@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libfwevt
+Description: Library to support the Windows XML Event Log (EVTX) data types
+Version: 20140928
+Libs: -L${libdir} -lfwevt
+Libs.private:          -lpthread
+Cflags: -I${includedir}
+
