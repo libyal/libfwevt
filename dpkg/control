@@ -1,30 +1,30 @@
-Source: libfole
+Source: libfwevt
 Section: unknown
 Priority: extra
 Maintainer: Joachim Metz <joachim.metz@gmail.com>
 Build-Depends: debhelper (>= 7), autotools-dev
 Standards-Version: 3.8.3
-Homepage: https://github.com/libyal/libfole/
+Homepage: https://github.com/libyal/libfwevt/
 
-Package: libfole
+Package: libfwevt
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: libfole-dbg
+Suggests: libfwevt-dbg
 Description: Library to support the Windows XML Event Log (EVTX) data types
- libfole is a library to support the Windows XML Event Log (EVTX) data types.
+ libfwevt is a library to support the Windows XML Event Log (EVTX) data types.
 
-Package: libfole-dbg
+Package: libfwevt-dbg
 Architecture: any
 Section: debug
-Depends: libfole (= ${Source-Version}), ${misc:Depends}
-Description: Debugging symbols for libfole
- Debugging symbols for libfole.
+Depends: libfwevt (= ${Source-Version}), ${misc:Depends}
+Description: Debugging symbols for libfwevt
+ Debugging symbols for libfwevt.
 
-Package: libfole-dev
+Package: libfwevt-dev
 Section: libdevel
 Architecture: any
-Depends: libfole (= ${Source-Version})
-Description: Header files and libraries for developing applications for libfole
- Header files and libraries for developing applications for libfole.
+Depends: libfwevt (= ${Source-Version})
+Description: Header files and libraries for developing applications for libfwevt
+ Header files and libraries for developing applications for libfwevt.
 

@@ -1,8 +1,8 @@
 man_MANS = \
-	libfole.3
+	libfwevt.3
 
 EXTRA_DIST = \
-	libfole.3
+	libfwevt.3
 
 MAINTAINERCLEANFILES = \
 	Makefile.in
