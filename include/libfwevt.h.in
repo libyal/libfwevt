@@ -111,6 +111,9 @@ int libfwevt_channel_free(
      libfwevt_channel_t **channel,
      libfwevt_error_t **error );
 
+/* Reads the channel
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_channel_read(
      libfwevt_channel_t *channel,
@@ -140,6 +143,9 @@ int libfwevt_event_free(
      libfwevt_event_t **event,
      libfwevt_error_t **error );
 
+/* Reads the event
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_event_read(
      libfwevt_event_t *event,
@@ -148,18 +154,27 @@ int libfwevt_event_read(
      size_t data_offset,
      libfwevt_error_t **error );
 
+/* Retrieves the identifier
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_event_get_identifier(
      libfwevt_event_t *event,
      uint32_t *identifier,
      libfwevt_error_t **error );
 
+/* Retrieves the message identifier
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_event_get_message_identifier(
      libfwevt_event_t *event,
      uint32_t *message_identifier,
      libfwevt_error_t **error );
 
+/* Retrieves the template offset
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_event_get_template_offset(
      libfwevt_event_t *event,
@@ -187,6 +202,9 @@ int libfwevt_keyword_free(
      libfwevt_keyword_t **keyword,
      libfwevt_error_t **error );
 
+/* Reads the keyword
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_keyword_read(
      libfwevt_keyword_t *keyword,
@@ -216,6 +234,9 @@ int libfwevt_level_free(
      libfwevt_level_t **level,
      libfwevt_error_t **error );
 
+/* Reads the level
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_level_read(
      libfwevt_level_t *level,
@@ -245,6 +266,9 @@ int libfwevt_manifest_free(
      libfwevt_manifest_t **manifest,
      libfwevt_error_t **error );
 
+/* Reads the manifest
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_manifest_read(
      libfwevt_manifest_t *manifest,
@@ -252,12 +276,18 @@ int libfwevt_manifest_read(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Retrieves the number of providers
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_manifest_get_number_of_providers(
      libfwevt_manifest_t *manifest,
      int *number_of_providers,
      libfwevt_error_t **error );
 
+/* Retrieves a specific provider
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_manifest_get_provider(
      libfwevt_manifest_t *manifest,
@@ -265,6 +295,9 @@ int libfwevt_manifest_get_provider(
      libfwevt_provider_t **provider,
      libfwevt_error_t **error );
 
+/* Retrieves a specific provider by identifier (GUID)
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_manifest_get_provider_by_identifier(
      libfwevt_manifest_t *manifest,
@@ -294,6 +327,9 @@ int libfwevt_map_free(
      libfwevt_map_t **map,
      libfwevt_error_t **error );
 
+/* Reads the map
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_map_read(
      libfwevt_map_t *map,
@@ -323,6 +359,9 @@ int libfwevt_opcode_free(
      libfwevt_opcode_t **opcode,
      libfwevt_error_t **error );
 
+/* Reads the opcode
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_opcode_read(
      libfwevt_opcode_t *opcode,
@@ -354,6 +393,9 @@ int libfwevt_provider_free(
      libfwevt_provider_t **provider,
      libfwevt_error_t **error );
 
+/* Reads the provider
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read(
      libfwevt_provider_t *provider,
@@ -362,6 +404,9 @@ int libfwevt_provider_read(
      size_t data_offset,
      libfwevt_error_t **error );
 
+/* Reads the provider channels
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read_channels(
      libfwevt_provider_t *provider,
@@ -369,6 +414,9 @@ int libfwevt_provider_read_channels(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Reads the provider events
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read_events(
      libfwevt_provider_t *provider,
@@ -376,6 +424,9 @@ int libfwevt_provider_read_events(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Reads the provider keywords
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read_keywords(
      libfwevt_provider_t *provider,
@@ -383,6 +434,9 @@ int libfwevt_provider_read_keywords(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Reads the provider levels
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read_levels(
      libfwevt_provider_t *provider,
@@ -390,6 +444,9 @@ int libfwevt_provider_read_levels(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Reads the provider maps
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read_maps(
      libfwevt_provider_t *provider,
@@ -397,6 +454,9 @@ int libfwevt_provider_read_maps(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Reads the provider opcodes
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read_opcodes(
      libfwevt_provider_t *provider,
@@ -404,6 +464,9 @@ int libfwevt_provider_read_opcodes(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Reads the provider tasks
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read_tasks(
      libfwevt_provider_t *provider,
@@ -411,6 +474,9 @@ int libfwevt_provider_read_tasks(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Reads the provider templates
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_read_templates(
      libfwevt_provider_t *provider,
@@ -418,6 +484,9 @@ int libfwevt_provider_read_templates(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Compares the provider with the identifier
+ * Returns 1 if identifier matches, 0 if not or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_compare_identifier(
      libfwevt_provider_t *provider,
@@ -425,12 +494,18 @@ int libfwevt_provider_compare_identifier(
      size_t identifier_size,
      libfwevt_error_t **error );
 
+/* Retrieves the number of channels
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_channels(
      libfwevt_provider_t *provider,
      int *number_of_channels,
      libfwevt_error_t **error );
 
+/* Retrieves a specific channel
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_channel(
      libfwevt_provider_t *provider,
@@ -438,12 +513,18 @@ int libfwevt_provider_get_channel(
      libfwevt_channel_t **channel,
      libfwevt_error_t **error );
 
+/* Retrieves the number of events
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_events(
      libfwevt_provider_t *provider,
      int *number_of_events,
      libfwevt_error_t **error );
 
+/* Retrieves a specific event
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_event(
      libfwevt_provider_t *provider,
@@ -451,6 +532,9 @@ int libfwevt_provider_get_event(
      libfwevt_event_t **event,
      libfwevt_error_t **error );
 
+/* Retrieves a specific event by identifier
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_event_by_identifier(
      libfwevt_provider_t *provider,
@@ -458,12 +542,18 @@ int libfwevt_provider_get_event_by_identifier(
      libfwevt_event_t **event,
      libfwevt_error_t **error );
 
+/* Retrieves the number of keywords
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_keywords(
      libfwevt_provider_t *provider,
      int *number_of_keywords,
      libfwevt_error_t **error );
 
+/* Retrieves a specific keyword
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_keyword(
      libfwevt_provider_t *provider,
@@ -471,12 +561,18 @@ int libfwevt_provider_get_keyword(
      libfwevt_keyword_t **keyword,
      libfwevt_error_t **error );
 
+/* Retrieves the number of levels
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_levels(
      libfwevt_provider_t *provider,
      int *number_of_levels,
      libfwevt_error_t **error );
 
+/* Retrieves a specific level
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_level(
      libfwevt_provider_t *provider,
@@ -484,12 +580,18 @@ int libfwevt_provider_get_level(
      libfwevt_level_t **level,
      libfwevt_error_t **error );
 
+/* Retrieves the number of maps
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_maps(
      libfwevt_provider_t *provider,
      int *number_of_maps,
      libfwevt_error_t **error );
 
+/* Retrieves a specific map
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_map(
      libfwevt_provider_t *provider,
@@ -497,12 +599,18 @@ int libfwevt_provider_get_map(
      libfwevt_map_t **map,
      libfwevt_error_t **error );
 
+/* Retrieves the number of opcodes
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_opcodes(
      libfwevt_provider_t *provider,
      int *number_of_opcodes,
      libfwevt_error_t **error );
 
+/* Retrieves a specific opcode
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_opcode(
      libfwevt_provider_t *provider,
@@ -510,12 +618,18 @@ int libfwevt_provider_get_opcode(
      libfwevt_opcode_t **opcode,
      libfwevt_error_t **error );
 
+/* Retrieves the number of tasks
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_tasks(
      libfwevt_provider_t *provider,
      int *number_of_tasks,
      libfwevt_error_t **error );
 
+/* Retrieves a specific task
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_task(
      libfwevt_provider_t *provider,
@@ -523,12 +637,18 @@ int libfwevt_provider_get_task(
      libfwevt_task_t **task,
      libfwevt_error_t **error );
 
+/* Retrieves the number of templates
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_templates(
      libfwevt_provider_t *provider,
      int *number_of_templates,
      libfwevt_error_t **error );
 
+/* Retrieves a specific template
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_template(
      libfwevt_provider_t *provider,
@@ -536,6 +656,9 @@ int libfwevt_provider_get_template(
      libfwevt_template_t **template,
      libfwevt_error_t **error );
 
+/* Retrieves a specific template by offset
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_template_by_offset(
      libfwevt_provider_t *provider,
@@ -564,6 +687,9 @@ int libfwevt_task_free(
      libfwevt_task_t **task,
      libfwevt_error_t **error );
 
+/* Reads the task
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_task_read(
      libfwevt_task_t *task,
@@ -593,6 +719,9 @@ int libfwevt_template_free(
      libfwevt_template_t **template,
      libfwevt_error_t **error );
 
+/* Reads the template
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_template_read(
      libfwevt_template_t *template,
@@ -601,18 +730,27 @@ int libfwevt_template_read(
      size_t data_offset,
      libfwevt_error_t **error );
 
+/* Reads the template XML document
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_template_read_xml_document(
      libfwevt_template_t *template,
      libfwevt_xml_document_t *xml_document,
      libfwevt_error_t **error );
 
+/* Sets the ASCII codepage
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_ascii_codepage(
      libfwevt_template_t *template,
      int ascii_codepage,
      libfwevt_error_t **error );
 
+/* Retrieves the data
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_data(
      libfwevt_template_t *template,
@@ -620,6 +758,9 @@ int libfwevt_template_get_data(
      size_t *data_size,
      libfwevt_error_t **error );
 
+/* Sets the data
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_data(
      libfwevt_template_t *template,
@@ -627,18 +768,27 @@ int libfwevt_template_set_data(
      size_t data_size,
      libfwevt_error_t **error );
 
+/* Retrieves the offset
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_offset(
      libfwevt_template_t *template,
      uint32_t *offset,
      libfwevt_error_t **error );
 
+/* Sets the offset
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_offset(
      libfwevt_template_t *template,
      uint32_t offset,
      libfwevt_error_t **error );
 
+/* Retrieves the size
+ * Returns 1 if successful or -1 on error
+ */
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_size(
      libfwevt_template_t *template,
