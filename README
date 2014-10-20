@@ -1,7 +1,7 @@
 libfwevt is a library for Windows XML Event Log (EVTX) data types.
 
 Project information:
-* Status: alpha
+* Status: experimental
 * Licence: LGPLv3+
 
 For more information see:
