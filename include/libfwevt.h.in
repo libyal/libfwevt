@@ -845,7 +845,6 @@ int libfwevt_xml_document_read(
      size_t binary_data_offset,
      int ascii_codepage,
      uint8_t flags,
-     libcdata_array_t *template_values_array,
      libfwevt_error_t **error );
 
 /* Retrieves the size of the UTF-8 formatted string of the XML document

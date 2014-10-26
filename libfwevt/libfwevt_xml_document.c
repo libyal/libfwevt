@@ -264,12 +264,48 @@ int libfwevt_xml_document_read(
      size_t binary_data_offset,
      int ascii_codepage,
      uint8_t flags,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_xml_document_read";
+
+	if( libfwevt_xml_document_read_with_template_values(
+	     xml_document,
+	     binary_data,
+	     binary_data_size,
+	     binary_data_offset,
+	     ascii_codepage,
+	     flags,
+	     NULL,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read XML document.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Reads a binary XML document with template values
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_document_read_with_template_values(
+     libfwevt_xml_document_t *xml_document,
+     const uint8_t *binary_data,
+     size_t binary_data_size,
+     size_t binary_data_offset,
+     int ascii_codepage,
+     uint8_t flags,
      libcdata_array_t *template_values_array,
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_document_t *internal_xml_document = NULL;
 	libfwevt_xml_token_t *xml_token                         = NULL;
-	static char *function                                   = "libfwevt_xml_document_read";
+	static char *function                                   = "libfwevt_xml_document_read_with_template_values";
 
 	if( xml_document == NULL )
 	{

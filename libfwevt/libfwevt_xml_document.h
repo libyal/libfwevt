@@ -79,6 +79,15 @@ int libfwevt_xml_document_read(
      size_t binary_data_offset,
      int ascii_codepage,
      uint8_t flags,
+     libcerror_error_t **error );
+
+int libfwevt_xml_document_read_with_template_values(
+     libfwevt_xml_document_t *xml_document,
+     const uint8_t *binary_data,
+     size_t binary_data_size,
+     size_t binary_data_offset,
+     int ascii_codepage,
+     uint8_t flags,
      libcdata_array_t *template_values_array,
      libcerror_error_t **error );
 
