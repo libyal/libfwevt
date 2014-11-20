@@ -432,7 +432,7 @@ int libfwevt_xml_tag_set_value_type(
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
-	static char *function                         = "libfwevt_xml_tag_set_value_value_type";
+	static char *function                         = "libfwevt_xml_tag_set_value_type";
 
 	if( xml_tag == NULL )
 	{
