@@ -1,13 +1,12 @@
 Source: libfwevt
-Section: unknown
+Section: libs
 Priority: extra
 Maintainer: Joachim Metz <joachim.metz@gmail.com>
 Build-Depends: debhelper (>= 7), autotools-dev
-Standards-Version: 3.8.3
+Standards-Version: 3.9.5
 Homepage: https://github.com/libyal/libfwevt/
 
 Package: libfwevt
-Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: libfwevt-dbg
@@ -17,14 +16,14 @@ Description: Library to support the Windows XML Event Log (EVTX) data types
 Package: libfwevt-dbg
 Architecture: any
 Section: debug
-Depends: libfwevt (= ${Source-Version}), ${misc:Depends}
+Depends: libfwevt (= ${binary:Version}), ${misc:Depends}
 Description: Debugging symbols for libfwevt
  Debugging symbols for libfwevt.
 
 Package: libfwevt-dev
 Section: libdevel
 Architecture: any
-Depends: libfwevt (= ${Source-Version})
+Depends: libfwevt (= ${binary:Version}), ${misc:Depends}
 Description: Header files and libraries for developing applications for libfwevt
  Header files and libraries for developing applications for libfwevt.
 
