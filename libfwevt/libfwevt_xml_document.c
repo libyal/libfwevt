@@ -306,6 +306,7 @@ int libfwevt_xml_document_read_with_template_values(
 	libfwevt_internal_xml_document_t *internal_xml_document = NULL;
 	libfwevt_xml_token_t *xml_token                         = NULL;
 	static char *function                                   = "libfwevt_xml_document_read_with_template_values";
+	uint8_t supported_flags                                 = 0;
 
 	if( xml_document == NULL )
 	{
@@ -364,7 +365,10 @@ int libfwevt_xml_document_read_with_template_values(
 
 		goto on_error;
 	}
-	if( ( flags & ~( LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) ) != 0 )
+	supported_flags = LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS
+	                | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS;
+
+	if( ( flags & ~( supported_flags ) ) != 0 )
 	{
 		libcerror_error_set(
 		 error,
@@ -440,7 +444,7 @@ int libfwevt_xml_document_read_with_template_values(
 				if( libcnotify_verbose != 0 )
 				{
 					libcnotify_printf(
-					 "%s: type\t\t\t\t\t: 0x%02" PRIx8 "\n",
+					 "%s: type\t\t\t: 0x%02" PRIx8 "\n",
 					 function,
 					 binary_data[ binary_data_offset ] );
 
@@ -1540,6 +1544,7 @@ int libfwevt_xml_document_read_element(
 	const uint8_t *xml_document_data    = NULL;
 	static char *function               = "libfwevt_xml_document_read_element";
 	size_t additional_value_size        = 0;
+	size_t element_size_offset          = 0;
 	size_t template_value_offset        = 0;
 	size_t trailing_data_size           = 0;
 	size_t xml_document_data_offset     = 0;
@@ -1625,10 +1630,18 @@ int libfwevt_xml_document_read_element(
 	{
 		additional_value_size = 4;
 	}
+	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS ) == 0 )
+	{
+		element_size_offset = 1;
+	}
+	else
+	{
+		element_size_offset = 3;
+	}
 	xml_document_data      = &( binary_data[ binary_data_offset ] );
 	xml_document_data_size = binary_data_size - binary_data_offset;
 
-	if( xml_document_data_size < ( 7 + additional_value_size ) )
+	if( xml_document_data_size < ( element_size_offset + 4 + additional_value_size ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1675,12 +1688,12 @@ int libfwevt_xml_document_read_element(
 			 function );
 			libcnotify_print_data(
 			 xml_document_data,
-			 7 + additional_value_size,
+			 element_size_offset + 4 + additional_value_size,
 			 0 );
 		}
 #endif
 		byte_stream_copy_to_uint32_little_endian(
-		 &( xml_document_data[ 3 ] ),
+		 &( xml_document_data[ element_size_offset ] ),
 		 element_size );
 
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -1691,24 +1704,26 @@ int libfwevt_xml_document_read_element(
 			 function,
 			 xml_document_data[ 0 ] );
 
-			byte_stream_copy_to_uint16_little_endian(
-			 &( xml_document_data[ 1 ] ),
-			 value_16bit );
-			libcnotify_printf(
-			 "%s: dependency identifier\t\t: %" PRIi16 " (0x%04" PRIx16 ")\n",
-			 function,
-			 (int16_t) value_16bit,
-			 value_16bit );
-
+			if( element_size_offset == 3 )
+			{
+				byte_stream_copy_to_uint16_little_endian(
+				 &( xml_document_data[ 1 ] ),
+				 value_16bit );
+				libcnotify_printf(
+				 "%s: dependency identifier\t\t: %" PRIi16 " (0x%04" PRIx16 ")\n",
+				 function,
+				 (int16_t) value_16bit,
+				 value_16bit );
+			}
 			libcnotify_printf(
 			 "%s: size\t\t\t\t: %" PRIu32 "\n",
 			 function,
 			 element_size );
 		}
 #endif
-		xml_document_data_offset = 7;
+		xml_document_data_offset = element_size_offset + 4;
 
-		/* The first 7 bytes are not included in the element size
+		/* The first 5 or 7 bytes are not included in the element size
 		 */
 
 		if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
@@ -1718,7 +1733,7 @@ int libfwevt_xml_document_read_element(
 		else
 		{
 			byte_stream_copy_to_uint32_little_endian(
-			 &( xml_document_data[ 7 ] ),
+			 &( xml_document_data[ xml_document_data_offset ] ),
 			 element_name_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -5739,6 +5754,30 @@ int libfwevt_xml_document_substitute_template_value(
 		}
 		switch( xml_sub_token->type & 0xbf )
 		{
+			case LIBFWEVT_XML_TOKEN_OPEN_START_ELEMENT_TAG:
+				if( libfwevt_xml_document_read_element(
+				     internal_xml_document,
+				     xml_sub_token,
+				     binary_data,
+				     binary_data_size,
+				     binary_data_offset,
+				     ascii_codepage,
+				     flags & ~( LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS ),
+				     template_values_array,
+				     xml_tag,
+				     error ) != 1 )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_IO,
+					 LIBCERROR_IO_ERROR_READ_FAILED,
+					 "%s: unable to read element.",
+					 function );
+
+					goto on_error;
+				}
+				break;
+
 			case LIBFWEVT_XML_TOKEN_FRAGMENT_HEADER:
 				if( libfwevt_xml_document_read_fragment(
 				     internal_xml_document,
