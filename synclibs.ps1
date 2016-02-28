@@ -1,6 +1,6 @@
 # Script that synchronizes the local library dependencies
 #
-# Version: 20150105
+# Version: 20160212
 
 $GitUrlPrefix = "https://github.com/libyal"
 $LocalLibs = @("libcdata","libcerror","libcnotify","libcstring","libcthreads","libfdatetime","libfguid","libfvalue","libuna")

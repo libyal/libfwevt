@@ -23,9 +23,8 @@
 #define _LIBFWEVT_INTERNAL_ERROR_H
 
 #include <common.h>
+#include <file_stream.h>
 #include <types.h>
-
-#include <stdio.h>
 
 #if !defined( HAVE_LOCAL_LIBFWEVT )
 #include <libfwevt/error.h>
@@ -65,11 +64,11 @@ int libfwevt_error_backtrace_sprint(
      char *string,
      size_t size );
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBFWEVT ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_ERROR_H ) */
 

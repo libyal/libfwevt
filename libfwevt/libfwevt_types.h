@@ -63,9 +63,9 @@ typedef intptr_t libfwevt_xml_document_t;
 typedef intptr_t libfwevt_xml_tag_t;
 typedef intptr_t libfwevt_xml_template_value_t;
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) && !defined( WINAPI ) */
 
-#endif
+#endif /* defined( HAVE_LOCAL_LIBFWEVT ) */
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_TYPES_H ) */
 
