@@ -1,5 +1,5 @@
 /*
- * Library to support the Object Linking and Embedding (OLE) data types
+ * Library to support the Windows XML Event Log (EVTX) data types
  *
  * Copyright (C) 2011-2016, Joachim Metz <joachim.metz@gmail.com>
  *

@@ -895,7 +895,7 @@ int libfwevt_xml_document_debug_print(
      libfwevt_xml_document_t *xml_document,
      libfwevt_error_t **error );
 
-#endif
+#endif /* #if defined( HAVE_DEBUG_OUTPUT ) */
 
 /* -------------------------------------------------------------------------
  * XML tag functions
@@ -1072,5 +1072,5 @@ int libfwevt_xml_tag_get_flags(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_H ) */
 

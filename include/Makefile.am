@@ -1,12 +1,12 @@
 include_HEADERS = \
-        libfwevt.h
+	libfwevt.h
 
 pkginclude_HEADERS = \
-        libfwevt/definitions.h \
-        libfwevt/error.h \
-        libfwevt/extern.h \
-        libfwevt/features.h \
-        libfwevt/types.h
+	libfwevt/definitions.h \
+	libfwevt/error.h \
+	libfwevt/extern.h \
+	libfwevt/features.h \
+	libfwevt/types.h
 
 EXTRA_DIST = \
 	libfwevt.h.in \
