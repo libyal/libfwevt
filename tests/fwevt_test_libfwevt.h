@@ -1,5 +1,5 @@
 /*
- * The libfwevt header wrapper
+ * The internal libfwevt header
  *
  * Copyright (C) 2011-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -24,14 +24,14 @@
 
 #include <common.h>
 
-/* If libtool DLL support is enabled set LIBFWEVT_DLL_IMPORT
- * before including libfwevt.h
+/* If Cygwin libtool DLL support is enabled and do not want to create static
+ * executables set LIBFWEVT_DLL_IMPORT before including libfwevt.h
  */
-#if defined( _WIN32 ) && defined( DLL_IMPORT )
+#if defined( _WIN32 ) && defined( DLL_EXPORT ) && !defined( HAVE_STATIC_EXECUTABLES )
 #define LIBFWEVT_DLL_IMPORT
 #endif
 
 #include <libfwevt.h>
 
-#endif
+#endif /* !defined( _FWEVT_TEST_LIBFWEVT_H ) */
 

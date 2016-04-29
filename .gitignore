@@ -116,6 +116,7 @@ stamp-h[1-9]
 /include/libfwevt/types.h
 /libfwevt/libfwevt.rc
 /libfwevt/libfwevt_definitions.h
+/tests/fwevt_test_get_version
 /tests/tmp*
 
 # Local library dependencies specific files
