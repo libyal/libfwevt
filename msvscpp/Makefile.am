@@ -1,5 +1,5 @@
 MSVSCPP_FILES = \
-	fwevt_get_version/fwevt_get_version.vcproj \
+	fwevt_test_get_version/fwevt_test_get_version.vcproj \
 	libcdata/libcdata.vcproj \
 	libcerror/libcerror.vcproj \
 	libcnotify/libcnotify.vcproj \

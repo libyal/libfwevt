@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="fwevt_get_version"
-	ProjectGUID="{A222D69E-3F01-4C55-B36C-84C6C96D69FC}"
-	RootNamespace="fwevt_get_version"
+	Name="fwevt_test_get_version"
+	ProjectGUID="{74B53AAA-840C-4B97-B54D-97577DDF51EE}"
+	RootNamespace="fwevt_test_get_version"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -175,12 +175,28 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath="..\..\tests\fwevt_test_get_version.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\tests\fwevt_test_libcstring.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\fwevt_test_libfwevt.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\fwevt_test_unused.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

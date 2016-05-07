@@ -37,5 +37,5 @@ const char *libfwevt_get_version(
 	return( (const char *) LIBFWEVT_VERSION_STRING );
 }
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBFWEVT ) */
 

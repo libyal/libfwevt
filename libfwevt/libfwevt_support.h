@@ -37,11 +37,11 @@ LIBFWEVT_EXTERN \
 const char *libfwevt_get_version(
              void );
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBFWEVT ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_SUPPORT_H ) */
 
