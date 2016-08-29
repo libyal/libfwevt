@@ -20,7 +20,6 @@
  */
 
 #include <common.h>
-#include <file_stream.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
@@ -28,6 +27,7 @@
 
 #include "fwevt_test_libcstring.h"
 #include "fwevt_test_libfwevt.h"
+#include "fwevt_test_macros.h"
 #include "fwevt_test_unused.h"
 
 /* Tests retrieving the library version
@@ -46,11 +46,15 @@ int fwevt_test_get_version(
 	          LIBFWEVT_VERSION_STRING,
 	          9 );
 
-	if( result != 0 )
-	{
-		return( 0 );
-	}
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
 	return( 1 );
+
+on_error:
+	return( 0 );
 }
 
 /* The main program
@@ -68,10 +72,13 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
-	if( fwevt_test_get_version() != 1 )
-	{
-		return( EXIT_FAILURE );
-	}
+	FWEVT_TEST_RUN(
+	 "libfwevt_get_version",
+	 fwevt_test_get_version() )
+
 	return( EXIT_SUCCESS );
+
+on_error:
+	return( EXIT_FAILURE );
 }
 

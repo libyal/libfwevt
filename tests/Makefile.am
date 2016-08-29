@@ -16,12 +16,25 @@ EXTRA_DIST = \
 	$(check_SCRIPTS)
 
 check_PROGRAMS = \
+	fwevt_test_error \
 	fwevt_test_get_version
+
+fwevt_test_error_SOURCES = \
+	fwevt_test_error.c \
+	fwevt_test_libcstring.h \
+	fwevt_test_libfwevt.h \
+	fwevt_test_macros.h \
+	fwevt_test_unused.h
+
+fwevt_test_error_LDADD = \
+	../libfwevt/libfwevt.la \
+	@LIBCSTRING_LIBADD@
 
 fwevt_test_get_version_SOURCES = \
 	fwevt_test_get_version.c \
 	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
+	fwevt_test_macros.h \
 	fwevt_test_unused.h
 
 fwevt_test_get_version_LDADD = \

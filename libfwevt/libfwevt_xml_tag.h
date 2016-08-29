@@ -309,6 +309,7 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
      libcerror_error_t **error );
 
 #if defined( HAVE_DEBUG_OUTPUT )
+
 int libfwevt_xml_tag_debug_print_value_string(
      libfwevt_internal_xml_tag_t *internal_xml_tag,
      libcerror_error_t **error );
@@ -326,11 +327,12 @@ int libfwevt_xml_tag_value_debug_print(
      libfwevt_xml_tag_t *xml_tag,
      int value_entry_index,
      libcerror_error_t **error );
-#endif
+
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_XML_TAG_H ) */
 

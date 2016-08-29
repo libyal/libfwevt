@@ -1,5 +1,5 @@
 /*
- * Windows Event Log binary XML token functions
+ * Memory allocation functions for testing
  *
  * Copyright (C) 2011-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,49 +19,32 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_XML_TOKEN_H )
-#define _LIBFWEVT_XML_TOKEN_H
+#if !defined( _FWEVT_TEST_MEMORY_H )
+#define _FWEVT_TEST_MEMORY_H
 
 #include <common.h>
-#include <types.h>
-
-#include "libfwevt_libcerror.h"
 
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-typedef struct libfwevt_xml_token libfwevt_xml_token_t;
+#if defined( HAVE_GNU_DL_DLSYM ) && defined( __GNUC__ ) && !defined( __clang__ )
 
-struct libfwevt_xml_token
-{
-	/* The type
-	 */
-	uint8_t type;
+#define HAVE_FWEVT_TEST_MEMORY		1
 
-	/* The size
-	 */
-	size_t size;
-};
+extern int fwevt_test_malloc_attempts_before_fail;
 
-int libfwevt_xml_token_initialize(
-     libfwevt_xml_token_t **xml_token,
-     libcerror_error_t **error );
+extern int fwevt_test_memcpy_attempts_before_fail;
 
-int libfwevt_xml_token_free(
-     libfwevt_xml_token_t **xml_token,
-     libcerror_error_t **error );
+extern int fwevt_test_memset_attempts_before_fail;
 
-int libfwevt_xml_token_read(
-     libfwevt_xml_token_t *xml_token,
-     const uint8_t *chunk_data,
-     size_t chunk_data_size,
-     size_t chunk_data_offset,
-     libcerror_error_t **error );
+extern int fwevt_test_realloc_attempts_before_fail;
+
+#endif /* defined( HAVE_GNU_DL_DLSYM ) && defined( __GNUC__ ) && !defined( __clang__ ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_XML_TOKEN_H ) */
+#endif /* !defined( _FWEVT_TEST_MEMORY_H ) */
 

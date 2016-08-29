@@ -6197,5 +6197,5 @@ int libfwevt_xml_tag_value_debug_print(
 	return( 1 );
 }
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 

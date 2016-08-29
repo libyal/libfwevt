@@ -1,4 +1,5 @@
 MSVSCPP_FILES = \
+	fwevt_test_error/fwevt_test_error.vcproj \
 	fwevt_test_get_version/fwevt_test_get_version.vcproj \
 	libcdata/libcdata.vcproj \
 	libcerror/libcerror.vcproj \
