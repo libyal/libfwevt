@@ -123,23 +123,23 @@ int main(
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_error_free",
-	 fwevt_test_error_free() )
+	 fwevt_test_error_free );
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_error_fprint",
-	 fwevt_test_error_fprint() )
+	 fwevt_test_error_fprint );
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_error_sprint",
-	 fwevt_test_error_sprint() )
+	 fwevt_test_error_sprint );
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_error_backtrace_fprint",
-	 fwevt_test_error_backtrace_fprint() )
+	 fwevt_test_error_backtrace_fprint );
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_error_backtrace_sprint",
-	 fwevt_test_error_backtrace_sprint() )
+	 fwevt_test_error_backtrace_sprint );
 
 	return( EXIT_SUCCESS );
 

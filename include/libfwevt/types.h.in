@@ -219,5 +219,5 @@ typedef intptr_t libfwevt_xml_template_value_t;
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_TYPES_H ) */
 

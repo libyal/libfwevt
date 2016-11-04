@@ -1,5 +1,5 @@
 /*
- * The internal extern definition
+ * Library xml_template_value type testing program
  *
  * Copyright (C) 2011-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,28 +19,39 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_EXTERN_H )
-#define _LIBFWEVT_INTERNAL_EXTERN_H
-
 #include <common.h>
+#include <file_stream.h>
+#include <types.h>
 
-/* Define HAVE_LOCAL_LIBFWEVT for local use of libfwevt
- */
-#if !defined( HAVE_LOCAL_LIBFWEVT )
-
-/* If libtool DLL support is enabled set LIBFWEVT_DLL_EXPORT
- * before including libfwevt/extern.h
- */
-#if defined( _WIN32 ) && defined( DLL_EXPORT )
-#define LIBFWEVT_DLL_EXPORT
+#if defined( HAVE_STDLIB_H ) || defined( WINAPI )
+#include <stdlib.h>
 #endif
 
-#include <libfwevt/extern.h>
+#include "fwevt_test_libcerror.h"
+#include "fwevt_test_libcstring.h"
+#include "fwevt_test_libfwevt.h"
+#include "fwevt_test_macros.h"
+#include "fwevt_test_memory.h"
+#include "fwevt_test_unused.h"
 
+/* The main program
+ */
+#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+int wmain(
+     int argc FWEVT_TEST_ATTRIBUTE_UNUSED,
+     wchar_t * const argv[] FWEVT_TEST_ATTRIBUTE_UNUSED )
 #else
-#define LIBFWEVT_EXTERN	extern
-
+int main(
+     int argc FWEVT_TEST_ATTRIBUTE_UNUSED,
+     char * const argv[] FWEVT_TEST_ATTRIBUTE_UNUSED )
 #endif
+{
+	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
+	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_EXTERN_H ) */
+	return( EXIT_SUCCESS );
+
+on_error:
+	return( EXIT_FAILURE );
+}
 

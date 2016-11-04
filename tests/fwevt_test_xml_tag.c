@@ -1,5 +1,5 @@
 /*
- * Library get version test program
+ * Library xml_tag type testing program
  *
  * Copyright (C) 2011-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -20,42 +20,19 @@
  */
 
 #include <common.h>
+#include <file_stream.h>
+#include <types.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
 #endif
 
+#include "fwevt_test_libcerror.h"
 #include "fwevt_test_libcstring.h"
 #include "fwevt_test_libfwevt.h"
 #include "fwevt_test_macros.h"
+#include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
-
-/* Tests retrieving the library version
- * Returns 1 if successful or 0 if not
- */
-int fwevt_test_get_version(
-     void )
-{
-	const char *version_string = NULL;
-	int result                 = 0;
-
-	version_string = libfwevt_get_version();
-
-	result = libcstring_narrow_string_compare(
-	          version_string,
-	          LIBFWEVT_VERSION_STRING,
-	          9 );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 0 );
-
-	return( 1 );
-
-on_error:
-	return( 0 );
-}
 
 /* The main program
  */
@@ -71,10 +48,6 @@ int main(
 {
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
-
-	FWEVT_TEST_RUN(
-	 "libfwevt_get_version",
-	 fwevt_test_get_version() )
 
 	return( EXIT_SUCCESS );
 

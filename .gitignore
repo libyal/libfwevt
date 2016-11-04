@@ -1,6 +1,6 @@
 # Files to ignore by git
 #
-# Version: 20160507
+# Version: 20161030
 
 # Generic auto-generated build files
 *~
@@ -57,6 +57,7 @@ stamp-h[1-9]
 /test-driver
 /ylwrap
 /m4/codeset.m4
+/m4/extern-inline.m4
 /m4/fcntl-o.m4
 /m4/gettext.m4
 /m4/glibc2.m4
@@ -119,8 +120,21 @@ stamp-h[1-9]
 /include/libfwevt/types.h
 /libfwevt/libfwevt.rc
 /libfwevt/libfwevt_definitions.h
+/tests/fwevt_test_channel
 /tests/fwevt_test_error
-/tests/fwevt_test_get_version
+/tests/fwevt_test_event
+/tests/fwevt_test_keyword
+/tests/fwevt_test_level
+/tests/fwevt_test_manifest
+/tests/fwevt_test_map
+/tests/fwevt_test_opcode
+/tests/fwevt_test_provider
+/tests/fwevt_test_support
+/tests/fwevt_test_task
+/tests/fwevt_test_template
+/tests/fwevt_test_xml_document
+/tests/fwevt_test_xml_tag
+/tests/fwevt_test_xml_template_value
 /tests/tmp*
 
 # Local library dependencies specific files

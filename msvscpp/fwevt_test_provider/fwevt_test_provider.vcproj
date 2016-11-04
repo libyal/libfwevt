@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="fwevt_test_get_version"
-	ProjectGUID="{74B53AAA-840C-4B97-B54D-97577DDF51EE}"
-	RootNamespace="fwevt_test_get_version"
+	Name="fwevt_test_provider"
+	ProjectGUID="{72C96509-C06F-4BE9-9853-64B43F69CC5C}"
+	RootNamespace="fwevt_test_provider"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -176,7 +176,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tests\fwevt_test_get_version.c"
+				RelativePath="..\..\tests\fwevt_test_memory.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\fwevt_test_provider.c"
 				>
 			</File>
 		</Filter>
@@ -185,6 +189,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\tests\fwevt_test_libcerror.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\tests\fwevt_test_libcstring.h"
 				>
@@ -195,6 +203,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tests\fwevt_test_macros.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\fwevt_test_memory.h"
 				>
 			</File>
 			<File

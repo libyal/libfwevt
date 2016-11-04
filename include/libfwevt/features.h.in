@@ -24,8 +24,8 @@
 
 /* The libfwevt type support features
  */
-#if @HAVE_WIDE_CHARACTER_TYPE@ || defined( HAVE_WIDE_CHARACTER_TYPE )
-#define LIBFWEVT_HAVE_WIDE_CHARACTER_TYPE		1
+#if defined( WINAPI ) || @HAVE_WIDE_CHARACTER_TYPE@
+#define LIBFWEVT_HAVE_WIDE_CHARACTER_TYPE	1
 #endif
 
 #if !defined( LIBFWEVT_DEPRECATED )
@@ -38,5 +38,5 @@
 #endif
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_FEATURES_H ) */
 
