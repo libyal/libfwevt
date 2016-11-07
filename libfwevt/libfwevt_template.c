@@ -22,6 +22,7 @@
 #include <common.h>
 #include <byte_stream.h>
 #include <memory.h>
+#include <system_string.h>
 #include <types.h>
 
 #include "libfwevt_debug.h"
@@ -405,7 +406,7 @@ int libfwevt_template_read_header(
 	static char *function       = "libfwevt_template_read_header";
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	libcstring_system_character_t guid_string[ 48 ];
+	system_character_t guid_string[ 48 ];
 
 	libfguid_identifier_t *guid = NULL;
 	uint32_t value_32bit        = 0;
@@ -552,7 +553,7 @@ int libfwevt_template_read_header(
 
 			goto on_error;
 		}
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 		result = libfguid_identifier_copy_to_utf16_string(
 			  guid,
 			  (uint16_t *) guid_string,
@@ -579,7 +580,7 @@ int libfwevt_template_read_header(
 			goto on_error;
 		}
 		libcnotify_printf(
-		 "%s: identifier\t\t\t\t: %" PRIs_LIBCSTRING_SYSTEM "\n",
+		 "%s: identifier\t\t\t\t: %" PRIs_SYSTEM "\n",
 		 function,
 		 guid_string );
 

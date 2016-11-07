@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBCTHREADS_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
@@ -26,7 +25,6 @@ libfwevt_la_SOURCES = \
 	libfwevt_libcdata.h \
 	libfwevt_libcerror.h \
 	libfwevt_libcnotify.h \
-	libfwevt_libcstring.h \
 	libfwevt_libfguid.h \
 	libfwevt_libfvalue.h \
 	libfwevt_libuna.h \
@@ -47,7 +45,6 @@ libfwevt_la_SOURCES = \
 	libfwevt_xml_token.c libfwevt_xml_token.h
 
 libfwevt_la_LIBADD = \
-	@LIBCSTRING_LIBADD@ \
 	@LIBCERROR_LIBADD@ \
 	@LIBCTHREADS_LIBADD@ \
 	@LIBCDATA_LIBADD@ \

@@ -22,6 +22,7 @@
 #include <common.h>
 #include <byte_stream.h>
 #include <memory.h>
+#include <system_string.h>
 #include <types.h>
 
 #include "libfwevt_libcerror.h"
@@ -177,7 +178,7 @@ int libfwevt_manifest_read(
 	uint32_t provider_index                         = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	libcstring_system_character_t guid_string[ 48 ];
+	system_character_t guid_string[ 48 ];
 
 	libfguid_identifier_t *guid                     = NULL;
 	uint32_t value_32bit                            = 0;
@@ -388,7 +389,7 @@ int libfwevt_manifest_read(
 
 				goto on_error;
 			}
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 			result = libfguid_identifier_copy_to_utf16_string(
 				  guid,
 				  (uint16_t *) guid_string,
@@ -415,7 +416,7 @@ int libfwevt_manifest_read(
 				goto on_error;
 			}
 			libcnotify_printf(
-			 "%s: provider entry: %02" PRIu32 " identifier\t\t\t: %" PRIs_LIBCSTRING_SYSTEM "\n",
+			 "%s: provider entry: %02" PRIu32 " identifier\t\t\t: %" PRIs_SYSTEM "\n",
 			 function,
 			 provider_index,
 			 guid_string );

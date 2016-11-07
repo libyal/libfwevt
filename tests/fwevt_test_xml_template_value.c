@@ -28,7 +28,6 @@
 #endif
 
 #include "fwevt_test_libcerror.h"
-#include "fwevt_test_libcstring.h"
 #include "fwevt_test_libfwevt.h"
 #include "fwevt_test_macros.h"
 #include "fwevt_test_memory.h"
@@ -36,7 +35,7 @@
 
 /* The main program
  */
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 int wmain(
      int argc FWEVT_TEST_ATTRIBUTE_UNUSED,
      wchar_t * const argv[] FWEVT_TEST_ATTRIBUTE_UNUSED )

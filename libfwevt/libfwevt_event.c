@@ -27,7 +27,6 @@
 #include "libfwevt_event.h"
 #include "libfwevt_libcerror.h"
 #include "libfwevt_libcnotify.h"
-#include "libfwevt_libcstring.h"
 #include "libfwevt_libuna.h"
 #include "libfwevt_types.h"
 

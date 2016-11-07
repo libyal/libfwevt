@@ -21,7 +21,10 @@
 
 #include <common.h>
 #include <memory.h>
+#include <narrow_string.h>
+#include <system_string.h>
 #include <types.h>
+#include <wide_string.h>
 
 #if defined( HAVE_WCTYPE_H )
 #include <wctype.h>
@@ -31,7 +34,6 @@
 #include "libfwevt_libcdata.h"
 #include "libfwevt_libcerror.h"
 #include "libfwevt_libcnotify.h"
-#include "libfwevt_libcstring.h"
 #include "libfwevt_libfvalue.h"
 #include "libfwevt_libuna.h"
 #include "libfwevt_types.h"
@@ -5492,14 +5494,14 @@ int libfwevt_xml_tag_debug_print_value_string(
      libfwevt_internal_xml_tag_t *internal_xml_tag,
      libcerror_error_t **error )
 {
-	libcstring_system_character_t *value_string = NULL;
-	static char *function                       = "libfwevt_xml_tag_debug_print_value_string";
-	size_t value_string_index                   = 0;
-	size_t value_string_size                    = 0;
-	int number_of_value_entries                 = 0;
-	int result                                  = 0;
-	int value_entry_index                       = 0;
-	int value_type                              = 0;
+	system_character_t *value_string = NULL;
+	static char *function            = "libfwevt_xml_tag_debug_print_value_string";
+	size_t value_string_index        = 0;
+	size_t value_string_size         = 0;
+	int number_of_value_entries      = 0;
+	int result                       = 0;
+	int value_entry_index            = 0;
+	int value_type                   = 0;
 
 	if( internal_xml_tag == NULL )
 	{
@@ -5544,7 +5546,7 @@ int libfwevt_xml_tag_debug_print_value_string(
 	     value_entry_index < number_of_value_entries;
 	     value_entry_index++ )
 	{
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 		result = libfvalue_value_get_utf16_string_size(
 			  internal_xml_tag->value,
 			  value_entry_index,
@@ -5586,7 +5588,7 @@ int libfwevt_xml_tag_debug_print_value_string(
 		{
 			if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
 			{
-				value_string = libcstring_system_string_allocate(
+				value_string = system_string_allocate(
 				                value_string_size );
 
 				if( value_string == NULL )
@@ -5600,7 +5602,7 @@ int libfwevt_xml_tag_debug_print_value_string(
 
 					goto on_error;
 				}
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 				result = libfvalue_value_copy_to_utf16_string(
 				          internal_xml_tag->value,
 				          value_entry_index,
@@ -5674,7 +5676,7 @@ int libfwevt_xml_tag_debug_print_value_string(
 
 						default:
 			                                libcnotify_printf(
-			                                 "%" PRIc_LIBCSTRING_SYSTEM "",
+			                                 "%" PRIc_SYSTEM "",
 			                                 value_string[ value_string_index ] );
 
 							break;

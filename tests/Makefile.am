@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBFWEVT_DLL_IMPORT@
 
@@ -37,7 +36,6 @@ check_PROGRAMS = \
 fwevt_test_channel_SOURCES = \
 	fwevt_test_channel.c \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -45,24 +43,20 @@ fwevt_test_channel_SOURCES = \
 
 fwevt_test_channel_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_error_SOURCES = \
 	fwevt_test_error.c \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_unused.h
 
 fwevt_test_error_LDADD = \
-	../libfwevt/libfwevt.la \
-	@LIBCSTRING_LIBADD@
+	../libfwevt/libfwevt.la
 
 fwevt_test_event_SOURCES = \
 	fwevt_test_event.c \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -70,13 +64,11 @@ fwevt_test_event_SOURCES = \
 
 fwevt_test_event_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_keyword_SOURCES = \
 	fwevt_test_keyword.c \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -84,13 +76,11 @@ fwevt_test_keyword_SOURCES = \
 
 fwevt_test_keyword_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_level_SOURCES = \
 	fwevt_test_level.c \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -98,12 +88,10 @@ fwevt_test_level_SOURCES = \
 
 fwevt_test_level_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_manifest_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_manifest.c \
@@ -112,12 +100,10 @@ fwevt_test_manifest_SOURCES = \
 
 fwevt_test_manifest_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_map_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_map.c \
@@ -126,13 +112,11 @@ fwevt_test_map_SOURCES = \
 
 fwevt_test_map_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_opcode_SOURCES = \
 	fwevt_test_opcode.c \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -140,12 +124,10 @@ fwevt_test_opcode_SOURCES = \
 
 fwevt_test_opcode_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_provider_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -154,23 +136,19 @@ fwevt_test_provider_SOURCES = \
 
 fwevt_test_provider_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_support_SOURCES = \
 	fwevt_test_support.c \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_unused.h
 
 fwevt_test_support_LDADD = \
-	../libfwevt/libfwevt.la \
-	@LIBCSTRING_LIBADD@
+	../libfwevt/libfwevt.la
 
 fwevt_test_task_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -179,12 +157,10 @@ fwevt_test_task_SOURCES = \
 
 fwevt_test_task_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_template_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -193,12 +169,10 @@ fwevt_test_template_SOURCES = \
 
 fwevt_test_template_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_xml_document_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -207,12 +181,10 @@ fwevt_test_xml_document_SOURCES = \
 
 fwevt_test_xml_document_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_xml_tag_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -221,12 +193,10 @@ fwevt_test_xml_tag_SOURCES = \
 
 fwevt_test_xml_tag_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 fwevt_test_xml_template_value_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libcstring.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.h fwevt_test_memory.c \
@@ -235,8 +205,7 @@ fwevt_test_xml_template_value_SOURCES = \
 
 fwevt_test_xml_template_value_LDADD = \
 	../libfwevt/libfwevt.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 MAINTAINERCLEANFILES = \
 	Makefile.in

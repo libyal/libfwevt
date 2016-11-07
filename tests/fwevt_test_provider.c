@@ -28,7 +28,6 @@
 #endif
 
 #include "fwevt_test_libcerror.h"
-#include "fwevt_test_libcstring.h"
 #include "fwevt_test_libfwevt.h"
 #include "fwevt_test_macros.h"
 #include "fwevt_test_memory.h"
@@ -42,9 +41,9 @@
 int fwevt_test_provider_initialize(
      void )
 {
-	libcerror_error_t *error = NULL;
-	libfwevt_provider_t *provider      = NULL;
-	int result               = 0;
+	libcerror_error_t *error      = NULL;
+	libfwevt_provider_t *provider = NULL;
+	int result                    = 0;
 
 	/* Test libfwevt_provider_initialize
 	 */
@@ -257,7 +256,7 @@ on_error:
 
 /* The main program
  */
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 int wmain(
      int argc FWEVT_TEST_ATTRIBUTE_UNUSED,
      wchar_t * const argv[] FWEVT_TEST_ATTRIBUTE_UNUSED )

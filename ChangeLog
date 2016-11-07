@@ -1,5 +1,11 @@
 TODO
-* update libfwevt.3 man page
+* Code clean up
+  - change code to use libfwsi_debug_print_guid_value
+  - change code to use libfwsi_debug_print_property_storage_value
+  - change code to use libfwsi_debug_print_string_value
+
+20161107
+* code clean up
 
 20160103
 * 2016 update
