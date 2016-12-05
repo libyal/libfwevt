@@ -64,5 +64,5 @@ int libfwevt_keyword_read(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_KEYWORD_H ) */
 

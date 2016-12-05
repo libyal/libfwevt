@@ -93,5 +93,5 @@ int libfwevt_manifest_get_provider_by_identifier(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_MANIFEST_H ) */
 

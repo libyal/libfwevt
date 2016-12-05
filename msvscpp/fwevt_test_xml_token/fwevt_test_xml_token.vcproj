@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="fwevt_test_keyword"
-	ProjectGUID="{58C8BF9C-CEF7-447F-A059-6619D2584EA9}"
-	RootNamespace="fwevt_test_keyword"
+	Name="fwevt_test_xml_token"
+	ProjectGUID="{6AEB4E37-792D-490D-95A5-1A855C166C1B}"
+	RootNamespace="fwevt_test_xml_token"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -176,11 +176,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tests\fwevt_test_keyword.c"
+				RelativePath="..\..\tests\fwevt_test_memory.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tests\fwevt_test_memory.c"
+				RelativePath="..\..\tests\fwevt_test_xml_token.c"
 				>
 			</File>
 		</Filter>

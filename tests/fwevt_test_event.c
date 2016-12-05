@@ -39,11 +39,17 @@
 int fwevt_test_event_initialize(
      void )
 {
-	libcerror_error_t *error = NULL;
-	libfwevt_event_t *event  = NULL;
-	int result               = 0;
+	libcerror_error_t *error        = NULL;
+	libfwevt_event_t *event         = NULL;
+	int result                      = 0;
 
-	/* Test libfwevt_event_initialize
+#if defined( HAVE_FWEVT_TEST_MEMORY )
+	int number_of_malloc_fail_tests = 1;
+	int number_of_memset_fail_tests = 1;
+	int test_number                 = 0;
+#endif
+
+	/* Test regular cases
 	 */
 	result = libfwevt_event_initialize(
 	          &event,
@@ -119,79 +125,89 @@ int fwevt_test_event_initialize(
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 
-	/* Test libfwevt_event_initialize with malloc failing
-	 */
-	fwevt_test_malloc_attempts_before_fail = 0;
-
-	result = libfwevt_event_initialize(
-	          &event,
-	          &error );
-
-	if( fwevt_test_malloc_attempts_before_fail != -1 )
+	for( test_number = 0;
+	     test_number < number_of_malloc_fail_tests;
+	     test_number++ )
 	{
-		fwevt_test_malloc_attempts_before_fail = -1;
+		/* Test libfwevt_event_initialize with malloc failing
+		 */
+		fwevt_test_malloc_attempts_before_fail = test_number;
 
-		if( event != NULL )
+		result = libfwevt_event_initialize(
+		          &event,
+		          &error );
+
+		if( fwevt_test_malloc_attempts_before_fail != -1 )
 		{
-			libfwevt_event_free(
-			 &event,
-			 NULL );
+			fwevt_test_malloc_attempts_before_fail = -1;
+
+			if( event != NULL )
+			{
+				libfwevt_event_free(
+				 &event,
+				 NULL );
+			}
+		}
+		else
+		{
+			FWEVT_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
+
+			FWEVT_TEST_ASSERT_IS_NULL(
+			 "event",
+			 event );
+
+			FWEVT_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
+
+			libcerror_error_free(
+			 &error );
 		}
 	}
-	else
+	for( test_number = 0;
+	     test_number < number_of_memset_fail_tests;
+	     test_number++ )
 	{
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		/* Test libfwevt_event_initialize with memset failing
+		 */
+		fwevt_test_memset_attempts_before_fail = test_number;
 
-		FWEVT_TEST_ASSERT_IS_NULL(
-		 "event",
-		 event );
+		result = libfwevt_event_initialize(
+		          &event,
+		          &error );
 
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
-	/* Test libfwevt_event_initialize with memset failing
-	 */
-	fwevt_test_memset_attempts_before_fail = 0;
-
-	result = libfwevt_event_initialize(
-	          &event,
-	          &error );
-
-	if( fwevt_test_memset_attempts_before_fail != -1 )
-	{
-		fwevt_test_memset_attempts_before_fail = -1;
-
-		if( event != NULL )
+		if( fwevt_test_memset_attempts_before_fail != -1 )
 		{
-			libfwevt_event_free(
-			 &event,
-			 NULL );
+			fwevt_test_memset_attempts_before_fail = -1;
+
+			if( event != NULL )
+			{
+				libfwevt_event_free(
+				 &event,
+				 NULL );
+			}
 		}
-	}
-	else
-	{
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		else
+		{
+			FWEVT_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
 
-		FWEVT_TEST_ASSERT_IS_NULL(
-		 "event",
-		 event );
+			FWEVT_TEST_ASSERT_IS_NULL(
+			 "event",
+			 event );
 
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+			FWEVT_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
 
-		libcerror_error_free(
-		 &error );
+			libcerror_error_free(
+			 &error );
+		}
 	}
 #endif /* defined( HAVE_FWEVT_TEST_MEMORY ) */
 
@@ -250,6 +266,375 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_event_get_identifier function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_event_get_identifier(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_event_t *event  = NULL;
+	uint32_t identifier      = 0;
+	int identifier_is_set    = 0;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_event_initialize(
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "event",
+	 event );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_event_get_identifier(
+	          event,
+	          &identifier,
+	          &error );
+
+	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	identifier_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libfwevt_event_get_identifier(
+	          NULL,
+	          &identifier,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( identifier_is_set != 0 )
+	{
+		result = libfwevt_event_get_identifier(
+		          event,
+		          NULL,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		FWEVT_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libfwevt_event_free(
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "event",
+	 event );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( event != NULL )
+	{
+		libfwevt_event_free(
+		 &event,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_event_get_message_identifier function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_event_get_message_identifier(
+     void )
+{
+	libcerror_error_t *error      = NULL;
+	libfwevt_event_t *event       = NULL;
+	uint32_t message_identifier   = 0;
+	int message_identifier_is_set = 0;
+	int result                    = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_event_initialize(
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "event",
+	 event );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_event_get_message_identifier(
+	          event,
+	          &message_identifier,
+	          &error );
+
+	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	message_identifier_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libfwevt_event_get_message_identifier(
+	          NULL,
+	          &message_identifier,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( message_identifier_is_set != 0 )
+	{
+		result = libfwevt_event_get_message_identifier(
+		          event,
+		          NULL,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		FWEVT_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libfwevt_event_free(
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "event",
+	 event );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( event != NULL )
+	{
+		libfwevt_event_free(
+		 &event,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_event_get_template_offset function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_event_get_template_offset(
+     void )
+{
+	libcerror_error_t *error   = NULL;
+	libfwevt_event_t *event    = NULL;
+	uint32_t template_offset   = 0;
+	int result                 = 0;
+	int template_offset_is_set = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_event_initialize(
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "event",
+	 event );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_event_get_template_offset(
+	          event,
+	          &template_offset,
+	          &error );
+
+	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	template_offset_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libfwevt_event_get_template_offset(
+	          NULL,
+	          &template_offset,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( template_offset_is_set != 0 )
+	{
+		result = libfwevt_event_get_template_offset(
+		          event,
+		          NULL,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		FWEVT_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libfwevt_event_free(
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "event",
+	 event );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( event != NULL )
+	{
+		libfwevt_event_free(
+		 &event,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -272,6 +657,20 @@ int main(
 	FWEVT_TEST_RUN(
 	 "libfwevt_event_free",
 	 fwevt_test_event_free );
+
+	/* TODO: add tests for libfwevt_event_read */
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_event_get_identifier",
+	 fwevt_test_event_get_identifier );
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_event_get_message_identifier",
+	 fwevt_test_event_get_message_identifier );
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_event_get_template_offset",
+	 fwevt_test_event_get_template_offset );
 
 	return( EXIT_SUCCESS );
 

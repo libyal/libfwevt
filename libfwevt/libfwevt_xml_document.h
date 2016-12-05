@@ -298,5 +298,5 @@ int libfwevt_xml_document_debug_print(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_XML_DOCUMENT_H ) */
 

@@ -321,5 +321,5 @@ int libfwevt_provider_get_template_by_offset(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_PROVIDER_H ) */
 

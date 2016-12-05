@@ -33,189 +33,6 @@
 #include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
 
-#ifdef TODO
-
-/* Tests the libfwevt_provider_initialize function
- * Returns 1 if successful or 0 if not
- */
-int fwevt_test_provider_initialize(
-     void )
-{
-	libcerror_error_t *error      = NULL;
-	libfwevt_provider_t *provider = NULL;
-	int result                    = 0;
-
-	/* Test libfwevt_provider_initialize
-	 */
-	result = libfwevt_provider_initialize(
-	          &provider,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "provider",
-         provider );
-
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
-
-	result = libfwevt_provider_free(
-	          &provider,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "provider",
-         provider );
-
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
-
-	/* Test error cases
-	 */
-	result = libfwevt_provider_initialize(
-	          NULL,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 -1 );
-
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
-
-	libcerror_error_free(
-	 &error );
-
-	provider = (libfwevt_provider_t *) 0x12345678UL;
-
-	result = libfwevt_provider_initialize(
-	          &provider,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 -1 );
-
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
-
-	libcerror_error_free(
-	 &error );
-
-	provider = NULL;
-
-#if defined( HAVE_FWEVT_TEST_MEMORY )
-
-	/* Test libfwevt_provider_initialize with malloc failing
-	 */
-	fwevt_test_malloc_attempts_before_fail = 0;
-
-	result = libfwevt_provider_initialize(
-	          &provider,
-	          &error );
-
-	if( fwevt_test_malloc_attempts_before_fail != -1 )
-	{
-		fwevt_test_malloc_attempts_before_fail = -1;
-
-		if( provider != NULL )
-		{
-			libfwevt_provider_free(
-			 &provider,
-			 NULL );
-		}
-	}
-	else
-	{
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
-
-		FWEVT_TEST_ASSERT_IS_NULL(
-		 "provider",
-		 provider );
-
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
-	/* Test libfwevt_provider_initialize with memset failing
-	 */
-	fwevt_test_memset_attempts_before_fail = 0;
-
-	result = libfwevt_provider_initialize(
-	          &provider,
-	          &error );
-
-	if( fwevt_test_memset_attempts_before_fail != -1 )
-	{
-		fwevt_test_memset_attempts_before_fail = -1;
-
-		if( provider != NULL )
-		{
-			libfwevt_provider_free(
-			 &provider,
-			 NULL );
-		}
-	}
-	else
-	{
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
-
-		FWEVT_TEST_ASSERT_IS_NULL(
-		 "provider",
-		 provider );
-
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
-#endif /* defined( HAVE_FWEVT_TEST_MEMORY ) */
-
-	return( 1 );
-
-on_error:
-	if( error != NULL )
-	{
-		libcerror_error_free(
-		 &error );
-	}
-	if( provider != NULL )
-	{
-		libfwevt_provider_free(
-		 &provider,
-		 NULL );
-	}
-	return( 0 );
-}
-
-#endif /* TODO */
-
 /* Tests the libfwevt_provider_free function
  * Returns 1 if successful or 0 if not
  */
@@ -269,15 +86,67 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
-#ifdef TODO
-	FWEVT_TEST_RUN(
-	 "libfwevt_provider_initialize",
-	 fwevt_test_provider_initialize );
-#endif
+	/* TODO: add tests for libfwevt_provider_initialize */
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_provider_free",
 	 fwevt_test_provider_free );
+
+	/* TODO: add tests for libfwevt_provider_read */
+
+	/* TODO: add tests for libfwevt_provider_read_channels */
+
+	/* TODO: add tests for libfwevt_provider_read_events */
+
+	/* TODO: add tests for libfwevt_provider_read_keywords */
+
+	/* TODO: add tests for libfwevt_provider_read_levels */
+
+	/* TODO: add tests for libfwevt_provider_read_maps */
+
+	/* TODO: add tests for libfwevt_provider_read_opcodes */
+
+	/* TODO: add tests for libfwevt_provider_read_tasks */
+
+	/* TODO: add tests for libfwevt_provider_read_templates */
+
+	/* TODO: add tests for libfwevt_provider_compare_identifier */
+
+	/* TODO: add tests for libfwevt_provider_get_number_of_channels */
+
+	/* TODO: add tests for libfwevt_provider_get_channel */
+
+	/* TODO: add tests for libfwevt_provider_get_number_of_events */
+
+	/* TODO: add tests for libfwevt_provider_get_event */
+
+	/* TODO: add tests for libfwevt_provider_get_event_by_identifier */
+
+	/* TODO: add tests for libfwevt_provider_get_number_of_keywords */
+
+	/* TODO: add tests for libfwevt_provider_get_keyword */
+
+	/* TODO: add tests for libfwevt_provider_get_number_of_levels */
+
+	/* TODO: add tests for libfwevt_provider_get_level */
+
+	/* TODO: add tests for libfwevt_provider_get_number_of_maps */
+
+	/* TODO: add tests for libfwevt_provider_get_map */
+
+	/* TODO: add tests for libfwevt_provider_get_number_of_opcodes */
+
+	/* TODO: add tests for libfwevt_provider_get_opcode */
+
+	/* TODO: add tests for libfwevt_provider_get_number_of_tasks */
+
+	/* TODO: add tests for libfwevt_provider_get_task */
+
+	/* TODO: add tests for libfwevt_provider_get_number_of_templates */
+
+	/* TODO: add tests for libfwevt_provider_get_template */
+
+	/* TODO: add tests for libfwevt_provider_get_template_by_offset */
 
 	return( EXIT_SUCCESS );
 

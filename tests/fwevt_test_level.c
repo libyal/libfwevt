@@ -39,11 +39,17 @@
 int fwevt_test_level_initialize(
      void )
 {
-	libcerror_error_t *error = NULL;
-	libfwevt_level_t *level  = NULL;
-	int result               = 0;
+	libcerror_error_t *error        = NULL;
+	libfwevt_level_t *level         = NULL;
+	int result                      = 0;
 
-	/* Test libfwevt_level_initialize
+#if defined( HAVE_FWEVT_TEST_MEMORY )
+	int number_of_malloc_fail_tests = 1;
+	int number_of_memset_fail_tests = 1;
+	int test_number                 = 0;
+#endif
+
+	/* Test regular cases
 	 */
 	result = libfwevt_level_initialize(
 	          &level,
@@ -119,79 +125,89 @@ int fwevt_test_level_initialize(
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 
-	/* Test libfwevt_level_initialize with malloc failing
-	 */
-	fwevt_test_malloc_attempts_before_fail = 0;
-
-	result = libfwevt_level_initialize(
-	          &level,
-	          &error );
-
-	if( fwevt_test_malloc_attempts_before_fail != -1 )
+	for( test_number = 0;
+	     test_number < number_of_malloc_fail_tests;
+	     test_number++ )
 	{
-		fwevt_test_malloc_attempts_before_fail = -1;
+		/* Test libfwevt_level_initialize with malloc failing
+		 */
+		fwevt_test_malloc_attempts_before_fail = test_number;
 
-		if( level != NULL )
+		result = libfwevt_level_initialize(
+		          &level,
+		          &error );
+
+		if( fwevt_test_malloc_attempts_before_fail != -1 )
 		{
-			libfwevt_level_free(
-			 &level,
-			 NULL );
+			fwevt_test_malloc_attempts_before_fail = -1;
+
+			if( level != NULL )
+			{
+				libfwevt_level_free(
+				 &level,
+				 NULL );
+			}
+		}
+		else
+		{
+			FWEVT_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
+
+			FWEVT_TEST_ASSERT_IS_NULL(
+			 "level",
+			 level );
+
+			FWEVT_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
+
+			libcerror_error_free(
+			 &error );
 		}
 	}
-	else
+	for( test_number = 0;
+	     test_number < number_of_memset_fail_tests;
+	     test_number++ )
 	{
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		/* Test libfwevt_level_initialize with memset failing
+		 */
+		fwevt_test_memset_attempts_before_fail = test_number;
 
-		FWEVT_TEST_ASSERT_IS_NULL(
-		 "level",
-		 level );
+		result = libfwevt_level_initialize(
+		          &level,
+		          &error );
 
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
-	/* Test libfwevt_level_initialize with memset failing
-	 */
-	fwevt_test_memset_attempts_before_fail = 0;
-
-	result = libfwevt_level_initialize(
-	          &level,
-	          &error );
-
-	if( fwevt_test_memset_attempts_before_fail != -1 )
-	{
-		fwevt_test_memset_attempts_before_fail = -1;
-
-		if( level != NULL )
+		if( fwevt_test_memset_attempts_before_fail != -1 )
 		{
-			libfwevt_level_free(
-			 &level,
-			 NULL );
+			fwevt_test_memset_attempts_before_fail = -1;
+
+			if( level != NULL )
+			{
+				libfwevt_level_free(
+				 &level,
+				 NULL );
+			}
 		}
-	}
-	else
-	{
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		else
+		{
+			FWEVT_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
 
-		FWEVT_TEST_ASSERT_IS_NULL(
-		 "level",
-		 level );
+			FWEVT_TEST_ASSERT_IS_NULL(
+			 "level",
+			 level );
 
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+			FWEVT_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
 
-		libcerror_error_free(
-		 &error );
+			libcerror_error_free(
+			 &error );
+		}
 	}
 #endif /* defined( HAVE_FWEVT_TEST_MEMORY ) */
 
@@ -272,6 +288,8 @@ int main(
 	FWEVT_TEST_RUN(
 	 "libfwevt_level_free",
 	 fwevt_test_level_free );
+
+	/* TODO: add tests for libfwevt_level_read */
 
 	return( EXIT_SUCCESS );
 

@@ -102,5 +102,5 @@ int libfwevt_event_get_template_offset(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_EVENT_H ) */
 

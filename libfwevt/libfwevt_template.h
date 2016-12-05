@@ -151,5 +151,5 @@ int libfwevt_template_get_size(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_TEMPLATE_H ) */
 

@@ -64,5 +64,5 @@ int libfwevt_task_read(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_TASK_H ) */
 

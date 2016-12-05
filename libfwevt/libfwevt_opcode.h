@@ -64,5 +64,5 @@ int libfwevt_opcode_read(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_OPCODE_H ) */
 

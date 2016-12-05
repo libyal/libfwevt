@@ -553,5 +553,5 @@ struct fwevt_template_header
 }
 #endif
 
-#endif
+#endif /* !defined( _FWEVT_TEMPLATE_H ) */
 

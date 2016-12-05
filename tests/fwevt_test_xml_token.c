@@ -1,5 +1,5 @@
 /*
- * Library keyword type testing program
+ * Library xml_token type testing program
  *
  * Copyright (C) 2011-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -33,14 +33,18 @@
 #include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
 
-/* Tests the libfwevt_keyword_initialize function
+#include "../libfwevt/libfwevt_xml_token.h"
+
+#if defined( __GNUC__ )
+
+/* Tests the libfwevt_xml_token_initialize function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_keyword_initialize(
+int fwevt_test_xml_token_initialize(
      void )
 {
 	libcerror_error_t *error        = NULL;
-	libfwevt_keyword_t *keyword     = NULL;
+	libfwevt_xml_token_t *xml_token = NULL;
 	int result                      = 0;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
@@ -51,8 +55,8 @@ int fwevt_test_keyword_initialize(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_keyword_initialize(
-	          &keyword,
+	result = libfwevt_xml_token_initialize(
+	          &xml_token,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -61,15 +65,15 @@ int fwevt_test_keyword_initialize(
 	 1 );
 
         FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "keyword",
-         keyword );
+         "xml_token",
+         xml_token );
 
         FWEVT_TEST_ASSERT_IS_NULL(
          "error",
          error );
 
-	result = libfwevt_keyword_free(
-	          &keyword,
+	result = libfwevt_xml_token_free(
+	          &xml_token,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -78,8 +82,8 @@ int fwevt_test_keyword_initialize(
 	 1 );
 
         FWEVT_TEST_ASSERT_IS_NULL(
-         "keyword",
-         keyword );
+         "xml_token",
+         xml_token );
 
         FWEVT_TEST_ASSERT_IS_NULL(
          "error",
@@ -87,7 +91,7 @@ int fwevt_test_keyword_initialize(
 
 	/* Test error cases
 	 */
-	result = libfwevt_keyword_initialize(
+	result = libfwevt_xml_token_initialize(
 	          NULL,
 	          &error );
 
@@ -103,10 +107,10 @@ int fwevt_test_keyword_initialize(
 	libcerror_error_free(
 	 &error );
 
-	keyword = (libfwevt_keyword_t *) 0x12345678UL;
+	xml_token = (libfwevt_xml_token_t *) 0x12345678UL;
 
-	result = libfwevt_keyword_initialize(
-	          &keyword,
+	result = libfwevt_xml_token_initialize(
+	          &xml_token,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -121,7 +125,7 @@ int fwevt_test_keyword_initialize(
 	libcerror_error_free(
 	 &error );
 
-	keyword = NULL;
+	xml_token = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 
@@ -129,22 +133,22 @@ int fwevt_test_keyword_initialize(
 	     test_number < number_of_malloc_fail_tests;
 	     test_number++ )
 	{
-		/* Test libfwevt_keyword_initialize with malloc failing
+		/* Test libfwevt_xml_token_initialize with malloc failing
 		 */
 		fwevt_test_malloc_attempts_before_fail = test_number;
 
-		result = libfwevt_keyword_initialize(
-		          &keyword,
+		result = libfwevt_xml_token_initialize(
+		          &xml_token,
 		          &error );
 
 		if( fwevt_test_malloc_attempts_before_fail != -1 )
 		{
 			fwevt_test_malloc_attempts_before_fail = -1;
 
-			if( keyword != NULL )
+			if( xml_token != NULL )
 			{
-				libfwevt_keyword_free(
-				 &keyword,
+				libfwevt_xml_token_free(
+				 &xml_token,
 				 NULL );
 			}
 		}
@@ -156,8 +160,8 @@ int fwevt_test_keyword_initialize(
 			 -1 );
 
 			FWEVT_TEST_ASSERT_IS_NULL(
-			 "keyword",
-			 keyword );
+			 "xml_token",
+			 xml_token );
 
 			FWEVT_TEST_ASSERT_IS_NOT_NULL(
 			 "error",
@@ -171,22 +175,22 @@ int fwevt_test_keyword_initialize(
 	     test_number < number_of_memset_fail_tests;
 	     test_number++ )
 	{
-		/* Test libfwevt_keyword_initialize with memset failing
+		/* Test libfwevt_xml_token_initialize with memset failing
 		 */
 		fwevt_test_memset_attempts_before_fail = test_number;
 
-		result = libfwevt_keyword_initialize(
-		          &keyword,
+		result = libfwevt_xml_token_initialize(
+		          &xml_token,
 		          &error );
 
 		if( fwevt_test_memset_attempts_before_fail != -1 )
 		{
 			fwevt_test_memset_attempts_before_fail = -1;
 
-			if( keyword != NULL )
+			if( xml_token != NULL )
 			{
-				libfwevt_keyword_free(
-				 &keyword,
+				libfwevt_xml_token_free(
+				 &xml_token,
 				 NULL );
 			}
 		}
@@ -198,8 +202,8 @@ int fwevt_test_keyword_initialize(
 			 -1 );
 
 			FWEVT_TEST_ASSERT_IS_NULL(
-			 "keyword",
-			 keyword );
+			 "xml_token",
+			 xml_token );
 
 			FWEVT_TEST_ASSERT_IS_NOT_NULL(
 			 "error",
@@ -219,19 +223,19 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( keyword != NULL )
+	if( xml_token != NULL )
 	{
-		libfwevt_keyword_free(
-		 &keyword,
+		libfwevt_xml_token_free(
+		 &xml_token,
 		 NULL );
 	}
 	return( 0 );
 }
 
-/* Tests the libfwevt_keyword_free function
+/* Tests the libfwevt_xml_token_free function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_keyword_free(
+int fwevt_test_xml_token_free(
      void )
 {
 	libcerror_error_t *error = NULL;
@@ -239,7 +243,7 @@ int fwevt_test_keyword_free(
 
 	/* Test error cases
 	 */
-	result = libfwevt_keyword_free(
+	result = libfwevt_xml_token_free(
 	          NULL,
 	          &error );
 
@@ -266,6 +270,8 @@ on_error:
 	return( 0 );
 }
 
+#endif /* defined( __GNUC__ ) */
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -281,15 +287,19 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
-	FWEVT_TEST_RUN(
-	 "libfwevt_keyword_initialize",
-	 fwevt_test_keyword_initialize );
+#if defined( __GNUC__ )
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_keyword_free",
-	 fwevt_test_keyword_free );
+	 "libfwevt_xml_token_initialize",
+	 fwevt_test_xml_token_initialize );
 
-	/* TODO: add tests for libfwevt_keyword_read */
+	FWEVT_TEST_RUN(
+	 "libfwevt_xml_token_free",
+	 fwevt_test_xml_token_free );
+
+	/* TODO: add tests for libfwevt_xml_token_read */
+
+#endif /* defined( __GNUC__ ) */
 
 	return( EXIT_SUCCESS );
 

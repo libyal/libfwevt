@@ -64,5 +64,5 @@ int libfwevt_map_read(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_MAP_H ) */
 

@@ -42,5 +42,5 @@ void libfwevt_debug_print_value_type(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_DEBUG_H ) */
 

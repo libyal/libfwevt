@@ -105,5 +105,5 @@ int libfwevt_xml_template_value_set_flags(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_XML_TEMPLATE_VALUE_H ) */
 

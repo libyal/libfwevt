@@ -64,5 +64,5 @@ int libfwevt_channel_read(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBFWEVT_INTERNAL_CHANNEL_H ) */
 

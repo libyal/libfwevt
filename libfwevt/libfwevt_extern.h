@@ -38,9 +38,9 @@
 #include <libfwevt/extern.h>
 
 #else
-#define LIBFWEVT_EXTERN	extern
+#define LIBFWEVT_EXTERN	/* extern */
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBFWEVT ) */
 
 #endif /* !defined( _LIBFWEVT_INTERNAL_EXTERN_H ) */
 
