@@ -1,7 +1,7 @@
 /*
- * Library xml_document type testing program
+ * Library xml_document type test program
  *
- * Copyright (C) 2011-2016, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2011-2017, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -32,6 +32,8 @@
 #include "fwevt_test_macros.h"
 #include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
+
+#include "../libfwevt/libfwevt_xml_tag.h"
 
 /* Tests the libfwevt_xml_document_initialize function
  * Returns 1 if successful or 0 if not

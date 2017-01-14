@@ -1,7 +1,7 @@
 /*
- * Library xml_tag type testing program
+ * Library xml_tag type test program
  *
- * Copyright (C) 2011-2016, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2011-2017, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -277,8 +277,8 @@ int fwevt_test_xml_tag_get_value(
      void )
 {
 	libcerror_error_t *error    = NULL;
+	libfvalue_value_t *value    = 0;
 	libfwevt_xml_tag_t *xml_tag = NULL;
-	libfvalue_value_t value     = 0;
 	int result                  = 0;
 	int value_is_set            = 0;
 
@@ -1940,7 +1940,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_size(
 	/* Test regular cases
 	 */
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_size(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          &utf8_xml_value_string_size,
 	          &error );
 
@@ -1977,7 +1977,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_size(
 	if( utf8_xml_value_string_size_is_set != 0 )
 	{
 		result = libfwevt_xml_tag_get_utf8_xml_value_string_size(
-		          xml_tag,
+		          (libfwevt_internal_xml_tag_t *) xml_tag,
 		          NULL,
 		          &error );
 
@@ -2063,7 +2063,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_size(
 	/* Test regular cases
 	 */
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_size(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          &utf16_xml_value_string_size,
 	          &error );
 
@@ -2100,7 +2100,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_size(
 	if( utf16_xml_value_string_size_is_set != 0 )
 	{
 		result = libfwevt_xml_tag_get_utf16_xml_value_string_size(
-		          xml_tag,
+		          (libfwevt_internal_xml_tag_t *) xml_tag,
 		          NULL,
 		          &error );
 

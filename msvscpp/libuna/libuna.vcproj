@@ -477,6 +477,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libuna\libuna_inline.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libuna\libuna_libcerror.h"
 				>
 			</File>
