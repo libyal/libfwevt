@@ -414,6 +414,8 @@ on_error:
 	return( 0 );
 }
 
+#if !defined( LIBFWEVT_DLL_IMPORT )
+
 /* Tests the libfwevt_xml_document_get_root_xml_tag function
  * Returns 1 if successful or 0 if not
  */
@@ -569,6 +571,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#endif /* !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* Tests the libfwevt_xml_document_get_utf8_xml_string_size function
  * Returns 1 if successful or 0 if not
@@ -1171,9 +1175,13 @@ int main(
 	 "libfwevt_xml_document_clone",
 	 fwevt_test_xml_document_clone );
 
+#if !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_xml_document_get_root_xml_tag",
 	 fwevt_test_xml_document_get_root_xml_tag );
+
+#endif /* !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	/* TODO: add tests for libfwevt_xml_document_read */
 
