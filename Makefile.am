@@ -23,10 +23,9 @@ DPKG_FILES = \
 	dpkg/compat \
 	dpkg/control \
 	dpkg/copyright \
-	dpkg/copyright.in \
 	dpkg/rules \
-	dpkg/libfwevt-dev.docs \
-	dpkg/libfwevt.docs \
+	dpkg/libfwevt-dev.install \
+	dpkg/libfwevt.install \
 	dpkg/source/format
 
 GETTEXT_FILES = \

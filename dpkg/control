@@ -1,10 +1,10 @@
 Source: libfwevt
-Section: libs
 Priority: extra
 Maintainer: Joachim Metz <joachim.metz@gmail.com>
-Build-Depends: debhelper (>= 7), autotools-dev
+Build-Depends: debhelper (>= 9), dh-autoreconf, pkg-config
 Standards-Version: 3.9.5
-Homepage: https://github.com/libyal/libfwevt/
+Section: libs
+Homepage: https://github.com/libyal/libfwevt
 
 Package: libfwevt
 Architecture: any
