@@ -35,7 +35,7 @@
 
 #include "../libfwevt/libfwevt_xml_token.h"
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_xml_token_initialize function
  * Returns 1 if successful or 0 if not
@@ -270,7 +270,7 @@ on_error:
 	return( 0 );
 }
 
-#endif /* defined( __GNUC__ ) */
+#endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -287,7 +287,7 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_xml_token_initialize",
@@ -299,7 +299,7 @@ int main(
 
 	/* TODO: add tests for libfwevt_xml_token_read */
 
-#endif /* defined( __GNUC__ ) */
+#endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

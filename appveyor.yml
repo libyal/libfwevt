@@ -16,8 +16,9 @@ environment:
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     VisualStudioVersion: 14.0
   - TARGET: cygwin
-  - TARGET: mingw32
-  - TARGET: mingw64
+  - TARGET: cygwin64
+  - TARGET: mingw
+  - TARGET: mingw-w64
 
 # TODO: add x64, fix issue: LNK1158: cannot run 'cvtres.exe'
 platform:
@@ -50,18 +51,20 @@ build_script:
 - cmd: if [%TARGET%]==[cygwin] (
     xcopy /q /s C:\projects\libfwevt C:\cygwin\home\appveyor\ &&
     C:\cygwin\bin\bash -e -l -c "cd libfwevt" &&
-    C:\cygwin\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
-    C:\cygwin\bin\bash -e -l -c "./configure && make -j4" )
-- cmd: if [%TARGET%]==[mingw32] (
+    C:\cygwin\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" )
+- cmd: if [%TARGET%]==[cygwin64] (
+    xcopy /q /s C:\projects\libfwevt C:\cygwin64\home\appveyor\ &&
+    C:\cygwin64\bin\bash -e -l -c "cd libfwevt" &&
+    C:\cygwin64\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" )
+- cmd: if [%TARGET%]==[mingw] (
+    xcopy /q /s C:\projects\libfwevt C:\MinGW\msys\1.0\home\appveyor\ &&
+    C:\MinGW\msys\1.0\bin\bash -e -l -c "cd libfwevt" &&
+    C:\MinGW\msys\1.0\bin\bash -e -l -c "sed 's/@VERSION@/0.29/g' m4/pkg.m4.in > m4/pkg.m4" &&
+    C:\MinGW\msys\1.0\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" )
+- cmd: if [%TARGET%]==[mingw-w64] (
     xcopy /q /s C:\projects\libfwevt C:\msys64\home\appveyor\ &&
     C:\msys64\usr\bin\bash -e -l -c "cd libfwevt" &&
-    C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
-    C:\msys64\usr\bin\bash -e -l -c "./configure --host=i686-w64-mingw32 && make -j4" )
-- cmd: if [%TARGET%]==[mingw64] (
-    xcopy /q /s C:\projects\libfwevt C:\msys64\home\appveyor\ &&
-    C:\msys64\usr\bin\bash -e -l -c "cd libfwevt" &&
-    C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
-    C:\msys64\usr\bin\bash -e -l -c "./configure --host=x86_64-w64-mingw32 && make -j4" )
+    C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" )
 
 test_script:
 - cmd: rem Run tests
@@ -75,4 +78,12 @@ test_script:
     .\runtests.ps1 }
 - ps: if ($env:TARGET -eq "vs2015") {
     .\runtests.ps1 }
+- cmd: if [%TARGET%]==[cygwin] (
+    C:\cygwin\bin\bash -e -l -c "./runtests.sh" )
+- cmd: if [%TARGET%]==[cygwin64] (
+    C:\cygwin64\bin\bash -e -l -c "./runtests.sh" )
+- cmd: if [%TARGET%]==[mingw] (
+    C:\MinGW\msys\1.0\bin\bash -e -l -c "./runtests.sh" )
+- cmd: if [%TARGET%]==[mingw-w64] (
+    C:\msys64\usr\bin\bash -e -l -c "./runtests.sh" )
 

@@ -1185,7 +1185,7 @@ int main(
 
 	/* TODO: add tests for libfwevt_xml_document_read */
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 	/* TODO: add tests for libfwevt_xml_document_read_with_template_values */
 
@@ -1221,7 +1221,7 @@ int main(
 
 	/* TODO: add tests for libfwevt_xml_document_substitute_template_value */
 
-#endif /* defined( __GNUC__ ) */
+#endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_xml_document_get_utf8_xml_string_size",

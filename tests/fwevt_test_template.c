@@ -537,13 +537,13 @@ int main(
 
 	/* TODO: add tests for libfwevt_template_read */
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 	/* TODO: add tests for libfwevt_template_read_header */
 
 	/* TODO: add tests for libfwevt_template_read_instance_values */
 
-#endif /* defined( __GNUC__ ) */
+#endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	/* TODO: add tests for libfwevt_template_read_xml_document */
 

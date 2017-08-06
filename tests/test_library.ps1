@@ -1,14 +1,10 @@
 # Tests C library functions and types.
 #
-# Version: 20170115
+# Version: 20170722
 
 $ExitSuccess = 0
 $ExitFailure = 1
 $ExitIgnore = 77
-
-$TestPrefix = Split-Path -path ${Pwd}.Path -parent
-$TestPrefix = Split-Path -path ${TestPrefix} -leaf
-$TestPrefix = ${TestPrefix}.Substring(3)
 
 $LibraryTests = "channel error event keyword level manifest map opcode provider support task template xml_document xml_tag xml_template_value xml_token"
 $LibraryTestsWithInput = ""
@@ -20,7 +16,7 @@ Function RunTest
 	param( [string]$TestType )
 
 	$TestDescription = "Testing: ${TestName}"
-	$TestExecutable = "${TestToolDirectory}\${TestPrefix}_test_${TestName}.exe"
+	$TestExecutable = "${TestToolDirectory}\fwevt_test_${TestName}.exe"
 
 	$Output = Invoke-Expression ${TestExecutable}
 	$Result = ${LastExitCode}
