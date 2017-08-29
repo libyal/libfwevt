@@ -62,13 +62,13 @@ int fwevt_test_xml_document_initialize(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "xml_document",
-         xml_document );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "xml_document",
+	 xml_document );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libfwevt_xml_document_free(
 	          &xml_document,
@@ -79,13 +79,13 @@ int fwevt_test_xml_document_initialize(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "xml_document",
-         xml_document );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "xml_document",
+	 xml_document );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -98,9 +98,9 @@ int fwevt_test_xml_document_initialize(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -116,9 +116,9 @@ int fwevt_test_xml_document_initialize(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -250,9 +250,9 @@ int fwevt_test_xml_document_free(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -290,13 +290,13 @@ int fwevt_test_xml_document_clone(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "source_xml_document",
-         source_xml_document );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "source_xml_document",
+	 source_xml_document );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test regular cases
 	 */
@@ -310,13 +310,13 @@ int fwevt_test_xml_document_clone(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "destination_xml_document",
-         destination_xml_document );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "destination_xml_document",
+	 destination_xml_document );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libfwevt_xml_document_free(
 	          &destination_xml_document,
@@ -327,13 +327,13 @@ int fwevt_test_xml_document_clone(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "destination_xml_document",
-         destination_xml_document );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "destination_xml_document",
+	 destination_xml_document );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libfwevt_xml_document_clone(
 	          &destination_xml_document,
@@ -345,13 +345,13 @@ int fwevt_test_xml_document_clone(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "destination_xml_document",
-         destination_xml_document );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "destination_xml_document",
+	 destination_xml_document );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -365,9 +365,9 @@ int fwevt_test_xml_document_clone(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -383,13 +383,13 @@ int fwevt_test_xml_document_clone(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "source_xml_document",
-         source_xml_document );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "source_xml_document",
+	 source_xml_document );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	return( 1 );
 

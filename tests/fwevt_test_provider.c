@@ -53,9 +53,9 @@ int fwevt_test_provider_free(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );

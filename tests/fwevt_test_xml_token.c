@@ -64,13 +64,13 @@ int fwevt_test_xml_token_initialize(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "xml_token",
-         xml_token );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "xml_token",
+	 xml_token );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libfwevt_xml_token_free(
 	          &xml_token,
@@ -81,13 +81,13 @@ int fwevt_test_xml_token_initialize(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "xml_token",
-         xml_token );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "xml_token",
+	 xml_token );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -100,9 +100,9 @@ int fwevt_test_xml_token_initialize(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -118,9 +118,9 @@ int fwevt_test_xml_token_initialize(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -252,9 +252,9 @@ int fwevt_test_xml_token_free(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );

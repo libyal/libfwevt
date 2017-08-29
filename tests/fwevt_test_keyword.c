@@ -60,13 +60,13 @@ int fwevt_test_keyword_initialize(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "keyword",
-         keyword );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "keyword",
+	 keyword );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libfwevt_keyword_free(
 	          &keyword,
@@ -77,13 +77,13 @@ int fwevt_test_keyword_initialize(
 	 result,
 	 1 );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "keyword",
-         keyword );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "keyword",
+	 keyword );
 
-        FWEVT_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -96,9 +96,9 @@ int fwevt_test_keyword_initialize(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -114,9 +114,9 @@ int fwevt_test_keyword_initialize(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -248,9 +248,9 @@ int fwevt_test_keyword_free(
 	 result,
 	 -1 );
 
-        FWEVT_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
