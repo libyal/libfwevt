@@ -134,6 +134,7 @@ AC_DEFUN([AX_LIBFGUID_CHECK_LOCAL],
   ac_cv_libfguid=local
   ])
 
+
 dnl Function to detect how to enable libfguid
 AC_DEFUN([AX_LIBFGUID_CHECK_ENABLE],
   [AX_COMMON_ARG_WITH(
