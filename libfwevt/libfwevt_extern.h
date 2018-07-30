@@ -28,17 +28,13 @@
  */
 #if !defined( HAVE_LOCAL_LIBFWEVT )
 
-/* If libtool DLL support is enabled set LIBFWEVT_DLL_EXPORT
- * before including libfwevt/extern.h
- */
-#if defined( _WIN32 ) && defined( DLL_EXPORT )
-#define LIBFWEVT_DLL_EXPORT
-#endif
-
 #include <libfwevt/extern.h>
 
+#define LIBFWEVT_EXTERN_VARIABLE	LIBFWEVT_EXTERN
+
 #else
-#define LIBFWEVT_EXTERN	/* extern */
+#define LIBFWEVT_EXTERN		/* extern */
+#define LIBFWEVT_EXTERN_VARIABLE	extern
 
 #endif /* !defined( HAVE_LOCAL_LIBFWEVT ) */
 

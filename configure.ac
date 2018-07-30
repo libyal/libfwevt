@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libfwevt],
- [20180612],
+ [20180730],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -92,7 +92,7 @@ AS_IF(
  [test "x$enable_shared" = xyes],
  [AS_CASE(
   [$host],
-  [*cygwin* | *mingw*],
+  [*cygwin* | *mingw* | *msys*],
   [AC_DEFINE(
    [HAVE_DLLMAIN],
    [1],
@@ -101,7 +101,10 @@ AS_IF(
    [HAVE_DLLMAIN],
    [1])
 
-  dnl Used in tests
+  AC_SUBST(
+   [LIBFWEVT_DLL_EXPORT],
+   ["-DLIBFWEVT_DLL_EXPORT"])
+
   AC_SUBST(
    [LIBFWEVT_DLL_IMPORT],
    ["-DLIBFWEVT_DLL_IMPORT"])
