@@ -33,6 +33,17 @@
 #include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
 
+#include "../libfwevt/libfwevt_task.h"
+
+uint8_t fwevt_test_task_data1[ 100 ] = {
+	0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00,
+	0x53, 0x00, 0x45, 0x00, 0x5f, 0x00, 0x41, 0x00, 0x44, 0x00, 0x54, 0x00, 0x5f, 0x00, 0x53, 0x00,
+	0x59, 0x00, 0x53, 0x00, 0x54, 0x00, 0x45, 0x00, 0x4d, 0x00, 0x5f, 0x00, 0x53, 0x00, 0x45, 0x00,
+	0x43, 0x00, 0x55, 0x00, 0x52, 0x00, 0x49, 0x00, 0x54, 0x00, 0x59, 0x00, 0x53, 0x00, 0x54, 0x00,
+	0x41, 0x00, 0x54, 0x00, 0x45, 0x00, 0x43, 0x00, 0x48, 0x00, 0x41, 0x00, 0x4e, 0x00, 0x47, 0x00,
+	0x45, 0x00, 0x00, 0x00 };
+
 /* Tests the libfwevt_task_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -266,6 +277,205 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_task_read function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_task_read(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_task_t *task    = NULL;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_task_initialize(
+	          &task,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "task",
+	 task );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_task_read(
+	          task,
+	          fwevt_test_task_data1,
+	          100,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_task_read(
+	          NULL,
+	          fwevt_test_task_data1,
+	          100,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_task_read(
+	          task,
+	          NULL,
+	          100,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_task_read(
+	          task,
+	          fwevt_test_task_data1,
+	          (size_t) SSIZE_MAX + 1,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_task_read(
+	          task,
+	          fwevt_test_task_data1,
+	          100,
+	          40,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_task_read(
+	          task,
+	          fwevt_test_task_data1,
+	          100,
+	          99,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_task_read(
+	          task,
+	          fwevt_test_task_data1,
+	          100,
+	          71,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libfwevt_task_free(
+	          &task,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "task",
+	 task );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( task != NULL )
+	{
+		libfwevt_task_free(
+		 &task,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -289,7 +499,9 @@ int main(
 	 "libfwevt_task_free",
 	 fwevt_test_task_free );
 
-	/* TODO: add tests for libfwevt_task_read */
+	FWEVT_TEST_RUN(
+	 "libfwevt_task_read",
+	 fwevt_test_task_read );
 
 	return( EXIT_SUCCESS );
 
