@@ -279,8 +279,7 @@ int libfwevt_channel_read(
 
 	if( channel_data_offset > 0 )
 	{
-		if( ( data_size < 4 )
-		 || ( channel_data_offset >= ( data_size - 4 ) ) )
+		if( channel_data_offset >= ( data_size - 4 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -295,7 +294,7 @@ int libfwevt_channel_read(
 		 &( data[ channel_data_offset ] ),
 		 channel_data_size );
 
-		if( ( channel_data_size > data_size )
+		if( ( data_size < channel_data_size )
 		 || ( channel_data_offset > ( data_size - channel_data_size ) ) )
 		{
 			libcerror_error_set(
@@ -328,34 +327,36 @@ int libfwevt_channel_read(
 			 function,
 			 channel_data_size );
 		}
-		channel_data_offset += 4;
-		channel_data_size   -= 4;
-
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+		if( channel_data_size >= 4 )
+		{
+			channel_data_offset += 4;
+			channel_data_size   -= 4;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			if( libfwevt_debug_print_utf16_string_value(
-			     function,
-			     "name\t\t\t\t\t\t",
-			     &( data[ channel_data_offset ] ),
-			     channel_data_size,
-			     LIBUNA_ENDIAN_LITTLE,
-			     error ) != 1 )
+			if( libcnotify_verbose != 0 )
 			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-				 "%s: unable to print UTF-16 string value.",
-				 function );
+				if( libfwevt_debug_print_utf16_string_value(
+				     function,
+				     "name\t\t\t\t\t\t",
+				     &( data[ channel_data_offset ] ),
+				     channel_data_size,
+				     LIBUNA_ENDIAN_LITTLE,
+				     error ) != 1 )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+					 "%s: unable to print UTF-16 string value.",
+					 function );
 
-				return( -1 );
+					return( -1 );
+				}
 			}
-		}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
-
+		}
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )

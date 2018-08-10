@@ -33,6 +33,13 @@
 #include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
 
+#include "../libfwevt/libfwevt_opcode.h"
+
+uint8_t fwevt_test_opcode_data1[ 36 ] = {
+	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x0c, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00,
+	0x77, 0x00, 0x69, 0x00, 0x6e, 0x00, 0x3a, 0x00, 0x49, 0x00, 0x6e, 0x00, 0x66, 0x00, 0x6f, 0x00,
+	0x00, 0x00, 0x00, 0x00 };
+
 /* Tests the libfwevt_opcode_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -266,6 +273,232 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_opcode_read function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_opcode_read(
+     void )
+{
+	libcerror_error_t *error  = NULL;
+	libfwevt_opcode_t *opcode = NULL;
+	int result                = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_opcode_initialize(
+	          &opcode,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "opcode",
+	 opcode );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_opcode_read(
+	          opcode,
+	          fwevt_test_opcode_data1,
+	          36,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_opcode_read(
+	          NULL,
+	          fwevt_test_opcode_data1,
+	          36,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_opcode_read(
+	          opcode,
+	          NULL,
+	          36,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_opcode_read(
+	          opcode,
+	          fwevt_test_opcode_data1,
+	          (size_t) SSIZE_MAX + 1,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data offset value out of bounds
+	 */
+	result = libfwevt_opcode_read(
+	          opcode,
+	          fwevt_test_opcode_data1,
+	          36,
+	          36,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data value too small
+	 */
+	result = libfwevt_opcode_read(
+	          opcode,
+	          fwevt_test_opcode_data1,
+	          11,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test opcode data offset value out of bounds
+	 */
+	result = libfwevt_opcode_read(
+	          opcode,
+	          fwevt_test_opcode_data1,
+	          15,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test opcode data size value out of bounds
+	 */
+	result = libfwevt_opcode_read(
+	          opcode,
+	          fwevt_test_opcode_data1,
+	          35,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libfwevt_opcode_free(
+	          &opcode,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "opcode",
+	 opcode );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( opcode != NULL )
+	{
+		libfwevt_opcode_free(
+		 &opcode,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -289,7 +522,9 @@ int main(
 	 "libfwevt_opcode_free",
 	 fwevt_test_opcode_free );
 
-	/* TODO: add tests for libfwevt_opcode_read */
+	FWEVT_TEST_RUN(
+	 "libfwevt_opcode_read",
+	 fwevt_test_opcode_read );
 
 	return( EXIT_SUCCESS );
 

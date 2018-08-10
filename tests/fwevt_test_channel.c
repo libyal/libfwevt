@@ -36,7 +36,7 @@
 #include "../libfwevt/libfwevt_channel.h"
 
 uint8_t fwevt_test_channel_data1[ 40 ] = {
-	0x01, 0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
+	0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
 	0x18, 0x00, 0x00, 0x00, 0x53, 0x00, 0x65, 0x00, 0x63, 0x00, 0x75, 0x00, 0x72, 0x00, 0x69, 0x00,
 	0x74, 0x00, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
@@ -379,6 +379,8 @@ int fwevt_test_channel_read(
 	libcerror_error_free(
 	 &error );
 
+	/* Test data offset value out of bounds
+	 */
 	result = libfwevt_channel_read(
 	          channel,
 	          fwevt_test_channel_data1,
@@ -398,30 +400,55 @@ int fwevt_test_channel_read(
 	libcerror_error_free(
 	 &error );
 
+	/* Test data value too small
+	 */
 	result = libfwevt_channel_read(
 	          channel,
 	          fwevt_test_channel_data1,
-	          40,
+	          15,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test channel data offset value out of bounds
+	 */
+	result = libfwevt_channel_read(
+	          channel,
+	          fwevt_test_channel_data1,
+	          19,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test channel data size value out of bounds
+	 */
+	result = libfwevt_channel_read(
+	          channel,
+	          fwevt_test_channel_data1,
 	          39,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 -1 );
-
-	FWEVT_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	 &error );
-
-	result = libfwevt_channel_read(
-	          channel,
-	          fwevt_test_channel_data1,
-	          40,
-	          23,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(

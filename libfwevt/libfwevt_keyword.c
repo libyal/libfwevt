@@ -146,25 +146,20 @@ int libfwevt_keyword_free(
  */
 int libfwevt_keyword_read(
      libfwevt_keyword_t *keyword,
-     const uint8_t *resource_data,
-     size_t resource_data_size,
-     size_t resource_data_offset,
+     const uint8_t *data,
+     size_t data_size,
+     size_t data_offset,
      libcerror_error_t **error )
 {
-/* TODO
+	fwevt_template_keyword_t *wevt_keyword        = NULL;
 	libfwevt_internal_keyword_t *internal_keyword = NULL;
-*/
-	fwevt_template_keyword_t *wevt_keyword = NULL;
-	static char *function                  = "libfwevt_keyword_read";
-	uint32_t keyword_data_offset           = 0;
-	uint32_t keyword_data_size             = 0;
+	static char *function                         = "libfwevt_keyword_read";
+	uint32_t keyword_data_offset                  = 0;
+	uint32_t keyword_data_size                    = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	system_character_t *value_string       = NULL;
-	size_t value_string_size               = 0;
-	uint64_t value_64bit                   = 0;
-	uint32_t value_32bit                   = 0;
-	int result                             = 0;
+	uint64_t value_64bit                          = 0;
+	uint32_t value_32bit                          = 0;
 #endif
 
 	if( keyword == NULL )
@@ -178,56 +173,54 @@ int libfwevt_keyword_read(
 
 		return( -1 );
 	}
-/* TODO
 	internal_keyword = (libfwevt_internal_keyword_t *) keyword;
-*/
 
-	if( resource_data == NULL )
+	if( data == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid resource data.",
+		 "%s: invalid data.",
 		 function );
 
 		return( -1 );
 	}
-	if( resource_data_size > (size_t) SSIZE_MAX )
+	if( data_size > (size_t) SSIZE_MAX )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid resource data size value exceeds maximum.",
+		 "%s: invalid data size value exceeds maximum.",
 		 function );
 
 		return( -1 );
 	}
-	if( resource_data_offset >= resource_data_size )
+	if( data_offset >= data_size )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid resource data offset value out of bounds.",
+		 "%s: invalid data offset value out of bounds.",
 		 function );
 
 		return( -1 );
 	}
-	if( ( resource_data_size < sizeof( fwevt_template_keyword_t ) )
-	 || ( resource_data_offset > ( resource_data_size - sizeof( fwevt_template_keyword_t ) ) ) )
+	if( ( data_size < sizeof( fwevt_template_keyword_t ) )
+	 || ( data_offset > ( data_size - sizeof( fwevt_template_keyword_t ) ) ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid resource data value too small.",
+		 "%s: invalid data value too small.",
 		 function );
 
 		return( -1 );
 	}
-	wevt_keyword = (fwevt_template_keyword_t *) &( resource_data[ resource_data_offset ] );
+	wevt_keyword = (fwevt_template_keyword_t *) &( data[ data_offset ] );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -272,7 +265,7 @@ int libfwevt_keyword_read(
 #endif
 	if( keyword_data_offset > 0 )
 	{
-		if( keyword_data_offset >= resource_data_size )
+		if( keyword_data_offset >= ( data_size - 4 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -281,10 +274,14 @@ int libfwevt_keyword_read(
 			 "%s: invalid keyword data offset value out of bounds.",
 			 function );
 
-			goto on_error;
+			return( -1 );
 		}
-		if( ( keyword_data_size > resource_data_size )
-		 || ( ( keyword_data_offset + keyword_data_size ) > resource_data_size ) )
+		byte_stream_copy_to_uint32_little_endian(
+		 &( data[ keyword_data_offset ] ),
+		 keyword_data_size );
+
+		if( ( data_size < keyword_data_size )
+		 || ( keyword_data_offset > ( data_size - keyword_data_size ) ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -293,12 +290,8 @@ int libfwevt_keyword_read(
 			 "%s: invalid keyword data size value out of bounds.",
 			 function );
 
-			goto on_error;
+			return( -1 );
 		}
-		byte_stream_copy_to_uint32_little_endian(
-		 &( resource_data[ keyword_data_offset ] ),
-		 keyword_data_size );
-
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
@@ -306,7 +299,7 @@ int libfwevt_keyword_read(
 			 "%s: data:\n",
 			 function );
 			libcnotify_print_data(
-			 &( resource_data[ keyword_data_offset ] ),
+			 &( data[ keyword_data_offset ] ),
 			 keyword_data_size,
 			 0 );
 		}
@@ -319,104 +312,36 @@ int libfwevt_keyword_read(
 			 function,
 			 keyword_data_size );
 		}
-		keyword_data_offset += 4;
-		keyword_data_size   -= 4;
 #endif
+
+		if( keyword_data_size >= 4 )
+		{
+			keyword_data_offset += 4;
+			keyword_data_size   -= 4;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-			result = libuna_utf16_string_size_from_utf16_stream(
-				  &( resource_data[ keyword_data_offset ] ),
-				  keyword_data_size,
-				  LIBUNA_ENDIAN_LITTLE,
-				  &value_string_size,
-				  error );
-#else
-			result = libuna_utf8_string_size_from_utf16_stream(
-				  &( resource_data[ keyword_data_offset ] ),
-				  keyword_data_size,
-				  LIBUNA_ENDIAN_LITTLE,
-				  &value_string_size,
-				  error );
-#endif
-			if( result != 1 )
+			if( libcnotify_verbose != 0 )
 			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-				 "%s: unable to determine size of data string.",
-				 function );
+				if( libfwevt_debug_print_utf16_string_value(
+				     function,
+				     "name\t\t\t\t\t\t",
+				     &( data[ keyword_data_offset ] ),
+				     keyword_data_size,
+				     LIBUNA_ENDIAN_LITTLE,
+				     error ) != 1 )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+					 "%s: unable to print UTF-16 string value.",
+					 function );
 
-				goto on_error;
+					return( -1 );
+				}
 			}
-			if( ( value_string_size > (size_t) SSIZE_MAX )
-			 || ( ( sizeof( system_character_t ) * value_string_size )  > (size_t) SSIZE_MAX ) )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
-				 "%s: invalid data string size value exceeds maximum.",
-				 function );
-
-				goto on_error;
-			}
-			value_string = system_string_allocate(
-					value_string_size );
-
-			if( value_string == NULL )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_MEMORY,
-				 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-				 "%s: unable to create data string.",
-				 function );
-
-				goto on_error;
-			}
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-			result = libuna_utf16_string_copy_from_utf16_stream(
-				  (libuna_utf16_character_t *) value_string,
-				  value_string_size,
-				  &( resource_data[ keyword_data_offset ] ),
-				  keyword_data_size,
-				  LIBUNA_ENDIAN_LITTLE,
-				  error );
-#else
-			result = libuna_utf8_string_copy_from_utf16_stream(
-				  (libuna_utf8_character_t *) value_string,
-				  value_string_size,
-				  &( resource_data[ keyword_data_offset ] ),
-				  keyword_data_size,
-				  LIBUNA_ENDIAN_LITTLE,
-				  error );
-#endif
-			if( result != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-				 "%s: unable to set data string.",
-				 function );
-
-				goto on_error;
-			}
-			libcnotify_printf(
-			 "%s: name\t\t\t\t\t\t: %" PRIs_SYSTEM "\n",
-			 function,
-			 value_string );
-
-			memory_free(
-			 value_string );
-
-			value_string = NULL;
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 		}
-#endif
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -426,15 +351,5 @@ int libfwevt_keyword_read(
 	}
 #endif
 	return( 1 );
-
-on_error:
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( value_string != NULL )
-	{
-		memory_free(
-		 value_string );
-	}
-#endif
-	return( -1 );
 }
 

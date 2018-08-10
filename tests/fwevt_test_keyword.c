@@ -33,6 +33,15 @@
 #include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
 
+#include "../libfwevt/libfwevt_keyword.h"
+
+/* TODO currently using altereed channel data to test keyword replace with real keyword data sample */
+
+uint8_t fwevt_test_keyword_data1[ 40 ] = {
+	0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x10, 0x00, 0x00, 0x00,
+	0x18, 0x00, 0x00, 0x00, 0x53, 0x00, 0x65, 0x00, 0x63, 0x00, 0x75, 0x00, 0x72, 0x00, 0x69, 0x00,
+	0x74, 0x00, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
 /* Tests the libfwevt_keyword_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -266,6 +275,232 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_keyword_read function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_keyword_read(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_keyword_t *keyword  = NULL;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_keyword_initialize(
+	          &keyword,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "keyword",
+	 keyword );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_keyword_read(
+	          keyword,
+	          fwevt_test_keyword_data1,
+	          40,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_keyword_read(
+	          NULL,
+	          fwevt_test_keyword_data1,
+	          40,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_keyword_read(
+	          keyword,
+	          NULL,
+	          40,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_keyword_read(
+	          keyword,
+	          fwevt_test_keyword_data1,
+	          (size_t) SSIZE_MAX + 1,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data offset value out of bounds
+	 */
+	result = libfwevt_keyword_read(
+	          keyword,
+	          fwevt_test_keyword_data1,
+	          40,
+	          40,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data value too small
+	 */
+	result = libfwevt_keyword_read(
+	          keyword,
+	          fwevt_test_keyword_data1,
+	          15,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test keyword data offset value out of bounds
+	 */
+	result = libfwevt_keyword_read(
+	          keyword,
+	          fwevt_test_keyword_data1,
+	          19,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test keyword data size value out of bounds
+	 */
+	result = libfwevt_keyword_read(
+	          keyword,
+	          fwevt_test_keyword_data1,
+	          39,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libfwevt_keyword_free(
+	          &keyword,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "keyword",
+	 keyword );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( keyword != NULL )
+	{
+		libfwevt_keyword_free(
+		 &keyword,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -289,7 +524,9 @@ int main(
 	 "libfwevt_keyword_free",
 	 fwevt_test_keyword_free );
 
-	/* TODO: add tests for libfwevt_keyword_read */
+	FWEVT_TEST_RUN(
+	 "libfwevt_keyword_read",
+	 fwevt_test_keyword_read );
 
 	return( EXIT_SUCCESS );
 

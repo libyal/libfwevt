@@ -383,11 +383,13 @@ int fwevt_test_task_read(
 	libcerror_error_free(
 	 &error );
 
+	/* Test data offset value out of bounds
+	 */
 	result = libfwevt_task_read(
 	          task,
 	          fwevt_test_task_data1,
 	          100,
-	          40,
+	          100,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -402,30 +404,55 @@ int fwevt_test_task_read(
 	libcerror_error_free(
 	 &error );
 
+	/* Test data value too small
+	 */
 	result = libfwevt_task_read(
 	          task,
 	          fwevt_test_task_data1,
-	          100,
+	          27,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test task data offset value out of bounds
+	 */
+	result = libfwevt_task_read(
+	          task,
+	          fwevt_test_task_data1,
+	          31,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test task data size value out of bounds
+	 */
+	result = libfwevt_task_read(
+	          task,
+	          fwevt_test_task_data1,
 	          99,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 -1 );
-
-	FWEVT_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	 &error );
-
-	result = libfwevt_task_read(
-	          task,
-	          fwevt_test_task_data1,
-	          100,
-	          71,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(

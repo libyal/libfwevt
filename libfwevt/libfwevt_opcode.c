@@ -27,6 +27,7 @@
 #include <types.h>
 #include <wide_string.h>
 
+#include "libfwevt_debug.h"
 #include "libfwevt_libcerror.h"
 #include "libfwevt_libcnotify.h"
 #include "libfwevt_libuna.h"
@@ -151,19 +152,14 @@ int libfwevt_opcode_read(
      size_t data_offset,
      libcerror_error_t **error )
 {
-/* TODO
+	fwevt_template_opcode_t *wevt_opcode        = NULL;
 	libfwevt_internal_opcode_t *internal_opcode = NULL;
-*/
-	fwevt_template_opcode_t *wevt_opcode = NULL;
-	static char *function                = "libfwevt_opcode_read";
-	uint32_t opcode_data_offset          = 0;
-	uint32_t opcode_data_size            = 0;
+	static char *function                       = "libfwevt_opcode_read";
+	uint32_t opcode_data_offset                 = 0;
+	uint32_t opcode_data_size                   = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	system_character_t *value_string     = NULL;
-	size_t value_string_size             = 0;
-	uint32_t value_32bit                 = 0;
-	int result                           = 0;
+	uint32_t value_32bit                        = 0;
 #endif
 
 	if( opcode == NULL )
@@ -177,9 +173,7 @@ int libfwevt_opcode_read(
 
 		return( -1 );
 	}
-/* TODO
 	internal_opcode = (libfwevt_internal_opcode_t *) opcode;
-*/
 
 	if( data == NULL )
 	{
@@ -268,10 +262,11 @@ int libfwevt_opcode_read(
 		 function,
 		 opcode_data_offset );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( opcode_data_offset > 0 )
 	{
-		if( opcode_data_offset >= data_size )
+		if( opcode_data_offset >= ( data_size - 4 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -280,10 +275,14 @@ int libfwevt_opcode_read(
 			 "%s: invalid opcode data offset value out of bounds.",
 			 function );
 
-			goto on_error;
+			return( -1 );
 		}
-		if( ( opcode_data_size > data_size )
-		 || ( ( opcode_data_offset + opcode_data_size ) > data_size ) )
+		byte_stream_copy_to_uint32_little_endian(
+		 &( data[ opcode_data_offset ] ),
+		 opcode_data_size );
+
+		if( ( data_size < opcode_data_size )
+		 || ( opcode_data_offset > ( data_size - opcode_data_size ) ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -292,12 +291,8 @@ int libfwevt_opcode_read(
 			 "%s: invalid opcode data size value out of bounds.",
 			 function );
 
-			goto on_error;
+			return( -1 );
 		}
-		byte_stream_copy_to_uint32_little_endian(
-		 &( data[ opcode_data_offset ] ),
-		 opcode_data_size );
-
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
@@ -318,104 +313,36 @@ int libfwevt_opcode_read(
 			 function,
 			 opcode_data_size );
 		}
-		opcode_data_offset += 4;
-		opcode_data_size   -= 4;
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+		if( opcode_data_size >= 4 )
+		{
+			opcode_data_offset += 4;
+			opcode_data_size   -= 4;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-			result = libuna_utf16_string_size_from_utf16_stream(
-				  &( data[ opcode_data_offset ] ),
-				  opcode_data_size,
-				  LIBUNA_ENDIAN_LITTLE,
-				  &value_string_size,
-				  error );
-#else
-			result = libuna_utf8_string_size_from_utf16_stream(
-				  &( data[ opcode_data_offset ] ),
-				  opcode_data_size,
-				  LIBUNA_ENDIAN_LITTLE,
-				  &value_string_size,
-				  error );
-#endif
-			if( result != 1 )
+			if( libcnotify_verbose != 0 )
 			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-				 "%s: unable to determine size of data string.",
-				 function );
+				if( libfwevt_debug_print_utf16_string_value(
+				     function,
+				     "name\t\t\t\t\t\t",
+				     &( data[ opcode_data_offset ] ),
+				     opcode_data_size,
+				     LIBUNA_ENDIAN_LITTLE,
+				     error ) != 1 )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+					 "%s: unable to print UTF-16 string value.",
+					 function );
 
-				goto on_error;
+					return( -1 );
+				}
 			}
-			if( ( value_string_size > (size_t) SSIZE_MAX )
-			 || ( ( sizeof( system_character_t ) * value_string_size )  > (size_t) SSIZE_MAX ) )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
-				 "%s: invalid data string size value exceeds maximum.",
-				 function );
-
-				goto on_error;
-			}
-			value_string = system_string_allocate(
-					value_string_size );
-
-			if( value_string == NULL )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_MEMORY,
-				 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-				 "%s: unable to create data string.",
-				 function );
-
-				goto on_error;
-			}
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-			result = libuna_utf16_string_copy_from_utf16_stream(
-				  (libuna_utf16_character_t *) value_string,
-				  value_string_size,
-				  &( data[ opcode_data_offset ] ),
-				  opcode_data_size,
-				  LIBUNA_ENDIAN_LITTLE,
-				  error );
-#else
-			result = libuna_utf8_string_copy_from_utf16_stream(
-				  (libuna_utf8_character_t *) value_string,
-				  value_string_size,
-				  &( data[ opcode_data_offset ] ),
-				  opcode_data_size,
-				  LIBUNA_ENDIAN_LITTLE,
-				  error );
-#endif
-			if( result != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-				 "%s: unable to set data string.",
-				 function );
-
-				goto on_error;
-			}
-			libcnotify_printf(
-			 "%s: name\t\t\t\t\t\t: %" PRIs_SYSTEM "\n",
-			 function,
-			 value_string );
-
-			memory_free(
-			 value_string );
-
-			value_string = NULL;
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 		}
-#endif
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -425,15 +352,5 @@ int libfwevt_opcode_read(
 	}
 #endif
 	return( 1 );
-
-on_error:
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( value_string != NULL )
-	{
-		memory_free(
-		 value_string );
-	}
-#endif
-	return( -1 );
 }
 

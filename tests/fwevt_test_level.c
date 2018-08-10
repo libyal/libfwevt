@@ -33,6 +33,14 @@
 #include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
 
+#include "../libfwevt/libfwevt_level.h"
+
+uint8_t fwevt_test_level_data1[ 52 ] = {
+	0x04, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x0c, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00,
+	0x77, 0x00, 0x69, 0x00, 0x6e, 0x00, 0x3a, 0x00, 0x49, 0x00, 0x6e, 0x00, 0x66, 0x00, 0x6f, 0x00,
+	0x72, 0x00, 0x6d, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00, 0x6f, 0x00, 0x6e, 0x00, 0x61, 0x00,
+	0x6c, 0x00, 0x00, 0x00 };
+
 /* Tests the libfwevt_level_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -266,6 +274,232 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_level_read function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_level_read(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_level_t *level  = NULL;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_level_initialize(
+	          &level,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "level",
+	 level );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_level_read(
+	          level,
+	          fwevt_test_level_data1,
+	          52,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_level_read(
+	          NULL,
+	          fwevt_test_level_data1,
+	          52,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_level_read(
+	          level,
+	          NULL,
+	          52,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_level_read(
+	          level,
+	          fwevt_test_level_data1,
+	          (size_t) SSIZE_MAX + 1,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data offset value out of bounds
+	 */
+	result = libfwevt_level_read(
+	          level,
+	          fwevt_test_level_data1,
+	          52,
+	          52,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data value too small
+	 */
+	result = libfwevt_level_read(
+	          level,
+	          fwevt_test_level_data1,
+	          11,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test level data offset value out of bounds
+	 */
+	result = libfwevt_level_read(
+	          level,
+	          fwevt_test_level_data1,
+	          15,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test level data size value out of bounds
+	 */
+	result = libfwevt_level_read(
+	          level,
+	          fwevt_test_level_data1,
+	          51,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libfwevt_level_free(
+	          &level,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "level",
+	 level );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( level != NULL )
+	{
+		libfwevt_level_free(
+		 &level,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -289,7 +523,9 @@ int main(
 	 "libfwevt_level_free",
 	 fwevt_test_level_free );
 
-	/* TODO: add tests for libfwevt_level_read */
+	FWEVT_TEST_RUN(
+	 "libfwevt_level_read",
+	 fwevt_test_level_read );
 
 	return( EXIT_SUCCESS );
 

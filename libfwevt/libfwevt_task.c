@@ -286,9 +286,7 @@ int libfwevt_task_read(
 
 	if( task_data_offset > 0 )
 	{
-fprintf( stdout, "X: %" PRIu32 ", %zd\n", task_data_offset, data_size );
-		if( ( data_size < 4 )
-		 || ( task_data_offset >= ( data_size - 4 ) ) )
+		if( task_data_offset >= ( data_size - 4 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -303,7 +301,7 @@ fprintf( stdout, "X: %" PRIu32 ", %zd\n", task_data_offset, data_size );
 		 &( data[ task_data_offset ] ),
 		 task_data_size );
 
-		if( ( task_data_size > data_size )
+		if( ( data_size < task_data_size )
 		 || ( task_data_offset > ( data_size - task_data_size ) ) )
 		{
 			libcerror_error_set(
@@ -336,32 +334,36 @@ fprintf( stdout, "X: %" PRIu32 ", %zd\n", task_data_offset, data_size );
 			 function,
 			 task_data_size );
 		}
-		task_data_offset += 4;
-		task_data_size   -= 4;
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+		if( task_data_size >= 4 )
+		{
+			task_data_offset += 4;
+			task_data_size   -= 4;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			if( libfwevt_debug_print_utf16_string_value(
-			     function,
-			     "name\t\t\t\t\t\t",
-			     &( data[ task_data_offset ] ),
-			     task_data_size,
-			     LIBUNA_ENDIAN_LITTLE,
-			     error ) != 1 )
+			if( libcnotify_verbose != 0 )
 			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-				 "%s: unable to print UTF-16 string value.",
-				 function );
+				if( libfwevt_debug_print_utf16_string_value(
+				     function,
+				     "name\t\t\t\t\t\t",
+				     &( data[ task_data_offset ] ),
+				     task_data_size,
+				     LIBUNA_ENDIAN_LITTLE,
+				     error ) != 1 )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+					 "%s: unable to print UTF-16 string value.",
+					 function );
 
-				return( -1 );
+					return( -1 );
+				}
 			}
-		}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
+		}
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
