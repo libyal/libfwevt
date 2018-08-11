@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tests\fwevt_test_libfvalue.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tests\fwevt_test_libfwevt.h"
 				>
 			</File>

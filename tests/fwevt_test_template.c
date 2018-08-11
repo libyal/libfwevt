@@ -109,6 +109,8 @@ int fwevt_test_template_initialize(
 	          &template,
 	          &error );
 
+	template = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -120,8 +122,6 @@ int fwevt_test_template_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	template = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 

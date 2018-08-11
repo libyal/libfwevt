@@ -147,9 +147,7 @@ int libfwevt_map_read(
      size_t data_offset,
      libcerror_error_t **error )
 {
-/* TODO
 	libfwevt_internal_map_t *internal_map = NULL;
-*/
 	fwevt_template_map_t *wevt_map        = NULL;
 	static char *function                 = "libfwevt_map_read";
 
@@ -164,9 +162,7 @@ int libfwevt_map_read(
 
 		return( -1 );
 	}
-/* TODO
 	internal_map = (libfwevt_internal_map_t *) map;
-*/
 
 	if( data == NULL )
 	{
@@ -213,10 +209,22 @@ int libfwevt_map_read(
 
 		return( -1 );
 	}
-#if defined( HAVE_DEBUG_OUTPUT )
-/* TODO implement map support */
 	wevt_map = (fwevt_template_map_t *) &( data[ data_offset ] );
-#endif
+
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "%s: map data:\n",
+		 function );
+		libcnotify_print_data(
+		 (uint8_t *) wevt_map,
+		 sizeof( fwevt_template_map_t ),
+		 0 );
+	}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+/* TODO implement map support */
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )

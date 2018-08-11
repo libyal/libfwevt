@@ -113,6 +113,8 @@ int fwevt_test_xml_token_initialize(
 	          &xml_token,
 	          &error );
 
+	xml_token = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -124,8 +126,6 @@ int fwevt_test_xml_token_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	xml_token = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 

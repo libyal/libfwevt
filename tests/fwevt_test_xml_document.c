@@ -111,6 +111,8 @@ int fwevt_test_xml_document_initialize(
 	          &xml_document,
 	          &error );
 
+	xml_document = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -122,8 +124,6 @@ int fwevt_test_xml_document_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	xml_document = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 

@@ -116,6 +116,8 @@ int fwevt_test_channel_initialize(
 	          &channel,
 	          &error );
 
+	channel = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -127,8 +129,6 @@ int fwevt_test_channel_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	channel = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 
@@ -279,9 +279,9 @@ on_error:
 int fwevt_test_channel_read(
      void )
 {
-	libcerror_error_t *error     = NULL;
+	libcerror_error_t *error    = NULL;
 	libfwevt_channel_t *channel = NULL;
-	int result                   = 0;
+	int result                  = 0;
 
 	/* Initialize test
 	 */
@@ -522,7 +522,9 @@ int main(
 	 "libfwevt_channel_free",
 	 fwevt_test_channel_free );
 
-	/* TODO: add tests for libfwevt_channel_read */
+	FWEVT_TEST_RUN(
+	 "libfwevt_channel_read",
+	 fwevt_test_channel_read );
 
 	return( EXIT_SUCCESS );
 

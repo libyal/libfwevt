@@ -117,6 +117,8 @@ int fwevt_test_level_initialize(
 	          &level,
 	          &error );
 
+	level = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -128,8 +130,6 @@ int fwevt_test_level_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	level = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 

@@ -192,7 +192,9 @@ fwevt_test_xml_document_LDADD = \
 
 fwevt_test_xml_tag_SOURCES = \
 	fwevt_test_libcerror.h \
+	fwevt_test_libfvalue.h \
 	fwevt_test_libfwevt.h \
+	fwevt_test_libuna.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.c fwevt_test_memory.h \
 	fwevt_test_unused.h \

@@ -381,7 +381,8 @@ int libfwevt_event_read(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	return( 1 );
 }
 

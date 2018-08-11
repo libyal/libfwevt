@@ -393,7 +393,8 @@ int libfwevt_provider_read(
 
 		return( -1 );
 	}
-	if( ( data_offset + sizeof( fwevt_template_provider_t ) ) > data_size )
+	if( ( data_size < sizeof( fwevt_template_provider_t ) )
+	 || ( data_offset > ( data_size - sizeof( fwevt_template_provider_t ) ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -489,7 +490,8 @@ int libfwevt_provider_read(
 
 		return( -1 );
 	}
-	if( ( data_offset + ( number_of_descriptors * 8 ) ) > data_size )
+	if( ( ( data_size / 8 ) < number_of_descriptors )
+	 || ( data_offset > ( data_size - ( number_of_descriptors * 8 ) ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -504,6 +506,19 @@ int libfwevt_provider_read(
 	     descriptor_index < number_of_descriptors;
 	     descriptor_index++ )
 	{
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
+		{
+			libcnotify_printf(
+			 "%s: descriptor: %02" PRIu32 " data:\n",
+			 function,
+			 descriptor_index );
+			libcnotify_print_data(
+			 &( data[ data_offset ] ),
+			 8,
+			 0 );
+		}
+#endif
 		byte_stream_copy_to_uint32_little_endian(
 		 &( data[ data_offset ] ),
 		 descriptor_offset );
@@ -595,7 +610,8 @@ int libfwevt_provider_read(
 		}
 	}
 #endif
-	if( ( data_offset + ( number_of_unknown2 * 4 ) ) > data_size )
+	if( ( ( data_size / 4 ) < number_of_unknown2 )
+	 || ( ( data_offset + ( number_of_unknown2 * 4 ) ) > data_size ) )
 	{
 		libcerror_error_set(
 		 error,

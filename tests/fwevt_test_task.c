@@ -120,6 +120,8 @@ int fwevt_test_task_initialize(
 	          &task,
 	          &error );
 
+	task = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -131,8 +133,6 @@ int fwevt_test_task_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	task = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 

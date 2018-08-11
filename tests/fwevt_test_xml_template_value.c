@@ -113,6 +113,8 @@ int fwevt_test_xml_template_value_initialize(
 	          &xml_template_value,
 	          &error );
 
+	xml_template_value = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -124,8 +126,6 @@ int fwevt_test_xml_template_value_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	xml_template_value = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 

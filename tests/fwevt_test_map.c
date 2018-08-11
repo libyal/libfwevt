@@ -33,6 +33,11 @@
 #include "fwevt_test_memory.h"
 #include "fwevt_test_unused.h"
 
+#include "../libfwevt/libfwevt_map.h"
+
+uint8_t fwevt_test_map_data1[ 4 ] = {
+	0x4d, 0x41, 0x50, 0x53 };
+
 /* Tests the libfwevt_map_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -109,6 +114,8 @@ int fwevt_test_map_initialize(
 	          &map,
 	          &error );
 
+	map = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -120,8 +127,6 @@ int fwevt_test_map_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	map = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 
@@ -266,6 +271,190 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_map_read function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_map_read(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_map_t *map  = NULL;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_map_initialize(
+	          &map,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "map",
+	 map );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_map_read(
+	          map,
+	          fwevt_test_map_data1,
+	          4,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_map_read(
+	          NULL,
+	          fwevt_test_map_data1,
+	          4,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_map_read(
+	          map,
+	          NULL,
+	          4,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_map_read(
+	          map,
+	          fwevt_test_map_data1,
+	          (size_t) SSIZE_MAX + 1,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data offset value out of bounds
+	 */
+	result = libfwevt_map_read(
+	          map,
+	          fwevt_test_map_data1,
+	          4,
+	          4,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data value too small
+	 */
+	result = libfwevt_map_read(
+	          map,
+	          fwevt_test_map_data1,
+	          3,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libfwevt_map_free(
+	          &map,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "map",
+	 map );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( map != NULL )
+	{
+		libfwevt_map_free(
+		 &map,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -289,7 +478,9 @@ int main(
 	 "libfwevt_map_free",
 	 fwevt_test_map_free );
 
-	/* TODO: add tests for libfwevt_map_read */
+	FWEVT_TEST_RUN(
+	 "libfwevt_map_read",
+	 fwevt_test_map_read );
 
 	return( EXIT_SUCCESS );
 

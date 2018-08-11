@@ -118,6 +118,8 @@ int fwevt_test_keyword_initialize(
 	          &keyword,
 	          &error );
 
+	keyword = NULL;
+
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -129,8 +131,6 @@ int fwevt_test_keyword_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	keyword = NULL;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
 
