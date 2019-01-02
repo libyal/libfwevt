@@ -1,7 +1,7 @@
 /*
  * Provider functions
  *
- * Copyright (C) 2011-2018, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2011-2019, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -551,6 +551,17 @@ int libfwevt_provider_read(
 			 data[ descriptor_offset + 3 ] );
 		}
 #endif
+		if( descriptor_offset > data_size )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid descriptor offset value out of bounds.",
+			 function );
+
+			return( -1 );
+		}
 		byte_stream_copy_to_uint32_big_endian(
 		 &( data[ descriptor_offset ] ),
 		 descriptor_type );
@@ -611,7 +622,7 @@ int libfwevt_provider_read(
 	}
 #endif
 	if( ( ( data_size / 4 ) < number_of_unknown2 )
-	 || ( ( data_offset + ( number_of_unknown2 * 4 ) ) > data_size ) )
+	 || ( data_offset > ( data_size - ( number_of_unknown2 * 4 ) ) ) )
 	{
 		libcerror_error_set(
 		 error,

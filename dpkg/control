@@ -9,6 +9,8 @@ Homepage: https://github.com/libyal/libfwevt
 Package: libfwevt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libfwevt1
+Replaces: libfwevt1
 Suggests: libfwevt-dbg
 Description: Library to support the Windows XML Event Log (EVTX) data types
  libfwevt is a library to support the Windows XML Event Log (EVTX) data types.
