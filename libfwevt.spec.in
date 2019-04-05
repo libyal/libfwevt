@@ -13,6 +13,14 @@ BuildRequires: gcc @ax_libcdata_spec_build_requires@ @ax_libcerror_spec_build_re
 %description -n libfwevt
 Library to support the Windows XML Event Log (EVTX) data types
 
+%package -n libfwevt-static
+Summary: Library to support the Windows XML Event Log (EVTX) data types
+Group: Development/Libraries
+Requires: libfwevt = %{version}-%{release}
+
+%description -n libfwevt-static
+Static library version of libfwevt.
+
 %package -n libfwevt-devel
 Summary: Header files and libraries for developing applications for libfwevt
 Group: Development/Libraries
@@ -45,11 +53,16 @@ rm -rf %{buildroot}
 %doc AUTHORS README
 %attr(755,root,root) %{_libdir}/*.so.*
 
+%files -n libfwevt-static
+%defattr(644,root,root,755)
+%license COPYING
+%doc AUTHORS README
+%attr(755,root,root) %{_libdir}/*.a
+
 %files -n libfwevt-devel
 %defattr(644,root,root,755)
 %license COPYING
 %doc AUTHORS README
-%{_libdir}/*.a
 %{_libdir}/*.la
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/libfwevt.pc
