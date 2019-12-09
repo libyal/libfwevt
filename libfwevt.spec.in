@@ -49,19 +49,19 @@ rm -rf %{buildroot}
 
 %files -n libfwevt
 %defattr(644,root,root,755)
-%license COPYING
+%license COPYING COPYING.LESSER
 %doc AUTHORS README
 %attr(755,root,root) %{_libdir}/*.so.*
 
 %files -n libfwevt-static
 %defattr(644,root,root,755)
-%license COPYING
+%license COPYING COPYING.LESSER
 %doc AUTHORS README
 %attr(755,root,root) %{_libdir}/*.a
 
 %files -n libfwevt-devel
 %defattr(644,root,root,755)
-%license COPYING
+%license COPYING COPYING.LESSER
 %doc AUTHORS README
 %{_libdir}/*.la
 %{_libdir}/*.so
