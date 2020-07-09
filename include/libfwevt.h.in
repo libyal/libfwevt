@@ -653,7 +653,7 @@ LIBFWEVT_EXTERN \
 int libfwevt_provider_get_template(
      libfwevt_provider_t *provider,
      int template_index,
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libfwevt_error_t **error );
 
 /* Retrieves a specific template by offset
@@ -663,7 +663,7 @@ LIBFWEVT_EXTERN \
 int libfwevt_provider_get_template_by_offset(
      libfwevt_provider_t *provider,
      uint32_t offset,
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libfwevt_error_t **error );
 
 /* -------------------------------------------------------------------------
@@ -703,12 +703,12 @@ int libfwevt_task_read(
  * ------------------------------------------------------------------------- */
 
 /* Creates a template
- * Make sure the value channel is referencing, is set to NULL
+ * Make sure the value template is referencing, is set to NULL
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_initialize(
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libfwevt_error_t **error );
 
 /* Frees a template
@@ -716,7 +716,7 @@ int libfwevt_template_initialize(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_free(
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libfwevt_error_t **error );
 
 /* Reads the template
@@ -724,7 +724,7 @@ int libfwevt_template_free(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_read(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t *data,
      size_t data_size,
      size_t data_offset,
@@ -735,7 +735,7 @@ int libfwevt_template_read(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_read_xml_document(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      libfwevt_xml_document_t *xml_document,
      libfwevt_error_t **error );
 
@@ -744,7 +744,7 @@ int libfwevt_template_read_xml_document(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_ascii_codepage(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      int ascii_codepage,
      libfwevt_error_t **error );
 
@@ -753,7 +753,7 @@ int libfwevt_template_set_ascii_codepage(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_data(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t **data,
      size_t *data_size,
      libfwevt_error_t **error );
@@ -763,7 +763,7 @@ int libfwevt_template_get_data(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_data(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t *data,
      size_t data_size,
      libfwevt_error_t **error );
@@ -773,7 +773,7 @@ int libfwevt_template_set_data(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_offset(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t *offset,
      libfwevt_error_t **error );
 
@@ -782,7 +782,7 @@ int libfwevt_template_get_offset(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_offset(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t offset,
      libfwevt_error_t **error );
 
@@ -791,7 +791,7 @@ int libfwevt_template_set_offset(
  */
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_size(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t *size,
      libfwevt_error_t **error );
 

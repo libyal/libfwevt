@@ -2959,7 +2959,7 @@ int libfwevt_provider_read_templates(
      libcerror_error_t **error )
 {
 	libfwevt_internal_provider_t *internal_provider = NULL;
-	libfwevt_template_t *template                   = NULL;
+	libfwevt_template_t *wevt_template              = NULL;
 	fwevt_template_table_t *template_table          = NULL;
 	static char *function                           = "libfwevt_provider_read_templates";
 	size_t data_offset                              = 0;
@@ -3167,7 +3167,7 @@ int libfwevt_provider_read_templates(
 		}
 #endif
 		if( libfwevt_template_initialize(
-		     &template,
+		     &wevt_template,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -3182,7 +3182,7 @@ int libfwevt_provider_read_templates(
 		}
 /* TODO handle ASCII codepage */
 		if( libfwevt_template_read(
-		     template,
+		     wevt_template,
 		     data,
 		     data_size,
 		     data_offset,
@@ -3199,7 +3199,7 @@ int libfwevt_provider_read_templates(
 			goto on_error;
 		}
 		if( libfwevt_template_get_size(
-		     template,
+		     wevt_template,
 		     &template_size,
 		     error ) != 1 )
 		{
@@ -3229,7 +3229,7 @@ int libfwevt_provider_read_templates(
 		if( libcdata_array_set_entry_by_index(
 		     internal_provider->templates_array,
 		     (int) template_index,
-		     (intptr_t *) template,
+		     (intptr_t *) wevt_template,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -3242,7 +3242,7 @@ int libfwevt_provider_read_templates(
 
 			goto on_error;
 		}
-		template = NULL;
+		wevt_template = NULL;
 	}
 /* TODO count data size ?
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -3264,10 +3264,10 @@ int libfwevt_provider_read_templates(
 	return( 1 );
 
 on_error:
-	if( template != NULL )
+	if( wevt_template != NULL )
 	{
 		libfwevt_template_free(
-		 &template,
+		 &wevt_template,
 		 NULL );
 	}
 	if( internal_provider->templates_array != NULL )
@@ -3998,7 +3998,7 @@ int libfwevt_provider_get_number_of_templates(
 int libfwevt_provider_get_template(
      libfwevt_provider_t *provider,
      int template_index,
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libcerror_error_t **error )
 {
 	libfwevt_internal_provider_t *internal_provider = NULL;
@@ -4020,7 +4020,7 @@ int libfwevt_provider_get_template(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->templates_array,
 	     template_index,
-	     (intptr_t **) &template,
+	     (intptr_t **) wevt_template,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -4042,7 +4042,7 @@ int libfwevt_provider_get_template(
 int libfwevt_provider_get_template_by_offset(
      libfwevt_provider_t *provider,
      uint32_t offset,
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libcerror_error_t **error )
 {
 	libfwevt_internal_provider_t *internal_provider = NULL;
@@ -4064,7 +4064,7 @@ int libfwevt_provider_get_template_by_offset(
 	}
 	internal_provider = (libfwevt_internal_provider_t *) provider;
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -4096,7 +4096,7 @@ int libfwevt_provider_get_template_by_offset(
 		if( libcdata_array_get_entry_by_index(
 		     internal_provider->templates_array,
 		     template_index,
-		     (intptr_t **) template,
+		     (intptr_t **) wevt_template,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -4110,7 +4110,7 @@ int libfwevt_provider_get_template_by_offset(
 			goto on_error;
 		}
 		if( libfwevt_template_get_offset(
-		     *template,
+		     *wevt_template,
 		     &template_offset,
 		     error ) != 1 )
 		{
@@ -4129,12 +4129,12 @@ int libfwevt_provider_get_template_by_offset(
 			return( 1 );
 		}
 	}
-	*template = NULL;
+	*wevt_template = NULL;
 
 	return( 0 );
 
 on_error:
-	*template = NULL;
+	*wevt_template = NULL;
 
 	return( -1 );
 }

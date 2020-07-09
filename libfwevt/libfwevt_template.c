@@ -42,13 +42,13 @@
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_initialize(
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libcerror_error_t **error )
 {
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_initialize";
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -59,7 +59,7 @@ int libfwevt_template_initialize(
 
 		return( -1 );
 	}
-	if( *template != NULL )
+	if( *wevt_template != NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -114,7 +114,7 @@ int libfwevt_template_initialize(
 	}
 	internal_template->ascii_codepage = 1252;
 
-	*template = (libfwevt_template_t *) internal_template;
+	*wevt_template = (libfwevt_template_t *) internal_template;
 
 	return( 1 );
 
@@ -131,14 +131,14 @@ on_error:
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_free(
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libcerror_error_t **error )
 {
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_free";
 	int result                                      = 1;
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -149,10 +149,10 @@ int libfwevt_template_free(
 
 		return( -1 );
 	}
-	if( *template != NULL )
+	if( *wevt_template != NULL )
 	{
-		internal_template = (libfwevt_internal_template_t *) *template;
-		*template         = NULL;
+		internal_template = (libfwevt_internal_template_t *) *wevt_template;
+		*wevt_template    = NULL;
 
 		if( internal_template->data != NULL )
 		{
@@ -183,7 +183,7 @@ int libfwevt_template_free(
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_read(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t *data,
      size_t data_size,
      size_t data_offset,
@@ -196,7 +196,7 @@ int libfwevt_template_read(
 	libfwevt_xml_document_t *xml_document           = NULL;
 #endif
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -207,7 +207,7 @@ int libfwevt_template_read(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 	if( data == NULL )
 	{
@@ -325,7 +325,7 @@ int libfwevt_template_read(
 			goto on_error;
 		}
 		if( libfwevt_template_read_xml_document(
-		     template,
+		     wevt_template,
 		     xml_document,
 		     error ) != 1 )
 		{
@@ -1060,7 +1060,7 @@ on_error:
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_read_xml_document(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      libfwevt_xml_document_t *xml_document,
      libcerror_error_t **error )
 {
@@ -1068,7 +1068,7 @@ int libfwevt_template_read_xml_document(
 	static char *function                           = "libfwevt_template_read_xml_document";
 	size_t binary_xml_data_size                     = 0;
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1079,7 +1079,7 @@ int libfwevt_template_read_xml_document(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 	if( internal_template->data == NULL )
 	{
@@ -1212,14 +1212,14 @@ on_error:
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_set_ascii_codepage(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      int ascii_codepage,
      libcerror_error_t **error )
 {
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_set_ascii_codepage";
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1230,7 +1230,7 @@ int libfwevt_template_set_ascii_codepage(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 /* TODO check supported codepages ? */
 
@@ -1243,7 +1243,7 @@ int libfwevt_template_set_ascii_codepage(
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_get_data(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t **data,
      size_t *data_size,
      libcerror_error_t **error )
@@ -1251,7 +1251,7 @@ int libfwevt_template_get_data(
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_get_data";
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1262,7 +1262,7 @@ int libfwevt_template_get_data(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 	if( data == NULL )
 	{
@@ -1296,7 +1296,7 @@ int libfwevt_template_get_data(
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_set_data(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error )
@@ -1304,7 +1304,7 @@ int libfwevt_template_set_data(
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_set_data";
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1315,7 +1315,7 @@ int libfwevt_template_set_data(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 	if( data == NULL )
 	{
@@ -1422,14 +1422,14 @@ on_error:
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_get_offset(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t *offset,
      libcerror_error_t **error )
 {
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_get_offset";
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1440,7 +1440,7 @@ int libfwevt_template_get_offset(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 	if( offset == NULL )
 	{
@@ -1462,14 +1462,14 @@ int libfwevt_template_get_offset(
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_set_offset(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t offset,
      libcerror_error_t **error )
 {
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_set_offset";
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1480,7 +1480,7 @@ int libfwevt_template_set_offset(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 	internal_template->offset = offset;
 
@@ -1491,14 +1491,14 @@ int libfwevt_template_set_offset(
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_template_get_size(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t *size,
      libcerror_error_t **error )
 {
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_get_size";
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1509,7 +1509,7 @@ int libfwevt_template_get_size(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 	if( size == NULL )
 	{

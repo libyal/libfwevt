@@ -307,14 +307,14 @@ LIBFWEVT_EXTERN \
 int libfwevt_provider_get_template(
      libfwevt_provider_t *provider,
      int template_index,
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_provider_get_template_by_offset(
      libfwevt_provider_t *provider,
      uint32_t offset,
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

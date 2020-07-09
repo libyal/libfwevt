@@ -77,17 +77,17 @@ struct libfwevt_internal_template
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_initialize(
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_free(
-     libfwevt_template_t **template,
+     libfwevt_template_t **wevt_template,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_read(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t *data,
      size_t data_size,
      size_t data_offset,
@@ -105,45 +105,45 @@ int libfwevt_template_read_instance_values(
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_read_xml_document(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      libfwevt_xml_document_t *xml_document,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_ascii_codepage(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      int ascii_codepage,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_data(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t **data,
      size_t *data_size,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_data(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_offset(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t *offset,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_set_offset(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t offset,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_size(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint32_t *size,
      libcerror_error_t **error );
 

@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #endif
 
-#include "fwevt_test_libcerror.h"
 #include "fwevt_test_libfwevt.h"
 #include "fwevt_test_macros.h"
 #include "fwevt_test_unused.h"

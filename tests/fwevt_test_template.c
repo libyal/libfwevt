@@ -39,20 +39,20 @@
 int fwevt_test_template_initialize(
      void )
 {
-	libcerror_error_t *error        = NULL;
-	libfwevt_template_t *template   = NULL;
-	int result                      = 0;
+	libcerror_error_t *error           = NULL;
+	libfwevt_template_t *wevt_template = NULL;
+	int result                         = 0;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
-	int number_of_malloc_fail_tests = 1;
-	int number_of_memset_fail_tests = 1;
-	int test_number                 = 0;
+	int number_of_malloc_fail_tests    = 1;
+	int number_of_memset_fail_tests    = 1;
+	int test_number                    = 0;
 #endif
 
 	/* Test regular cases
 	 */
 	result = libfwevt_template_initialize(
-	          &template,
+	          &wevt_template,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -61,15 +61,15 @@ int fwevt_test_template_initialize(
 	 1 );
 
 	FWEVT_TEST_ASSERT_IS_NOT_NULL(
-	 "template",
-	 template );
+	 "wevt_template",
+	 wevt_template );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
 
 	result = libfwevt_template_free(
-	          &template,
+	          &wevt_template,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -78,8 +78,8 @@ int fwevt_test_template_initialize(
 	 1 );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
-	 "template",
-	 template );
+	 "wevt_template",
+	 wevt_template );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -103,13 +103,13 @@ int fwevt_test_template_initialize(
 	libcerror_error_free(
 	 &error );
 
-	template = (libfwevt_template_t *) 0x12345678UL;
+	wevt_template = (libfwevt_template_t *) 0x12345678UL;
 
 	result = libfwevt_template_initialize(
-	          &template,
+	          &wevt_template,
 	          &error );
 
-	template = NULL;
+	wevt_template = NULL;
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -134,17 +134,17 @@ int fwevt_test_template_initialize(
 		fwevt_test_malloc_attempts_before_fail = test_number;
 
 		result = libfwevt_template_initialize(
-		          &template,
+		          &wevt_template,
 		          &error );
 
 		if( fwevt_test_malloc_attempts_before_fail != -1 )
 		{
 			fwevt_test_malloc_attempts_before_fail = -1;
 
-			if( template != NULL )
+			if( wevt_template != NULL )
 			{
 				libfwevt_template_free(
-				 &template,
+				 &wevt_template,
 				 NULL );
 			}
 		}
@@ -156,8 +156,8 @@ int fwevt_test_template_initialize(
 			 -1 );
 
 			FWEVT_TEST_ASSERT_IS_NULL(
-			 "template",
-			 template );
+			 "wevt_template",
+			 wevt_template );
 
 			FWEVT_TEST_ASSERT_IS_NOT_NULL(
 			 "error",
@@ -176,17 +176,17 @@ int fwevt_test_template_initialize(
 		fwevt_test_memset_attempts_before_fail = test_number;
 
 		result = libfwevt_template_initialize(
-		          &template,
+		          &wevt_template,
 		          &error );
 
 		if( fwevt_test_memset_attempts_before_fail != -1 )
 		{
 			fwevt_test_memset_attempts_before_fail = -1;
 
-			if( template != NULL )
+			if( wevt_template != NULL )
 			{
 				libfwevt_template_free(
-				 &template,
+				 &wevt_template,
 				 NULL );
 			}
 		}
@@ -198,8 +198,8 @@ int fwevt_test_template_initialize(
 			 -1 );
 
 			FWEVT_TEST_ASSERT_IS_NULL(
-			 "template",
-			 template );
+			 "wevt_template",
+			 wevt_template );
 
 			FWEVT_TEST_ASSERT_IS_NOT_NULL(
 			 "error",
@@ -219,10 +219,10 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( template != NULL )
+	if( wevt_template != NULL )
 	{
 		libfwevt_template_free(
-		 &template,
+		 &wevt_template,
 		 NULL );
 	}
 	return( 0 );
@@ -272,16 +272,16 @@ on_error:
 int fwevt_test_template_get_offset(
      void )
 {
-	libcerror_error_t *error      = NULL;
-	libfwevt_template_t *template = NULL;
-	uint32_t offset               = 0;
-	int offset_is_set             = 0;
-	int result                    = 0;
+	libcerror_error_t *error           = NULL;
+	libfwevt_template_t *wevt_template = NULL;
+	uint32_t offset                    = 0;
+	int offset_is_set                  = 0;
+	int result                         = 0;
 
 	/* Initialize test
 	 */
 	result = libfwevt_template_initialize(
-	          &template,
+	          &wevt_template,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -290,8 +290,8 @@ int fwevt_test_template_get_offset(
 	 1 );
 
 	FWEVT_TEST_ASSERT_IS_NOT_NULL(
-	 "template",
-	 template );
+	 "wevt_template",
+	 wevt_template );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -300,7 +300,7 @@ int fwevt_test_template_get_offset(
 	/* Test regular cases
 	 */
 	result = libfwevt_template_get_offset(
-	          template,
+	          wevt_template,
 	          &offset,
 	          &error );
 
@@ -337,7 +337,7 @@ int fwevt_test_template_get_offset(
 	if( offset_is_set != 0 )
 	{
 		result = libfwevt_template_get_offset(
-		          template,
+		          wevt_template,
 		          NULL,
 		          &error );
 
@@ -356,7 +356,7 @@ int fwevt_test_template_get_offset(
 	/* Clean up
 	 */
 	result = libfwevt_template_free(
-	          &template,
+	          &wevt_template,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -365,8 +365,8 @@ int fwevt_test_template_get_offset(
 	 1 );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
-	 "template",
-	 template );
+	 "wevt_template",
+	 wevt_template );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -380,10 +380,10 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( template != NULL )
+	if( wevt_template != NULL )
 	{
 		libfwevt_template_free(
-		 &template,
+		 &wevt_template,
 		 NULL );
 	}
 	return( 0 );
@@ -395,16 +395,16 @@ on_error:
 int fwevt_test_template_get_size(
      void )
 {
-	libcerror_error_t *error      = NULL;
-	libfwevt_template_t *template = NULL;
-	uint32_t size                 = 0;
-	int result                    = 0;
-	int size_is_set               = 0;
+	libcerror_error_t *error           = NULL;
+	libfwevt_template_t *wevt_template = NULL;
+	uint32_t size                      = 0;
+	int result                         = 0;
+	int size_is_set                    = 0;
 
 	/* Initialize test
 	 */
 	result = libfwevt_template_initialize(
-	          &template,
+	          &wevt_template,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -413,8 +413,8 @@ int fwevt_test_template_get_size(
 	 1 );
 
 	FWEVT_TEST_ASSERT_IS_NOT_NULL(
-	 "template",
-	 template );
+	 "wevt_template",
+	 wevt_template );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -423,7 +423,7 @@ int fwevt_test_template_get_size(
 	/* Test regular cases
 	 */
 	result = libfwevt_template_get_size(
-	          template,
+	          wevt_template,
 	          &size,
 	          &error );
 
@@ -460,7 +460,7 @@ int fwevt_test_template_get_size(
 	if( size_is_set != 0 )
 	{
 		result = libfwevt_template_get_size(
-		          template,
+		          wevt_template,
 		          NULL,
 		          &error );
 
@@ -479,7 +479,7 @@ int fwevt_test_template_get_size(
 	/* Clean up
 	 */
 	result = libfwevt_template_free(
-	          &template,
+	          &wevt_template,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -488,8 +488,8 @@ int fwevt_test_template_get_size(
 	 1 );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
-	 "template",
-	 template );
+	 "wevt_template",
+	 wevt_template );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -503,10 +503,10 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( template != NULL )
+	if( wevt_template != NULL )
 	{
 		libfwevt_template_free(
-		 &template,
+		 &wevt_template,
 		 NULL );
 	}
 	return( 0 );
