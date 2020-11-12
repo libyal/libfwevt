@@ -1,4 +1,4 @@
-.Dd April  5, 2019
+.Dd November 12, 2020
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -149,9 +149,9 @@ Provider functions
 .Ft int
 .Fn libfwevt_provider_get_number_of_templates "libfwevt_provider_t *provider" "int *number_of_templates" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_provider_get_template "libfwevt_provider_t *provider" "int template_index" "libfwevt_template_t **template" "libfwevt_error_t **error"
+.Fn libfwevt_provider_get_template "libfwevt_provider_t *provider" "int template_index" "libfwevt_template_t **wevt_template" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_provider_get_template_by_offset "libfwevt_provider_t *provider" "uint32_t offset" "libfwevt_template_t **template" "libfwevt_error_t **error"
+.Fn libfwevt_provider_get_template_by_offset "libfwevt_provider_t *provider" "uint32_t offset" "libfwevt_template_t **wevt_template" "libfwevt_error_t **error"
 .Pp
 Task functions
 .Ft int
@@ -163,25 +163,25 @@ Task functions
 .Pp
 Template functions
 .Ft int
-.Fn libfwevt_template_initialize "libfwevt_template_t **template" "libfwevt_error_t **error"
+.Fn libfwevt_template_initialize "libfwevt_template_t **wevt_template" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_free "libfwevt_template_t **template" "libfwevt_error_t **error"
+.Fn libfwevt_template_free "libfwevt_template_t **wevt_template" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_read "libfwevt_template_t *template" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
+.Fn libfwevt_template_read "libfwevt_template_t *wevt_template" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_read_xml_document "libfwevt_template_t *template" "libfwevt_xml_document_t *xml_document" "libfwevt_error_t **error"
+.Fn libfwevt_template_read_xml_document "libfwevt_template_t *wevt_template" "libfwevt_xml_document_t *xml_document" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_set_ascii_codepage "libfwevt_template_t *template" "int ascii_codepage" "libfwevt_error_t **error"
+.Fn libfwevt_template_set_ascii_codepage "libfwevt_template_t *wevt_template" "int ascii_codepage" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_get_data "libfwevt_template_t *template" "const uint8_t **data" "size_t *data_size" "libfwevt_error_t **error"
+.Fn libfwevt_template_get_data "libfwevt_template_t *wevt_template" "const uint8_t **data" "size_t *data_size" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_set_data "libfwevt_template_t *template" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
+.Fn libfwevt_template_set_data "libfwevt_template_t *wevt_template" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_get_offset "libfwevt_template_t *template" "uint32_t *offset" "libfwevt_error_t **error"
+.Fn libfwevt_template_get_offset "libfwevt_template_t *wevt_template" "uint32_t *offset" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_set_offset "libfwevt_template_t *template" "uint32_t offset" "libfwevt_error_t **error"
+.Fn libfwevt_template_set_offset "libfwevt_template_t *wevt_template" "uint32_t offset" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_get_size "libfwevt_template_t *template" "uint32_t *size" "libfwevt_error_t **error"
+.Fn libfwevt_template_get_size "libfwevt_template_t *wevt_template" "uint32_t *size" "libfwevt_error_t **error"
 .Pp
 XML document functions
 .Ft int

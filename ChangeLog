@@ -4,31 +4,7 @@ TODO
   - change code to use libfwsi_debug_print_property_storage_value
   - change code to use libfwsi_debug_print_string_value
 
-20161107
-* code clean up
-
-20160103
-* 2016 update
-* Worked on format support
-
-20150104
-* 2015 update
-
-20141120
-* code clean up
-
-20141026
-* worked on stand-alone version
-
-20141020
-* worked on stand-alone version
-
-20141018
-* changes for deployment
-
-20141012
-* worked on utility scripts
-
 20140928
+* see `git log' for more recent change log
 * Created stand-alone version of version used in libevt
 
