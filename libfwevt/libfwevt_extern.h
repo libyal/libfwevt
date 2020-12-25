@@ -30,7 +30,7 @@
 
 #include <libfwevt/extern.h>
 
-#if defined( __CYGWIN__ )
+#if defined( __CYGWIN__ ) || defined( __MINGW32__ )
 #define LIBFWEVT_EXTERN_VARIABLE	extern
 #else
 #define LIBFWEVT_EXTERN_VARIABLE	LIBFWEVT_EXTERN
