@@ -288,11 +288,13 @@ int libfwevt_xml_document_get_utf16_xml_string(
      libcerror_error_t **error );
 
 #if defined( HAVE_DEBUG_OUTPUT )
+
 LIBFWEVT_EXTERN \
 int libfwevt_xml_document_debug_print(
      libfwevt_xml_document_t *xml_document,
      libcerror_error_t **error );
-#endif
+
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
 #if defined( __cplusplus )
 }

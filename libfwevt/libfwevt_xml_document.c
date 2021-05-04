@@ -353,7 +353,7 @@ int libfwevt_xml_document_read_with_template_values(
 		 "%s: invalid binary XML document data size value exceeds maximum.",
 		 function );
 
-		goto on_error;
+		return( -1 );
 	}
 	if( binary_data_offset >= binary_data_size )
 	{
@@ -364,7 +364,7 @@ int libfwevt_xml_document_read_with_template_values(
 		 "%s: invalid binary data offset value out of bounds.",
 		 function );
 
-		goto on_error;
+		return( -1 );
 	}
 	supported_flags = LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS
 	                | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS;
@@ -695,8 +695,20 @@ int libfwevt_xml_document_read_attribute(
 		}
 		else
 		{
+			if( ( xml_document_data_size < 4 )
+			 || ( xml_document_data_offset >= ( xml_document_data_size - 4 ) ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid binary XML document data size value too small.",
+				 function );
+
+				goto on_error;
+			}
 			byte_stream_copy_to_uint32_little_endian(
-			 &( xml_document_data[ 1 ] ),
+			 &( xml_document_data[ xml_document_data_offset ] ),
 			 attribute_name_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -1413,7 +1425,7 @@ int libfwevt_xml_document_read_character_reference(
 		 "%s: unable to set value type.",
 		 function );
 
-		return( -1 );
+		goto on_error;
 	}
 	/* Make sure the character value data is in UTF-16 litte-endian
 	 */
@@ -1651,7 +1663,7 @@ int libfwevt_xml_document_read_element(
 		 "%s: invalid binary XML document data size value too small.",
 		 function );
 
-		return( -1 );
+		goto on_error;
 	}
 	if( libfwevt_xml_token_initialize(
 	     &xml_sub_token,
@@ -1721,18 +1733,29 @@ int libfwevt_xml_document_read_element(
 			 function,
 			 element_size );
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 		xml_document_data_offset = element_size_offset + 4;
 
 		/* The first 5 or 7 bytes are not included in the element size
 		 */
-
 		if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
 		{
 			element_name_offset = (uint32_t) ( binary_data_offset + xml_document_data_offset );
 		}
 		else
 		{
+			if( xml_document_data_offset >= ( xml_document_data_size - 4 ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid binary XML document data size value too small.",
+				 function );
+
+				goto on_error;
+			}
 			byte_stream_copy_to_uint32_little_endian(
 			 &( xml_document_data[ xml_document_data_offset ] ),
 			 element_name_offset );
@@ -1812,7 +1835,7 @@ int libfwevt_xml_document_read_element(
 		}
 		if( ( xml_token->type & LIBFWEVT_XML_TOKEN_FLAG_HAS_MORE_DATA ) != 0 )
 		{
-			if( ( binary_data_offset + xml_document_data_offset + 4 ) > binary_data_size )
+			if( xml_document_data_offset >= ( xml_document_data_size - 4 ) )
 			{
 				libcerror_error_set(
 				 error,
@@ -1850,7 +1873,8 @@ int libfwevt_xml_document_read_element(
 				libcnotify_printf(
 				 "\n" );
 			}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 			xml_document_data_offset += 4;
 			element_size             -= 4;
 
@@ -1937,9 +1961,9 @@ int libfwevt_xml_document_read_element(
 			 function,
 			 xml_token->type );
 
-			return( -1 );
+			goto on_error;
 		}
-		if( ( binary_data_offset + xml_document_data_offset + 1 ) > binary_data_size )
+		if( xml_document_data_offset >= xml_document_data_size )
 		{
 			libcerror_error_set(
 			 error,
@@ -2027,7 +2051,7 @@ int libfwevt_xml_document_read_element(
 
 					case LIBFWEVT_XML_TOKEN_CLOSE_EMPTY_ELEMENT_TAG:
 					case LIBFWEVT_XML_TOKEN_END_ELEMENT_TAG:
-						if( ( binary_data_offset + xml_document_data_offset + 1 ) > binary_data_size )
+						if( xml_document_data_offset >= xml_document_data_size )
 						{
 							libcerror_error_set(
 							 error,
@@ -2430,8 +2454,9 @@ int libfwevt_xml_document_read_entity_reference(
 	const uint8_t *xml_document_data   = NULL;
 	static char *function              = "libfwevt_xml_document_read_entity_reference";
 	size_t additional_value_size       = 0;
-	size_t utf8_string_size            = 0;
 	size_t trailing_data_size          = 0;
+	size_t utf8_string_size            = 0;
+	size_t xml_document_data_offset    = 0;
 	size_t xml_document_data_size      = 0;
 	uint32_t entity_name_offset        = 0;
 	uint32_t entity_name_size          = 0;
@@ -2555,17 +2580,29 @@ int libfwevt_xml_document_read_entity_reference(
 		 xml_document_data[ 0 ] );
 	}
 #endif
-	xml_token->size     = 1;
-	binary_data_offset += 1;
+	xml_token->size          = 1;
+	xml_document_data_offset = 1;
 
 	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
 	{
-		entity_name_offset = (uint32_t) ( binary_data_offset + 1 );
+		entity_name_offset = (uint32_t) ( binary_data_offset + xml_document_data_offset );
 	}
 	else
 	{
+		if( ( xml_document_data_size < 4 )
+		 || ( xml_document_data_offset >= ( xml_document_data_size - 4 ) ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid binary XML document data size value too small.",
+			 function );
+
+			goto on_error;
+		}
 		byte_stream_copy_to_uint32_little_endian(
-		 &( xml_document_data[ 1 ] ),
+		 &( xml_document_data[ xml_document_data_offset ] ),
 		 entity_name_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -2577,8 +2614,8 @@ int libfwevt_xml_document_read_entity_reference(
 			 entity_name_offset );
 		}
 #endif
-		xml_token->size    += 4;
-		binary_data_offset += 4;
+		xml_token->size          += 4;
+		xml_document_data_offset += 4;
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -2587,7 +2624,7 @@ int libfwevt_xml_document_read_entity_reference(
 		 "\n" );
 	}
 #endif
-	if( entity_name_offset > binary_data_offset )
+	if( entity_name_offset > ( binary_data_offset + xml_document_data_offset ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -2598,9 +2635,9 @@ int libfwevt_xml_document_read_entity_reference(
 
 		goto on_error;
 	}
-	if( binary_data_offset < entity_name_offset )
+	if( ( binary_data_offset + xml_document_data_offset ) < entity_name_offset )
 	{
-		trailing_data_size = entity_name_offset - binary_data_offset;
+		trailing_data_size = entity_name_offset - ( binary_data_offset + xml_document_data_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
@@ -2609,13 +2646,13 @@ int libfwevt_xml_document_read_entity_reference(
 			 "%s: trailing data:\n",
 			 function );
 			libcnotify_print_data(
-			 &( xml_document_data[ 5 ] ),
+			 &( xml_document_data[ xml_document_data_offset ] ),
 			 trailing_data_size,
 			 0 );
 		}
 #endif
-		xml_token->size    += trailing_data_size;
-		binary_data_offset += trailing_data_size;
+		xml_token->size          += trailing_data_size;
+		xml_document_data_offset += trailing_data_size;
 	}
 	if( libfwevt_xml_tag_initialize(
 	     &entity_xml_tag,
@@ -2649,7 +2686,7 @@ int libfwevt_xml_document_read_entity_reference(
 
 		goto on_error;
 	}
-	if( binary_data_offset == entity_name_offset )
+	if( ( binary_data_offset + xml_document_data_offset ) == entity_name_offset )
 	{
 		xml_token->size += entity_name_size;
 	}
@@ -2841,7 +2878,8 @@ int libfwevt_xml_document_read_entity_reference(
 			goto on_error;
 		}
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( libfwevt_xml_tag_free(
 	     &entity_xml_tag,
 	     error ) != 1 )
@@ -3189,7 +3227,8 @@ int libfwevt_xml_document_read_fragment_header(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 /* TODO check values */
 	xml_token->size = 4;
 	
@@ -3566,7 +3605,8 @@ int libfwevt_xml_document_read_normal_substitution(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	xml_token->size = 4;
 
 	result = libfwevt_xml_document_substitute_template_value(
@@ -3743,7 +3783,8 @@ int libfwevt_xml_document_read_optional_substitution(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	xml_token->size = 4;
 
 	result = libfwevt_xml_document_substitute_template_value(
@@ -4007,12 +4048,13 @@ int libfwevt_xml_document_read_pi_target(
      libfwevt_xml_tag_t *xml_tag,
      libcerror_error_t **error )
 {
-	libfwevt_xml_token_t *xml_sub_token = NULL;
 	libfwevt_xml_tag_t *pi_xml_tag      = NULL;
+	libfwevt_xml_token_t *xml_sub_token = NULL;
 	const uint8_t *xml_document_data    = NULL;
 	static char *function               = "libfwevt_xml_document_read_pi_target";
 	size_t additional_value_size        = 0;
 	size_t trailing_data_size           = 0;
+	size_t xml_document_data_offset     = 0;
 	size_t xml_document_data_size       = 0;
 	uint32_t pi_name_offset             = 0;
 	uint32_t pi_name_size               = 0;
@@ -4138,7 +4180,7 @@ int libfwevt_xml_document_read_pi_target(
 		 "%s: unable to set XML tag type.",
 		 function );
 
-		return( -1 );
+		goto on_error;
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -4161,14 +4203,31 @@ int libfwevt_xml_document_read_pi_target(
 		 xml_document_data[ 0 ] );
 	}
 #endif
+	xml_token->size          = 1;
+	xml_document_data_offset = 1;
+
 	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
 	{
-		pi_name_offset = (uint32_t) ( binary_data_offset + 1 );
+		/* TODO double check if this needs to be binary_data_offset + xml_document_data_offset + 1
+		 */
+		pi_name_offset = (uint32_t) ( binary_data_offset + xml_document_data_offset );
 	}
 	else
 	{
+		if( ( xml_document_data_size < 4 )
+		 || ( xml_document_data_offset >= ( xml_document_data_size - 4 ) ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid binary XML document data size value too small.",
+			 function );
+
+			goto on_error;
+		}
 		byte_stream_copy_to_uint32_little_endian(
-		 &( xml_document_data[ 1 ] ),
+		 &( xml_document_data[ xml_document_data_offset ] ),
 		 pi_name_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -4180,6 +4239,8 @@ int libfwevt_xml_document_read_pi_target(
 			 pi_name_offset );
 		}
 #endif
+		xml_token->size           = 4;
+		xml_document_data_offset += 4;
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -4188,10 +4249,14 @@ int libfwevt_xml_document_read_pi_target(
 		 "\n" );
 	}
 #endif
-	xml_token->size     = 5;
-	binary_data_offset += 5;
 
-	if( pi_name_offset > binary_data_offset )
+	/* TODO double check setting this to 5 but this is currently needed
+	 * likely because of additional_value_size when LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS is not set
+	 */
+	xml_token->size          = 5;
+	xml_document_data_offset = 5;
+
+	if( pi_name_offset > ( binary_data_offset + xml_document_data_offset ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -4200,11 +4265,11 @@ int libfwevt_xml_document_read_pi_target(
 		 "%s: invalid PI name offset value out of bounds.",
 		 function );
 
-		return( -1 );
+		goto on_error;
 	}
-	if( binary_data_offset < pi_name_offset )
+	if( ( binary_data_offset + xml_document_data_offset ) < pi_name_offset )
 	{
-		trailing_data_size = pi_name_offset - binary_data_offset;
+		trailing_data_size = pi_name_offset - ( binary_data_offset + xml_document_data_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
@@ -4218,8 +4283,8 @@ int libfwevt_xml_document_read_pi_target(
 			 0 );
 		}
 #endif
-		xml_token->size    += trailing_data_size;
-		binary_data_offset += trailing_data_size;
+		xml_token->size          += trailing_data_size;
+		xml_document_data_offset += trailing_data_size;
 	}
 	if( libfwevt_xml_document_read_name(
 	     internal_xml_document,
@@ -4240,10 +4305,10 @@ int libfwevt_xml_document_read_pi_target(
 
 		goto on_error;
 	}
-	if( binary_data_offset == pi_name_offset )
+	if( ( binary_data_offset + xml_document_data_offset ) == pi_name_offset )
 	{
-		xml_token->size    += pi_name_size;
-		binary_data_offset += pi_name_size;
+		xml_token->size          += pi_name_size;
+		xml_document_data_offset += pi_name_size;
 	}
 	if( libfwevt_xml_token_initialize(
 	     &xml_sub_token,
@@ -4262,7 +4327,7 @@ int libfwevt_xml_document_read_pi_target(
 	     xml_sub_token,
 	     binary_data,
 	     binary_data_size,
-	     binary_data_offset,
+	     binary_data_offset + xml_document_data_offset,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -4279,7 +4344,7 @@ int libfwevt_xml_document_read_pi_target(
 	     xml_sub_token,
 	     binary_data,
 	     binary_data_size,
-	     binary_data_offset,
+	     binary_data_offset + xml_document_data_offset,
 	     pi_xml_tag,
 	     error ) != 1 )
 	{
@@ -4800,7 +4865,7 @@ int libfwevt_xml_document_read_template_instance(
 		 function,
 		 xml_token->type );
 
-		return( -1 );
+		goto on_error;
 	}
 	if( ( binary_data_offset + 1 ) > binary_data_size )
 	{
@@ -6437,5 +6502,5 @@ int libfwevt_xml_document_debug_print(
 	return( 1 );
 }
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 

@@ -15,6 +15,7 @@ SUBDIRS = \
 	po \
 	manuals \
 	tests \
+	ossfuzz \
 	msvscpp
 
 DPKG_FILES = \
@@ -95,4 +96,5 @@ splint:
 	(cd $(srcdir)/libfwevt && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
+	(cd $(srcdir)/ossfuzz && $(MAKE) splint $(AM_MAKEFLAGS))
 
