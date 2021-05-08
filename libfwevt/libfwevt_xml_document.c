@@ -418,7 +418,8 @@ int libfwevt_xml_document_read_with_template_values(
 		switch( xml_token->type & 0xbf )
 		{
 			case LIBFWEVT_XML_TOKEN_END_OF_FILE:
-				if( ( binary_data_offset + 1 ) > binary_data_size )
+				if( ( binary_data_size < 1 )
+				 || ( binary_data_offset >= ( binary_data_size - 1 ) ) )
 				{
 					libcerror_error_set(
 					 error,
@@ -432,6 +433,11 @@ int libfwevt_xml_document_read_with_template_values(
 #if defined( HAVE_DEBUG_OUTPUT )
 				if( libcnotify_verbose != 0 )
 				{
+					libcnotify_printf(
+					 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+					 function,
+					 binary_data_offset );
+
 					libcnotify_printf(
 					 "%s: end of file data:\n",
 					 function );
@@ -468,6 +474,7 @@ int libfwevt_xml_document_read_with_template_values(
 				     flags,
 				     template_values_array,
 				     internal_xml_document->root_xml_tag,
+				     0,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -538,6 +545,7 @@ int libfwevt_xml_document_read_attribute(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
+     int recursion_depth,
      libcerror_error_t **error )
 {
 	libfwevt_xml_token_t *xml_sub_token   = NULL;
@@ -620,6 +628,18 @@ int libfwevt_xml_document_read_attribute(
 
 		return( -1 );
 	}
+	if( ( recursion_depth < 0 )
+	 || ( recursion_depth > LIBFWEVT_XML_DOCUMENT_RECURSION_DEPTH ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid recursion depth value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
 	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
 	{
 		additional_value_size = 4;
@@ -669,6 +689,11 @@ int libfwevt_xml_document_read_attribute(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
+			libcnotify_printf(
+			 "%s: data offset\t\t\t: 0x%08" PRIzx "\n",
+			 function,
+			 binary_data_offset );
+
 			libcnotify_printf(
 			 "%s: attribute data:\n",
 			 function );
@@ -747,6 +772,11 @@ int libfwevt_xml_document_read_attribute(
 #if defined( HAVE_DEBUG_OUTPUT )
 			if( libcnotify_verbose != 0 )
 			{
+				libcnotify_printf(
+				 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+				 function,
+				 binary_data_offset + xml_document_data_offset );
+
 				libcnotify_printf(
 				 "%s: trailing data:\n",
 				 function );
@@ -845,6 +875,7 @@ int libfwevt_xml_document_read_attribute(
 				          template_values_array,
 				          &template_value_offset,
 				          attribute_xml_tag,
+				          recursion_depth + 1,
 				          error );
 
 				if( result == -1 )
@@ -872,6 +903,7 @@ int libfwevt_xml_document_read_attribute(
 					  template_values_array,
 					  &template_value_offset,
 					  attribute_xml_tag,
+				          recursion_depth + 1,
 					  error );
 
 				if( result == -1 )
@@ -1096,6 +1128,11 @@ int libfwevt_xml_document_read_cdata_section(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: cdata section data:\n",
 		 function );
 		libcnotify_print_data(
@@ -1127,7 +1164,8 @@ int libfwevt_xml_document_read_cdata_section(
 
 	value_data_size *= 2;
 
-	if( ( binary_data_offset + value_data_size ) > binary_data_size )
+	if( ( value_data_size > binary_data_size )
+	 || ( binary_data_offset >= ( binary_data_size - value_data_size ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1141,6 +1179,11 @@ int libfwevt_xml_document_read_cdata_section(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: value data:\n",
 		 function );
@@ -1325,6 +1368,11 @@ int libfwevt_xml_document_read_character_reference(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: character reference data:\n",
 		 function );
@@ -1550,6 +1598,7 @@ int libfwevt_xml_document_read_element(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
+     int recursion_depth,
      libcerror_error_t **error )
 {
 	libfwevt_xml_token_t *xml_sub_token = NULL;
@@ -1639,6 +1688,18 @@ int libfwevt_xml_document_read_element(
 
 		return( -1 );
 	}
+	if( ( recursion_depth < 0 )
+	 || ( recursion_depth > LIBFWEVT_XML_DOCUMENT_RECURSION_DEPTH ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid recursion depth value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
 	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
 	{
 		additional_value_size = 4;
@@ -1696,6 +1757,11 @@ int libfwevt_xml_document_read_element(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
+			libcnotify_printf(
+			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 function,
+			 binary_data_offset );
+
 			libcnotify_printf(
 			 "%s: element data:\n",
 			 function );
@@ -1798,6 +1864,11 @@ int libfwevt_xml_document_read_element(
 			if( libcnotify_verbose != 0 )
 			{
 				libcnotify_printf(
+				 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+				 function,
+				 binary_data_offset + xml_document_data_offset );
+
+				libcnotify_printf(
 				 "%s: trailing data:\n",
 				 function );
 				libcnotify_print_data(
@@ -1849,6 +1920,11 @@ int libfwevt_xml_document_read_element(
 #if defined( HAVE_DEBUG_OUTPUT )
 			if( libcnotify_verbose != 0 )
 			{
+				libcnotify_printf(
+				 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+				 function,
+				 binary_data_offset + xml_document_data_offset );
+
 				libcnotify_printf(
 				 "%s: attribute list data:\n",
 				 function );
@@ -1906,6 +1982,7 @@ int libfwevt_xml_document_read_element(
 				     flags,
 				     template_values_array,
 				     element_xml_tag,
+				     recursion_depth + 1,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -1978,6 +2055,11 @@ int libfwevt_xml_document_read_element(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
+			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 function,
+			 binary_data_offset + xml_document_data_offset );
+
+			libcnotify_printf(
 			 "%s: close element tag data:\n",
 			 function );
 			libcnotify_print_data(
@@ -2036,6 +2118,7 @@ int libfwevt_xml_document_read_element(
 						     flags,
 						     template_values_array,
 						     element_xml_tag,
+						     recursion_depth + 1,
 						     error ) != 1 )
 						{
 							libcerror_error_set(
@@ -2065,6 +2148,11 @@ int libfwevt_xml_document_read_element(
 #if defined( HAVE_DEBUG_OUTPUT )
 						if( libcnotify_verbose != 0 )
 						{
+							libcnotify_printf(
+							 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+							 function,
+							 binary_data_offset + xml_document_data_offset );
+
 							libcnotify_printf(
 							 "%s: end element tag data:\n",
 							 function );
@@ -2265,6 +2353,7 @@ int libfwevt_xml_document_read_element(
 							  template_values_array,
 							  &template_value_offset,
 							  element_xml_tag,
+							  recursion_depth + 1,
 							  error );
 
 						if( result == -1 )
@@ -2292,6 +2381,7 @@ int libfwevt_xml_document_read_element(
 							  template_values_array,
 							  &template_value_offset,
 							  element_xml_tag,
+							  recursion_depth + 1,
 							  error );
 
 						if( result == -1 )
@@ -2563,6 +2653,11 @@ int libfwevt_xml_document_read_entity_reference(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: entity reference data:\n",
 		 function );
 		libcnotify_print_data(
@@ -2642,6 +2737,11 @@ int libfwevt_xml_document_read_entity_reference(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
+			libcnotify_printf(
+			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 function,
+			 binary_data_offset + xml_document_data_offset );
+
 			libcnotify_printf(
 			 "%s: trailing data:\n",
 			 function );
@@ -2928,6 +3028,7 @@ int libfwevt_xml_document_read_fragment(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
+     int recursion_depth,
      libcerror_error_t **error )
 {
 	libfwevt_xml_token_t *xml_sub_token = NULL;
@@ -2951,6 +3052,18 @@ int libfwevt_xml_document_read_fragment(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid binary XML token.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( recursion_depth < 0 )
+	 || ( recursion_depth > LIBFWEVT_XML_DOCUMENT_RECURSION_DEPTH ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid recursion depth value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -3016,6 +3129,7 @@ int libfwevt_xml_document_read_fragment(
 			     flags,
 			     template_values_array,
 			     xml_tag,
+			     recursion_depth + 1,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -3039,6 +3153,7 @@ int libfwevt_xml_document_read_fragment(
 			     ascii_codepage,
 			     flags,
 			     xml_tag,
+			     recursion_depth + 1,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -3192,6 +3307,11 @@ int libfwevt_xml_document_read_fragment_header(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: fragment header data:\n",
 		 function );
@@ -3347,6 +3467,11 @@ int libfwevt_xml_document_read_name(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t\t\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: name header data:\n",
 		 function );
 		libcnotify_print_data(
@@ -3472,6 +3597,7 @@ int libfwevt_xml_document_read_normal_substitution(
      libcdata_array_t *template_values_array,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int recursion_depth,
      libcerror_error_t **error )
 {
 	const uint8_t *xml_document_data = NULL;
@@ -3566,6 +3692,11 @@ int libfwevt_xml_document_read_normal_substitution(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: normal substitution data:\n",
 		 function );
 		libcnotify_print_data(
@@ -3620,6 +3751,7 @@ int libfwevt_xml_document_read_normal_substitution(
 	          template_value_type,
 	          template_value_offset,
 	          xml_tag,
+	          recursion_depth,
 	          error );
 
 	if( result != 1 )
@@ -3650,6 +3782,7 @@ int libfwevt_xml_document_read_optional_substitution(
      libcdata_array_t *template_values_array,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int recursion_depth,
      libcerror_error_t **error )
 {
 	const uint8_t *xml_document_data = NULL;
@@ -3744,6 +3877,11 @@ int libfwevt_xml_document_read_optional_substitution(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: optional substitution data:\n",
 		 function );
 		libcnotify_print_data(
@@ -3798,6 +3936,7 @@ int libfwevt_xml_document_read_optional_substitution(
 	          template_value_type,
 	          template_value_offset,
 	          xml_tag,
+	          recursion_depth,
 	          error );
 
 	if( result == -1 )
@@ -3927,6 +4066,11 @@ int libfwevt_xml_document_read_pi_data(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: PI data:\n",
 		 function );
 		libcnotify_print_data(
@@ -3958,7 +4102,8 @@ int libfwevt_xml_document_read_pi_data(
 
 	value_data_size *= 2;
 
-	if( ( binary_data_offset + value_data_size ) > binary_data_size )
+	if( ( value_data_size > binary_data_size )
+	 || ( binary_data_offset >= ( binary_data_size - value_data_size ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -3972,6 +4117,11 @@ int libfwevt_xml_document_read_pi_data(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: value data:\n",
 		 function );
@@ -4186,6 +4336,11 @@ int libfwevt_xml_document_read_pi_target(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: PI target data:\n",
 		 function );
 		libcnotify_print_data(
@@ -4274,6 +4429,11 @@ int libfwevt_xml_document_read_pi_target(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
+			libcnotify_printf(
+			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 function,
+			 binary_data_offset + 5 );
+
 			libcnotify_printf(
 			 "%s: trailing data:\n",
 			 function );
@@ -4418,6 +4578,7 @@ int libfwevt_xml_document_read_template_instance(
      int ascii_codepage,
      uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
+     int recursion_depth,
      libcerror_error_t **error )
 {
 	libcdata_array_t *template_values_array  = NULL;
@@ -4511,7 +4672,8 @@ int libfwevt_xml_document_read_template_instance(
 	xml_document_data      = &( binary_data[ binary_data_offset ] );
 	xml_document_data_size = binary_data_size - binary_data_offset;
 
-	if( ( binary_data_offset + 10 ) >= binary_data_size )
+	if( ( binary_data_size < 10 )
+	 || ( binary_data_offset >= ( binary_data_size - 10 ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -4525,6 +4687,11 @@ int libfwevt_xml_document_read_template_instance(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: template instance header data:\n",
 		 function );
@@ -4567,7 +4734,8 @@ int libfwevt_xml_document_read_template_instance(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	xml_token->size     = 10;
 	binary_data_offset += 10;
 
@@ -4589,6 +4757,11 @@ int libfwevt_xml_document_read_template_instance(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
+			libcnotify_printf(
+			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 function,
+			 binary_data_offset );
+
 			libcnotify_printf(
 			 "%s: trailing data:\n",
 			 function );
@@ -4710,7 +4883,8 @@ int libfwevt_xml_document_read_template_instance(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( template_data_offset == binary_data_offset )
 	{
 		template_values_data_offset = 24 + template_definition_data_size;
@@ -4826,6 +5000,7 @@ int libfwevt_xml_document_read_template_instance(
 	     flags,
 	     template_values_array,
 	     xml_tag,
+	     recursion_depth,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -4867,7 +5042,8 @@ int libfwevt_xml_document_read_template_instance(
 
 		goto on_error;
 	}
-	if( ( binary_data_offset + 1 ) > binary_data_size )
+	if( ( binary_data_size < 1 )
+	 || ( binary_data_offset >= ( binary_data_size - 1 ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -4881,6 +5057,11 @@ int libfwevt_xml_document_read_template_instance(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: end of file data:\n",
 		 function );
@@ -5016,13 +5197,14 @@ int libfwevt_xml_document_read_template_instance_values(
 
 		return( -1 );
 	}
-	if( ( binary_data_offset + 4 ) >= binary_data_size )
+	if( ( binary_data_size < 4 )
+	 || ( binary_data_offset >= ( binary_data_size - 4 ) ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid binary data offset value out of bounds.",
+		 "%s: invalid binary data size value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -5041,6 +5223,11 @@ int libfwevt_xml_document_read_template_instance_values(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: template instance data:\n",
 		 function );
@@ -5071,13 +5258,14 @@ int libfwevt_xml_document_read_template_instance_values(
 
 	template_value_definitions_data_size = number_of_template_values * 4;
 
-	if( ( binary_data_offset + template_value_definitions_data_size ) >= binary_data_size )
+	if( ( template_value_definitions_data_size > binary_data_size )
+	 || ( binary_data_offset >= ( binary_data_size - template_value_definitions_data_size ) ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid binary data offset value out of bounds.",
+		 "%s: invalid template value definitions data size value out of bounds.",
 		 function );
 
 		goto on_error;
@@ -5085,6 +5273,11 @@ int libfwevt_xml_document_read_template_instance_values(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: template instance value descriptor data:\n",
 		 function );
@@ -5146,7 +5339,8 @@ int libfwevt_xml_document_read_template_instance_values(
 			libcnotify_printf(
 			 "\n" );
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 		*template_values_size += 4;
 		binary_data_offset    += 4;
 
@@ -5223,13 +5417,14 @@ int libfwevt_xml_document_read_template_instance_values(
 		}
 		template_value = NULL;
 	}
-	if( ( binary_data_offset + template_values_data_size ) >= binary_data_size )
+	if( ( template_values_data_size > binary_data_size )
+	 || ( binary_data_offset >= ( binary_data_size - template_values_data_size ) ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid binary data offset value out of bounds.",
+		 "%s: invalid template values data size value out of bounds.",
 		 function );
 
 		goto on_error;
@@ -5238,12 +5433,17 @@ int libfwevt_xml_document_read_template_instance_values(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: values data:\n",
 		 function );
 		libcnotify_print_data(
 		 &( binary_data[ binary_data_offset ] ),
 		 template_values_data_size,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 	for( template_value_index = 0;
@@ -5283,6 +5483,11 @@ int libfwevt_xml_document_read_template_instance_values(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
+			libcnotify_printf(
+			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 function,
+			 binary_data_offset );
+
 			libcnotify_printf(
 			 "%s: value: %02" PRIu32 " data:\n",
 			 function,
@@ -5441,6 +5646,11 @@ int libfwevt_xml_document_read_value(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
+		libcnotify_printf(
 		 "%s: value data:\n",
 		 function );
 		libcnotify_print_data(
@@ -5506,7 +5716,8 @@ int libfwevt_xml_document_read_value(
 
 			return( -1 );
 	}
-	if( ( binary_data_offset + value_data_size ) > binary_data_size )
+	if( ( value_data_size > binary_data_size )
+	 || ( binary_data_offset >= ( binary_data_size - value_data_size ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -5520,6 +5731,11 @@ int libfwevt_xml_document_read_value(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		libcnotify_printf(
+		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 function,
+		 binary_data_offset );
+
 		libcnotify_printf(
 		 "%s: value data:\n",
 		 function );
@@ -5599,6 +5815,7 @@ int libfwevt_xml_document_substitute_template_value(
      uint8_t template_value_type,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int recursion_depth,
      libcerror_error_t **error )
 {
 	libfwevt_xml_template_value_t *template_value = NULL;
@@ -5606,6 +5823,7 @@ int libfwevt_xml_document_substitute_template_value(
 	const uint8_t *template_value_data            = NULL;
 	static char *function                         = "libfwevt_xml_document_substitute_template_value";
 	size_t binary_data_offset                     = 0;
+	size_t safe_template_value_offset             = 0;
 	size_t template_value_data_size               = 0;
 	size_t template_value_size                    = 0;
 	ssize_t read_count                            = 0;
@@ -5613,8 +5831,8 @@ int libfwevt_xml_document_substitute_template_value(
 	uint16_t substitution_value_data_size         = 0;
 	uint8_t substitution_value_type               = 0;
 	uint8_t template_value_flags                  = 0;
-	int value_type                                = 0;
 	int value_encoding                            = 0;
+	int value_type                                = 0;
 
 	if( internal_xml_document == NULL )
 	{
@@ -5645,6 +5863,18 @@ int libfwevt_xml_document_substitute_template_value(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid XML tag.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( recursion_depth < 0 )
+	 || ( recursion_depth > LIBFWEVT_XML_DOCUMENT_RECURSION_DEPTH ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid recursion depth value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -5732,13 +5962,19 @@ int libfwevt_xml_document_substitute_template_value(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: value: %02" PRIu32 " size\t: %" PRIu16 "\n",
+		 "%s: value: %02" PRIu32 " offset\t: 0x%08" PRIzx "\n",
+		 function,
+		 template_value_index,
+		 binary_data_offset );
+
+		libcnotify_printf(
+		 "%s: value: %02" PRIu32 " size\t\t: %" PRIu16 "\n",
 		 function,
 		 template_value_index,
 		 substitution_value_data_size );
 
 		libcnotify_printf(
-		 "%s: value: %02" PRIu32 " type\t: 0x%02" PRIx8 " (",
+		 "%s: value: %02" PRIu32 " type\t\t: 0x%02" PRIx8 " (",
 		 function,
 		 template_value_index,
 		 substitution_value_type );
@@ -5754,16 +5990,19 @@ int libfwevt_xml_document_substitute_template_value(
 		libcnotify_print_data(
 		 &( binary_data[ binary_data_offset ] ),
 		 substitution_value_data_size,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	/* No substitution
 	 */
 	if( substitution_value_type == LIBFWEVT_VALUE_TYPE_NULL )
 	{
+		*template_value_offset = 0;
+
 		return( 0 );
 	}
 #if defined( HAVE_VERBOSE_OUTPUT )
@@ -5786,7 +6025,8 @@ int libfwevt_xml_document_substitute_template_value(
 			}
 		}
 	}
-#endif
+#endif /* defined( HAVE_VERBOSE_OUTPUT ) */
+
 	if( substitution_value_type == LIBFWEVT_VALUE_TYPE_BINARY_XML )
 	{
 		if( libfwevt_xml_token_initialize(
@@ -5831,6 +6071,7 @@ int libfwevt_xml_document_substitute_template_value(
 				     flags & ~( LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS ),
 				     template_values_array,
 				     xml_tag,
+				     recursion_depth + 1,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -5855,6 +6096,7 @@ int libfwevt_xml_document_substitute_template_value(
 				     flags,
 				     NULL,
 				     xml_tag,
+				     recursion_depth + 1,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -5878,6 +6120,7 @@ int libfwevt_xml_document_substitute_template_value(
 				     ascii_codepage,
 				     flags,
 				     xml_tag,
+				     recursion_depth + 1,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -6144,9 +6387,11 @@ int libfwevt_xml_document_substitute_template_value(
 		}
 		if( ( substitution_value_type & LIBFWEVT_VALUE_TYPE_ARRAY ) != 0 )
 		{
+			safe_template_value_offset = *template_value_offset;
+
 			if( substitution_value_data_size > 0 )
 			{
-				if( *template_value_offset >= (size_t) substitution_value_data_size )
+				if( safe_template_value_offset >= (size_t) substitution_value_data_size )
 				{
 					libcerror_error_set(
 					 error,
@@ -6157,8 +6402,8 @@ int libfwevt_xml_document_substitute_template_value(
 
 					goto on_error;
 				}
-				template_value_data      = &( binary_data[ binary_data_offset + *template_value_offset ] );
-				template_value_data_size = substitution_value_data_size - (uint16_t) *template_value_offset;
+				template_value_data      = &( binary_data[ binary_data_offset + safe_template_value_offset ] );
+				template_value_data_size = substitution_value_data_size - (uint16_t) safe_template_value_offset;
 			}
 			if( ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_BYTE_STREAM )
 			 || ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_UTF16 ) )
@@ -6181,7 +6426,7 @@ int libfwevt_xml_document_substitute_template_value(
 
 					goto on_error;
 				}
-				*template_value_offset += read_count;
+				safe_template_value_offset += read_count;
 			}
 			else
 			{
@@ -6212,11 +6457,11 @@ int libfwevt_xml_document_substitute_template_value(
 
 					goto on_error;
 				}
-				*template_value_offset += template_value_size;
+				safe_template_value_offset += template_value_size;
 			}
-			if( *template_value_offset == substitution_value_data_size )
+			if( safe_template_value_offset == substitution_value_data_size )
 			{
-				*template_value_offset = 0;
+				safe_template_value_offset = 0;
 			}
 		}
 		else
@@ -6270,8 +6515,10 @@ int libfwevt_xml_document_substitute_template_value(
 				goto on_error;
 			}
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 	}
+	*template_value_offset = safe_template_value_offset;
+
 	return( 1 );
 
 on_error:
