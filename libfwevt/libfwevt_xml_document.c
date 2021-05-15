@@ -1758,7 +1758,7 @@ int libfwevt_xml_document_read_element(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 "%s: data offset\t\t\t\t: 0x%08" PRIzx "\n",
 			 function,
 			 binary_data_offset );
 
@@ -1864,7 +1864,7 @@ int libfwevt_xml_document_read_element(
 			if( libcnotify_verbose != 0 )
 			{
 				libcnotify_printf(
-				 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+				 "%s: data offset\t\t\t\t: 0x%08" PRIzx "\n",
 				 function,
 				 binary_data_offset + xml_document_data_offset );
 
@@ -1921,7 +1921,7 @@ int libfwevt_xml_document_read_element(
 			if( libcnotify_verbose != 0 )
 			{
 				libcnotify_printf(
-				 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+				 "%s: data offset\t\t\t\t: 0x%08" PRIzx "\n",
 				 function,
 				 binary_data_offset + xml_document_data_offset );
 
@@ -2055,7 +2055,7 @@ int libfwevt_xml_document_read_element(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 "%s: data offset\t\t\t\t: 0x%08" PRIzx "\n",
 			 function,
 			 binary_data_offset + xml_document_data_offset );
 
@@ -2149,7 +2149,7 @@ int libfwevt_xml_document_read_element(
 						if( libcnotify_verbose != 0 )
 						{
 							libcnotify_printf(
-							 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+							 "%s: data offset\t\t\t\t: 0x%08" PRIzx "\n",
 							 function,
 							 binary_data_offset + xml_document_data_offset );
 
@@ -3577,7 +3577,8 @@ int libfwevt_xml_document_read_name(
 			return( -1 );
 		}
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	*name_data_size = (uint32_t) ( additional_value_size + 4 + name_size );
 
 	return( 1 );
@@ -5000,7 +5001,7 @@ int libfwevt_xml_document_read_template_instance(
 	     flags,
 	     template_values_array,
 	     xml_tag,
-	     recursion_depth,
+	     recursion_depth + 1,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -5224,7 +5225,7 @@ int libfwevt_xml_document_read_template_instance_values(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 "%s: data offset\t: 0x%08" PRIzx "\n",
 		 function,
 		 binary_data_offset );
 
@@ -5274,7 +5275,7 @@ int libfwevt_xml_document_read_template_instance_values(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 "%s: data offset\t: 0x%08" PRIzx "\n",
 		 function,
 		 binary_data_offset );
 
@@ -5484,7 +5485,7 @@ int libfwevt_xml_document_read_template_instance_values(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+			 "%s: data offset\t: 0x%08" PRIzx "\n",
 			 function,
 			 binary_data_offset );
 
@@ -5646,7 +5647,7 @@ int libfwevt_xml_document_read_value(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 "%s: data offset\t\t\t\t: 0x%08" PRIzx "\n",
 		 function,
 		 binary_data_offset );
 
@@ -6405,59 +6406,64 @@ int libfwevt_xml_document_substitute_template_value(
 				template_value_data      = &( binary_data[ binary_data_offset + safe_template_value_offset ] );
 				template_value_data_size = substitution_value_data_size - (uint16_t) safe_template_value_offset;
 			}
-			if( ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_BYTE_STREAM )
-			 || ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_UTF16 ) )
+			/* An empty XML tag should be created if template_value_data_size == 0
+			 */
+			if( template_value_data_size > 0 )
 			{
-				read_count = libfwevt_xml_tag_set_value_strings_array(
-					      xml_tag,
-					      template_value_data,
-					      template_value_data_size,
-					      value_encoding,
-					      error );
-
-				if( read_count == -1 )
+				if( ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_BYTE_STREAM )
+				 || ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_UTF16 ) )
 				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-					 "%s: unable to set value data.",
-					 function );
+					read_count = libfwevt_xml_tag_set_value_strings_array(
+						      xml_tag,
+						      template_value_data,
+						      template_value_data_size,
+						      value_encoding,
+						      error );
 
-					goto on_error;
+					if( read_count == -1 )
+					{
+						libcerror_error_set(
+						 error,
+						 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+						 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+						 "%s: unable to set value data.",
+						 function );
+
+						goto on_error;
+					}
+					safe_template_value_offset += read_count;
 				}
-				safe_template_value_offset += read_count;
-			}
-			else
-			{
-				if( template_value_size > template_value_data_size )
+				else
 				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-					 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-					 "%s: invalid template value size value out of bounds.",
-					 function );
+					if( template_value_size > template_value_data_size )
+					{
+						libcerror_error_set(
+						 error,
+						 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+						 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+						 "%s: invalid template value size value out of bounds.",
+						 function );
 
-					goto on_error;
-				}
-				if( libfwevt_xml_tag_set_value_data(
-				     xml_tag,
-				     template_value_data,
-				     template_value_size,
-				     value_encoding,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-					 "%s: unable to set value data.",
-					 function );
+						goto on_error;
+					}
+					if( libfwevt_xml_tag_set_value_data(
+					     xml_tag,
+					     template_value_data,
+					     template_value_size,
+					     value_encoding,
+					     error ) != 1 )
+					{
+						libcerror_error_set(
+						 error,
+						 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+						 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+						 "%s: unable to set value data.",
+						 function );
 
-					goto on_error;
+						goto on_error;
+					}
+					safe_template_value_offset += template_value_size;
 				}
-				safe_template_value_offset += template_value_size;
 			}
 			if( safe_template_value_offset == substitution_value_data_size )
 			{
@@ -6466,6 +6472,18 @@ int libfwevt_xml_document_substitute_template_value(
 		}
 		else
 		{
+			if( ( template_value_size != 0 )
+			 && ( template_value_size != substitution_value_data_size ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+				 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid substitution value data size value out of bounds.",
+				 function );
+
+				goto on_error;
+			}
 			if( libfwevt_xml_tag_set_value_data(
 			     xml_tag,
 			     &( binary_data[ binary_data_offset ] ),
