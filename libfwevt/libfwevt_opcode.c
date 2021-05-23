@@ -152,14 +152,13 @@ int libfwevt_opcode_read(
      size_t data_offset,
      libcerror_error_t **error )
 {
-	fwevt_template_opcode_t *wevt_opcode        = NULL;
-	libfwevt_internal_opcode_t *internal_opcode = NULL;
-	static char *function                       = "libfwevt_opcode_read";
-	uint32_t opcode_data_offset                 = 0;
-	uint32_t opcode_data_size                   = 0;
+	fwevt_template_opcode_t *wevt_opcode = NULL;
+	static char *function                = "libfwevt_opcode_read";
+	uint32_t opcode_data_offset          = 0;
+	uint32_t opcode_data_size            = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	uint32_t value_32bit                        = 0;
+	uint32_t value_32bit                 = 0;
 #endif
 
 	if( opcode == NULL )
@@ -173,8 +172,6 @@ int libfwevt_opcode_read(
 
 		return( -1 );
 	}
-	internal_opcode = (libfwevt_internal_opcode_t *) opcode;
-
 	if( data == NULL )
 	{
 		libcerror_error_set(

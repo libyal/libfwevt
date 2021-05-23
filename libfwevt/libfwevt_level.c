@@ -152,14 +152,13 @@ int libfwevt_level_read(
      size_t data_offset,
      libcerror_error_t **error )
 {
-	fwevt_template_level_t *wevt_level        = NULL;
-	libfwevt_internal_level_t *internal_level = NULL;
-	static char *function                     = "libfwevt_level_read";
-	uint32_t level_data_offset                = 0;
-	uint32_t level_data_size                  = 0;
+	fwevt_template_level_t *wevt_level = NULL;
+	static char *function              = "libfwevt_level_read";
+	uint32_t level_data_offset         = 0;
+	uint32_t level_data_size           = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	uint32_t value_32bit                      = 0;
+	uint32_t value_32bit               = 0;
 #endif
 
 	if( level == NULL )
@@ -173,8 +172,6 @@ int libfwevt_level_read(
 
 		return( -1 );
 	}
-	internal_level = (libfwevt_internal_level_t *) level;
-
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -262,7 +259,8 @@ int libfwevt_level_read(
 		 function,
 		 level_data_offset );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( level_data_offset > 0 )
 	{
 		if( level_data_offset >= ( data_size - 4 ) )

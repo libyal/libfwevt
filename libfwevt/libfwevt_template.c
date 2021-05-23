@@ -257,8 +257,9 @@ int libfwevt_template_read(
 
 		goto on_error;
 	}
-	if( ( (size_t) internal_template->size > data_size )
-	 || ( (size_t) internal_template->size > ( data_size - data_offset ) ) )
+	if( ( internal_template->size == 0 )
+	 || ( (size_t) internal_template->size > ( data_size - data_offset ) )
+	 || ( (size_t) internal_template->size > MEMORY_MAXIMUM_ALLOCATION_SIZE ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1328,13 +1329,14 @@ int libfwevt_template_set_data(
 
 		return( -1 );
 	}
-	if( data_size > (size_t) UINT32_MAX )
+	if( ( data_size == 0 )
+	 || ( data_size > (size_t) MEMORY_MAXIMUM_ALLOCATION_SIZE ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid data size value exceeds maximum.",
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data size value out of bounds.",
 		 function );
 
 		return( -1 );

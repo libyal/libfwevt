@@ -27,6 +27,7 @@
 #include <types.h>
 #include <wide_string.h>
 
+#include "libfwevt_debug.h"
 #include "libfwevt_keyword.h"
 #include "libfwevt_libcerror.h"
 #include "libfwevt_libcnotify.h"
@@ -151,15 +152,14 @@ int libfwevt_keyword_read(
      size_t data_offset,
      libcerror_error_t **error )
 {
-	fwevt_template_keyword_t *wevt_keyword        = NULL;
-	libfwevt_internal_keyword_t *internal_keyword = NULL;
-	static char *function                         = "libfwevt_keyword_read";
-	uint32_t keyword_data_offset                  = 0;
-	uint32_t keyword_data_size                    = 0;
+	fwevt_template_keyword_t *wevt_keyword = NULL;
+	static char *function                  = "libfwevt_keyword_read";
+	uint32_t keyword_data_offset           = 0;
+	uint32_t keyword_data_size             = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	uint64_t value_64bit                          = 0;
-	uint32_t value_32bit                          = 0;
+	uint64_t value_64bit                   = 0;
+	uint32_t value_32bit                   = 0;
 #endif
 
 	if( keyword == NULL )
@@ -173,8 +173,6 @@ int libfwevt_keyword_read(
 
 		return( -1 );
 	}
-	internal_keyword = (libfwevt_internal_keyword_t *) keyword;
-
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -262,7 +260,8 @@ int libfwevt_keyword_read(
 		 function,
 		 keyword_data_offset );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( keyword_data_offset > 0 )
 	{
 		if( keyword_data_offset >= ( data_size - 4 ) )
@@ -313,7 +312,6 @@ int libfwevt_keyword_read(
 			 keyword_data_size );
 		}
 #endif
-
 		if( keyword_data_size >= 4 )
 		{
 			keyword_data_offset += 4;

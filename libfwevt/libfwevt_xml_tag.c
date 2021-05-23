@@ -2429,6 +2429,18 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_size(
 			}
 			else if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
 			{
+				if( ( value_string_size == 0 )
+				 || ( value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+					 "%s: invalid value string size value out of bounds.",
+					 function );
+
+					goto on_error;
+				}
 				value_string = (uint8_t *) memory_allocate(
 				                            sizeof( uint8_t ) * value_string_size );
 
@@ -2655,6 +2667,18 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 		{
 			if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
 			{
+				if( ( value_string_size == 0 )
+				 || ( value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+					 "%s: invalid value string size value out of bounds.",
+					 function );
+
+					goto on_error;
+				}
 				value_string = (uint8_t *) memory_allocate(
 				                            sizeof( uint8_t ) * value_string_size );
 
@@ -4025,6 +4049,18 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_size(
 			}
 			else if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
 			{
+				if( ( value_string_size == 0 )
+				 || ( value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint16_t ) ) ) )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+					 "%s: invalid value string size value out of bounds.",
+					 function );
+
+					goto on_error;
+				}
 				value_string = (uint16_t *) memory_allocate(
 				                             sizeof( uint16_t ) * value_string_size );
 
@@ -4251,6 +4287,18 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 		{
 			if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
 			{
+				if( ( value_string_size == 0 )
+				 || ( value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint16_t ) ) ) )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+					 "%s: invalid value string size value out of bounds.",
+					 function );
+
+					goto on_error;
+				}
 				value_string = (uint16_t *) memory_allocate(
 				                             sizeof( uint16_t ) * value_string_size );
 

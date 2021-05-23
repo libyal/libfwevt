@@ -1,8 +1,9 @@
 TODO
+* Complete or remove libfwevt_xml_document_clone which is used by libevtx
 * Code clean up
-  - change code to use libfwsi_debug_print_guid_value
-  - change code to use libfwsi_debug_print_property_storage_value
-  - change code to use libfwsi_debug_print_string_value
+  - change code to use libfwps_debug_print_guid_value
+  - change code to use libfwps_debug_print_property_storage_value
+  - change code to use libfwps_debug_print_string_value
 
 20140928
 * see `git log' for more recent change log

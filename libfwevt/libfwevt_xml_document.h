@@ -119,7 +119,6 @@ int libfwevt_xml_document_read_character_reference(
      const uint8_t *binary_data,
      size_t binary_data_size,
      size_t binary_data_offset,
-     uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
      libcerror_error_t **error );
 

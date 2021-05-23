@@ -1256,7 +1256,6 @@ int libfwevt_xml_document_read_character_reference(
      const uint8_t *binary_data,
      size_t binary_data_size,
      size_t binary_data_offset,
-     uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
      libcerror_error_t **error )
 {
@@ -1423,6 +1422,17 @@ int libfwevt_xml_document_read_character_reference(
 	}
 	character_value_string_size += 3;
 
+	if( character_value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint16_t ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid character value string size value out of bounds.",
+		 function );
+
+		goto on_error;
+	}
 	character_value_string = (uint16_t *) memory_allocate(
 	                                       sizeof( uint16_t ) * character_value_string_size );
 
@@ -1477,6 +1487,18 @@ int libfwevt_xml_document_read_character_reference(
 	}
 	/* Make sure the character value data is in UTF-16 litte-endian
 	 */
+	if( ( character_value_utf16_stream_size == 0 )
+	 || ( character_value_utf16_stream_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / 2 ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid character value UTF-16 stream size value out of bounds.",
+		 function );
+
+		goto on_error;
+	}
 	character_value_utf16_stream_size = character_value_string_size * 2;
 
 	character_value_utf16_stream = (uint8_t *) memory_allocate(
@@ -1954,6 +1976,17 @@ int libfwevt_xml_document_read_element(
 			xml_document_data_offset += 4;
 			element_size             -= 4;
 
+			if( attribute_list_size > ( binary_data_size - ( binary_data_offset + xml_document_data_offset ) ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid attribute list size value out of bounds.",
+				 function );
+
+				goto on_error;
+			}
 			while( attribute_list_size > 0 )
 			{
 				if( libfwevt_xml_token_read(
@@ -2261,7 +2294,6 @@ int libfwevt_xml_document_read_element(
 						     binary_data,
 						     binary_data_size,
 						     binary_data_offset + xml_document_data_offset,
-						     flags,
 						     element_xml_tag,
 						     error ) != 1 )
 						{
@@ -2800,6 +2832,18 @@ int libfwevt_xml_document_read_entity_reference(
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
 		 "%s: unable to retrieve UTF-8 string size of entity name.",
+		 function );
+
+		goto on_error;
+	}
+	if( ( utf8_string_size == 0 )
+	 || ( utf8_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid UTF-8 string size value out of bounds.",
 		 function );
 
 		goto on_error;
@@ -3371,6 +3415,7 @@ int libfwevt_xml_document_read_name(
 	const uint8_t *xml_document_data = NULL;
 	static char *function            = "libfwevt_xml_document_read_name";
 	size_t additional_value_size     = 0;
+	size_t xml_document_data_offset  = 0;
 	size_t xml_document_data_size    = 0;
 	uint32_t name_size               = 0;
 
@@ -3401,13 +3446,14 @@ int libfwevt_xml_document_read_name(
 
 		return( -1 );
 	}
-	if( binary_data_size > (size_t) SSIZE_MAX )
+	if( ( binary_data_size < 4 )
+	 || ( binary_data_size > (size_t) SSIZE_MAX ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid binary XML document data size value exceeds maximum.",
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid binary XML document data size value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -3494,16 +3540,17 @@ int libfwevt_xml_document_read_name(
 			 value_32bit );
 		}
 #endif
+		xml_document_data_offset += additional_value_size;
 	}
 	byte_stream_copy_to_uint16_little_endian(
-	 &( xml_document_data[ additional_value_size + 2 ] ),
+	 &( xml_document_data[ xml_document_data_offset + 2 ] ),
 	 name_size );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
 		byte_stream_copy_to_uint16_little_endian(
-		 &( xml_document_data[ additional_value_size ] ),
+		 &( xml_document_data[ xml_document_data_offset ] ),
 		 value_16bit );
 		libcnotify_printf(
 		 "%s: name hash\t\t\t\t: 0x%04" PRIx16 "\n",
@@ -3515,19 +3562,31 @@ int libfwevt_xml_document_read_name(
 		 function,
 		 name_size );
 	}
-#endif
-	name_size += 1;
-	name_size *= 2;
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
-	xml_document_data_size -= additional_value_size + 4;
+	xml_document_data_offset += 4;
 
-	if( name_size > xml_document_data_size )
+	if( ( name_size == 0 )
+	 || ( (size_t) name_size > ( ( MEMORY_MAXIMUM_ALLOCATION_SIZE - 1 ) / 2 ) ) )
 	{
 		libcerror_error_set(
 		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
 		 "%s: invalid name size value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
+	name_size = ( name_size + 1 ) * 2;
+
+	if( (size_t) name_size > ( xml_document_data_size - xml_document_data_offset ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid binary XML document data size value too small.",
 		 function );
 
 		return( -1 );
@@ -3539,14 +3598,14 @@ int libfwevt_xml_document_read_name(
 		 "%s: name data:\n",
 		 function );
 		libcnotify_print_data(
-		 &( xml_document_data[ additional_value_size + 4 ] ),
+		 &( xml_document_data[ xml_document_data_offset ] ),
 		 name_size,
 		 0 );
 	}
 #endif
 	if( libfwevt_xml_tag_set_name_data(
 	     xml_tag,
-	     &( xml_document_data[ additional_value_size + 4 ] ),
+	     &( xml_document_data[ xml_document_data_offset ] ),
 	     name_size,
 	     LIBFVALUE_CODEPAGE_UTF16_LITTLE_ENDIAN,
 	     error ) != 1 )
@@ -3579,7 +3638,7 @@ int libfwevt_xml_document_read_name(
 	}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
-	*name_data_size = (uint32_t) ( additional_value_size + 4 + name_size );
+	*name_data_size = (uint32_t) ( xml_document_data_offset + name_size );
 
 	return( 1 );
 }
@@ -5285,7 +5344,7 @@ int libfwevt_xml_document_read_template_instance_values(
 		libcnotify_print_data(
 		 &( binary_data[ binary_data_offset ] ),
 		 template_value_definitions_data_size,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 	if( libcdata_array_initialize(
@@ -5496,7 +5555,7 @@ int libfwevt_xml_document_read_template_instance_values(
 			libcnotify_print_data(
 			 &( binary_data[ binary_data_offset ] ),
 			 template_value_data_size,
-			 0 );
+			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 		}
 #endif
 		if( libfwevt_xml_template_value_set_offset(

@@ -147,9 +147,8 @@ int libfwevt_map_read(
      size_t data_offset,
      libcerror_error_t **error )
 {
-	libfwevt_internal_map_t *internal_map = NULL;
-	fwevt_template_map_t *wevt_map        = NULL;
-	static char *function                 = "libfwevt_map_read";
+	fwevt_template_map_t *wevt_map = NULL;
+	static char *function          = "libfwevt_map_read";
 
 	if( map == NULL )
 	{
@@ -162,8 +161,6 @@ int libfwevt_map_read(
 
 		return( -1 );
 	}
-	internal_map = (libfwevt_internal_map_t *) map;
-
 	if( data == NULL )
 	{
 		libcerror_error_set(

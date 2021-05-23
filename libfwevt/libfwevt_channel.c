@@ -159,10 +159,7 @@ int libfwevt_channel_read(
 	uint32_t channel_data_size                    = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	system_character_t *value_string              = NULL;
-	size_t value_string_size                      = 0;
 	uint32_t value_32bit                          = 0;
-	int result                                    = 0;
 #endif
 
 	if( channel == NULL )
