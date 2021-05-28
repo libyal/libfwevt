@@ -692,13 +692,13 @@ int libfwevt_xml_document_read_attribute(
 			libcnotify_printf(
 			 "%s: data offset\t\t\t: 0x%08" PRIzx "\n",
 			 function,
-			 binary_data_offset );
+			 binary_data_offset + xml_document_data_offset );
 
 			libcnotify_printf(
 			 "%s: attribute data:\n",
 			 function );
 			libcnotify_print_data(
-			 xml_document_data,
+			 &( xml_document_data[ xml_document_data_offset ] ),
 			 1 + additional_value_size,
 			 0 );
 		}
@@ -709,10 +709,10 @@ int libfwevt_xml_document_read_attribute(
 			libcnotify_printf(
 			 "%s: type\t\t\t\t: 0x%02" PRIx8 "\n",
 			 function,
-			 xml_document_data[ 0 ] );
+			 xml_document_data[ xml_document_data_offset ] );
 		}
 #endif
-		xml_document_data_offset = 1;
+		xml_document_data_offset += 1;
 
 		if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
 		{
@@ -4655,11 +4655,7 @@ int libfwevt_xml_document_read_template_instance(
 	uint32_t template_definition_data_size   = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	system_character_t guid_string[ 48 ];
-
-	libfguid_identifier_t *guid              = NULL;
 	uint32_t value_32bit                     = 0;
-	int result                               = 0;
 #endif
 
 	if( internal_xml_document == NULL )
@@ -4799,7 +4795,7 @@ int libfwevt_xml_document_read_template_instance(
 	xml_token->size     = 10;
 	binary_data_offset += 10;
 
-	if( template_definition_data_offset > binary_data_offset )
+	if( template_definition_data_offset >= binary_data_size )
 	{
 		libcerror_error_set(
 		 error,
@@ -4810,7 +4806,7 @@ int libfwevt_xml_document_read_template_instance(
 
 		goto on_error;
 	}
-	if( binary_data_offset < template_definition_data_offset )
+	if( template_definition_data_offset > binary_data_offset )
 	{
 		trailing_data_size = template_definition_data_offset - binary_data_offset;
 
@@ -4836,7 +4832,8 @@ int libfwevt_xml_document_read_template_instance(
 	}
 	template_data_offset = template_definition_data_offset;
 
-	if( ( template_data_offset + 24 ) >= binary_data_size )
+	if( ( binary_data_size < 24 )
+	 || ( template_data_offset >= ( binary_data_size - 24 ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -4862,78 +4859,23 @@ int libfwevt_xml_document_read_template_instance(
 		 function,
 		 value_32bit );
 
-		if( libfguid_identifier_initialize(
-		     &guid,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create GUID.",
-			 function );
-
-			goto on_error;
-		}
-		if( libfguid_identifier_copy_from_byte_stream(
-		     guid,
+		if( libfwevt_debug_print_guid_value(
+		     function,
+		     "identifier\t\t",
 		     &( binary_data[ template_data_offset + 4 ] ),
 		     16,
 		     LIBFGUID_ENDIAN_LITTLE,
+		     LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-			 "%s: unable to copy byte stream to GUID.",
+			 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+			 "%s: unable to print GUID value.",
 			 function );
 
-			goto on_error;
-		}
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-		result = libfguid_identifier_copy_to_utf16_string(
-			  guid,
-			  (uint16_t *) guid_string,
-			  48,
-			  LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
-			  error );
-#else
-		result = libfguid_identifier_copy_to_utf8_string(
-			  guid,
-			  (uint8_t *) guid_string,
-			  48,
-			  LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
-			  error );
-#endif
-		if( result != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-			 "%s: unable to copy GUID to string.",
-			 function );
-
-			goto on_error;
-		}
-		libcnotify_printf(
-		 "%s: identifier\t\t: %" PRIs_SYSTEM "\n",
-		 function,
-		 guid_string );
-
-		if( libfguid_identifier_free(
-		     &guid,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free GUID.",
-			 function );
-
-			goto on_error;
+			return( -1 );
 		}
 		libcnotify_printf(
 		 "%s: definition size\t\t: %" PRIu32 "\n",
@@ -5102,8 +5044,7 @@ int libfwevt_xml_document_read_template_instance(
 
 		goto on_error;
 	}
-	if( ( binary_data_size < 1 )
-	 || ( binary_data_offset >= ( binary_data_size - 1 ) ) )
+	if( binary_data_offset >= ( binary_data_size - 1 ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -5201,14 +5142,6 @@ int libfwevt_xml_document_read_template_instance(
 	return( 1 );
 
 on_error:
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( guid != NULL )
-	{
-		libfguid_identifier_free(
-		 &guid,
-		 NULL );
-	}
-#endif
 	if( template_values_array != NULL )
 	{
 		libcdata_array_free(
@@ -5239,6 +5172,7 @@ int libfwevt_xml_document_read_template_instance_values(
 {
 	libfwevt_xml_template_value_t *template_value = NULL;
 	static char *function                         = "libfwevt_xml_document_read_template_instance_values";
+	size_t safe_template_values_size              = 0;
 	size_t template_value_definitions_data_size   = 0;
 	size_t template_values_data_size              = 0;
 	uint32_t number_of_template_values            = 0;
@@ -5313,8 +5247,8 @@ int libfwevt_xml_document_read_template_instance_values(
 		 "\n" );
 	}
 #endif
-	*template_values_size = 4;
-	binary_data_offset   += 4;
+	safe_template_values_size = 4;
+	binary_data_offset       += 4;
 
 	template_value_definitions_data_size = number_of_template_values * 4;
 
@@ -5401,8 +5335,8 @@ int libfwevt_xml_document_read_template_instance_values(
 		}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
-		*template_values_size += 4;
-		binary_data_offset    += 4;
+		safe_template_values_size += 4;
+		binary_data_offset        += 4;
 
 		template_values_data_size += template_value_data_size;
 
@@ -5574,7 +5508,7 @@ int libfwevt_xml_document_read_template_instance_values(
 		}
 		binary_data_offset += template_value_data_size;
 	}
-	*template_values_size += template_values_data_size;
+	*template_values_size = safe_template_values_size + template_values_data_size;
 
 	return( 1 );
 
@@ -5792,7 +5726,7 @@ int libfwevt_xml_document_read_value(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: data offset\t\t: 0x%08" PRIzx "\n",
+		 "%s: data offset\t\t\t\t: 0x%08" PRIzx "\n",
 		 function,
 		 binary_data_offset );
 
@@ -6472,6 +6406,18 @@ int libfwevt_xml_document_substitute_template_value(
 				if( ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_BYTE_STREAM )
 				 || ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_UTF16 ) )
 				{
+					if( ( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+					 && ( ( template_value_data_size % 2 ) != 0 ) )
+					{
+						libcerror_error_set(
+						 error,
+						 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+						 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+						 "%s: invalid UTF-16 template value data size value out of bounds.",
+						 function );
+
+						goto on_error;
+					}
 					read_count = libfwevt_xml_tag_set_value_strings_array(
 						      xml_tag,
 						      template_value_data,
@@ -6539,6 +6485,18 @@ int libfwevt_xml_document_substitute_template_value(
 				 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 				 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
 				 "%s: invalid substitution value data size value out of bounds.",
+				 function );
+
+				goto on_error;
+			}
+			else if( ( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+			      && ( ( substitution_value_data_size % 2 ) != 0 ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+				 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid UTF-16 substitution value data size value out of bounds.",
 				 function );
 
 				goto on_error;
