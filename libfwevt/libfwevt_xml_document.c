@@ -5492,6 +5492,13 @@ int libfwevt_xml_document_read_template_instance_values(
 			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 		}
 #endif
+		/* Note that template_value_data_size is allowed to be 0.
+		 * Don't set the template value offset in such a case.
+		 */
+		if( template_value_data_size == 0 )
+		{
+			continue;
+		}
 		if( libfwevt_xml_template_value_set_offset(
 		     template_value,
 		     binary_data_offset,
