@@ -4887,6 +4887,17 @@ int libfwevt_xml_document_read_template_instance(
 	}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
+	if( template_definition_data_size > binary_data_size )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid template definition data size value out of bounds.",
+		 function );
+
+		goto on_error;
+	}
 	if( template_data_offset == binary_data_offset )
 	{
 		template_values_data_offset = 24 + template_definition_data_size;
