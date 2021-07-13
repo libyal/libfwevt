@@ -545,7 +545,7 @@ int libfwevt_xml_document_read_attribute(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
-     int recursion_depth,
+     int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
 	libfwevt_xml_token_t *xml_sub_token   = NULL;
@@ -624,18 +624,6 @@ int libfwevt_xml_document_read_attribute(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
 		 "%s: invalid binary data offset value out of bounds.",
-		 function );
-
-		return( -1 );
-	}
-	if( ( recursion_depth < 0 )
-	 || ( recursion_depth > LIBFWEVT_XML_DOCUMENT_RECURSION_DEPTH ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid recursion depth value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -875,7 +863,7 @@ int libfwevt_xml_document_read_attribute(
 				          template_values_array,
 				          &template_value_offset,
 				          attribute_xml_tag,
-				          recursion_depth + 1,
+				          template_instance_recursion_depth,
 				          error );
 
 				if( result == -1 )
@@ -903,7 +891,7 @@ int libfwevt_xml_document_read_attribute(
 					  template_values_array,
 					  &template_value_offset,
 					  attribute_xml_tag,
-				          recursion_depth + 1,
+				          template_instance_recursion_depth,
 					  error );
 
 				if( result == -1 )
@@ -1620,7 +1608,7 @@ int libfwevt_xml_document_read_element(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
-     int recursion_depth,
+     int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
 	libfwevt_xml_token_t *xml_sub_token = NULL;
@@ -1706,18 +1694,6 @@ int libfwevt_xml_document_read_element(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
 		 "%s: invalid binary data offset value out of bounds.",
-		 function );
-
-		return( -1 );
-	}
-	if( ( recursion_depth < 0 )
-	 || ( recursion_depth > LIBFWEVT_XML_DOCUMENT_RECURSION_DEPTH ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid recursion depth value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -2015,7 +1991,7 @@ int libfwevt_xml_document_read_element(
 				     flags,
 				     template_values_array,
 				     element_xml_tag,
-				     recursion_depth + 1,
+				     template_instance_recursion_depth,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -2151,7 +2127,7 @@ int libfwevt_xml_document_read_element(
 						     flags,
 						     template_values_array,
 						     element_xml_tag,
-						     recursion_depth + 1,
+						     template_instance_recursion_depth,
 						     error ) != 1 )
 						{
 							libcerror_error_set(
@@ -2385,7 +2361,7 @@ int libfwevt_xml_document_read_element(
 							  template_values_array,
 							  &template_value_offset,
 							  element_xml_tag,
-							  recursion_depth + 1,
+							  template_instance_recursion_depth,
 							  error );
 
 						if( result == -1 )
@@ -2413,7 +2389,7 @@ int libfwevt_xml_document_read_element(
 							  template_values_array,
 							  &template_value_offset,
 							  element_xml_tag,
-							  recursion_depth + 1,
+							  template_instance_recursion_depth,
 							  error );
 
 						if( result == -1 )
@@ -3072,7 +3048,7 @@ int libfwevt_xml_document_read_fragment(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
-     int recursion_depth,
+     int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
 	libfwevt_xml_token_t *xml_sub_token = NULL;
@@ -3096,18 +3072,6 @@ int libfwevt_xml_document_read_fragment(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid binary XML token.",
-		 function );
-
-		return( -1 );
-	}
-	if( ( recursion_depth < 0 )
-	 || ( recursion_depth > LIBFWEVT_XML_DOCUMENT_RECURSION_DEPTH ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid recursion depth value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -3173,7 +3137,7 @@ int libfwevt_xml_document_read_fragment(
 			     flags,
 			     template_values_array,
 			     xml_tag,
-			     recursion_depth + 1,
+			     template_instance_recursion_depth,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -3197,7 +3161,7 @@ int libfwevt_xml_document_read_fragment(
 			     ascii_codepage,
 			     flags,
 			     xml_tag,
-			     recursion_depth + 1,
+			     template_instance_recursion_depth,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -3657,7 +3621,7 @@ int libfwevt_xml_document_read_normal_substitution(
      libcdata_array_t *template_values_array,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
-     int recursion_depth,
+     int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
 	const uint8_t *xml_document_data = NULL;
@@ -3811,7 +3775,7 @@ int libfwevt_xml_document_read_normal_substitution(
 	          template_value_type,
 	          template_value_offset,
 	          xml_tag,
-	          recursion_depth,
+	          template_instance_recursion_depth,
 	          error );
 
 	if( result != 1 )
@@ -3842,7 +3806,7 @@ int libfwevt_xml_document_read_optional_substitution(
      libcdata_array_t *template_values_array,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
-     int recursion_depth,
+     int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
 	const uint8_t *xml_document_data = NULL;
@@ -3996,7 +3960,7 @@ int libfwevt_xml_document_read_optional_substitution(
 	          template_value_type,
 	          template_value_offset,
 	          xml_tag,
-	          recursion_depth,
+	          template_instance_recursion_depth,
 	          error );
 
 	if( result == -1 )
@@ -4638,7 +4602,7 @@ int libfwevt_xml_document_read_template_instance(
      int ascii_codepage,
      uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
-     int recursion_depth,
+     int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
 	libcdata_array_t *template_values_array  = NULL;
@@ -4721,6 +4685,18 @@ int libfwevt_xml_document_read_template_instance(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
 		 "%s: invalid binary data offset value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( template_instance_recursion_depth < 0 )
+	 || ( template_instance_recursion_depth > LIBFWEVT_XML_DOCUMENT_TEMPLATE_INSTANCE_RECURSION_DEPTH ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid template instance recursion depth value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -5013,7 +4989,7 @@ int libfwevt_xml_document_read_template_instance(
 	     flags,
 	     template_values_array,
 	     xml_tag,
-	     recursion_depth + 1,
+	     template_instance_recursion_depth + 1,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -5827,7 +5803,7 @@ int libfwevt_xml_document_substitute_template_value(
      uint8_t template_value_type,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
-     int recursion_depth,
+     int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
 	libfwevt_xml_template_value_t *template_value = NULL;
@@ -5875,18 +5851,6 @@ int libfwevt_xml_document_substitute_template_value(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid XML tag.",
-		 function );
-
-		return( -1 );
-	}
-	if( ( recursion_depth < 0 )
-	 || ( recursion_depth > LIBFWEVT_XML_DOCUMENT_RECURSION_DEPTH ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid recursion depth value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -6083,7 +6047,7 @@ int libfwevt_xml_document_substitute_template_value(
 				     flags & ~( LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS ),
 				     template_values_array,
 				     xml_tag,
-				     recursion_depth + 1,
+				     template_instance_recursion_depth,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -6108,7 +6072,7 @@ int libfwevt_xml_document_substitute_template_value(
 				     flags,
 				     NULL,
 				     xml_tag,
-				     recursion_depth + 1,
+				     template_instance_recursion_depth,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -6132,7 +6096,7 @@ int libfwevt_xml_document_substitute_template_value(
 				     ascii_codepage,
 				     flags,
 				     xml_tag,
-				     recursion_depth + 1,
+				     template_instance_recursion_depth,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
