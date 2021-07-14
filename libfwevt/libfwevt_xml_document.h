@@ -101,6 +101,7 @@ int libfwevt_xml_document_read_attribute(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
+     int element_recursion_depth,
      int template_instance_recursion_depth,
      libcerror_error_t **error );
 
@@ -132,6 +133,7 @@ int libfwevt_xml_document_read_element(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
+     int element_recursion_depth,
      int template_instance_recursion_depth,
      libcerror_error_t **error );
 
@@ -155,6 +157,7 @@ int libfwevt_xml_document_read_fragment(
      uint8_t flags,
      libcdata_array_t *template_values_array,
      libfwevt_xml_tag_t *xml_tag,
+     int element_recursion_depth,
      int template_instance_recursion_depth,
      libcerror_error_t **error );
 
@@ -187,6 +190,7 @@ int libfwevt_xml_document_read_normal_substitution(
      libcdata_array_t *template_values_array,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int element_recursion_depth,
      int template_instance_recursion_depth,
      libcerror_error_t **error );
 
@@ -201,6 +205,7 @@ int libfwevt_xml_document_read_optional_substitution(
      libcdata_array_t *template_values_array,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int element_recursion_depth,
      int template_instance_recursion_depth,
      libcerror_error_t **error );
 
@@ -232,6 +237,7 @@ int libfwevt_xml_document_read_template_instance(
      int ascii_codepage,
      uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
+     int element_recursion_depth,
      int template_instance_recursion_depth,
      libcerror_error_t **error );
 
@@ -264,6 +270,7 @@ int libfwevt_xml_document_substitute_template_value(
      uint8_t template_value_type,
      size_t *template_value_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int element_recursion_depth,
      int template_instance_recursion_depth,
      libcerror_error_t **error );
 
