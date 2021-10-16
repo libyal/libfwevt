@@ -840,7 +840,8 @@ int libfwevt_template_read_instance_values(
 			 template_value_index,
 			 template_value_data_offset );
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 		instance_values_data_offset += 20;
 
 		if( template_value_data_offset < internal_template->offset )
@@ -931,7 +932,7 @@ int libfwevt_template_read_instance_values(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: value: %02d size\t\t: %" PRIu32 "\n",
+			 "%s: value: %02d size\t\t\t: %" PRIu32 "\n",
 			 function,
 			 template_value_index,
 			 template_value_data_size );
@@ -944,11 +945,9 @@ int libfwevt_template_read_instance_values(
 			 &( internal_template->data[ template_value_data_offset ] ),
 			 template_value_data_size,
 			 0 );
-
-			libcnotify_printf(
-			 "\n" );
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 		if( libfwevt_xml_template_value_initialize(
 		     &template_value,
 		     error ) != 1 )
@@ -1185,7 +1184,7 @@ int libfwevt_template_read_xml_document(
 	     internal_template->data_size,
 	     sizeof( fwevt_template_header_t ),
 	     internal_template->ascii_codepage,
-	     0,
+	     LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
 	     internal_template->values_array,
 	     error ) != 1 )
 	{

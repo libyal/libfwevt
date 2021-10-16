@@ -253,7 +253,7 @@ int libfwevt_xml_tag_append_attribute(
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
-	static char *function                         = "libfwevt_xml_tag_free";
+	static char *function                         = "libfwevt_xml_tag_append_attribute";
 	int entry_index                               = 0;
 
 	if( xml_tag == NULL )
@@ -673,7 +673,7 @@ int libfwevt_xml_tag_append_element(
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
-	static char *function                         = "libfwevt_xml_tag_free";
+	static char *function                         = "libfwevt_xml_tag_append_element";
 	int entry_index                               = 0;
 
 	if( xml_tag == NULL )

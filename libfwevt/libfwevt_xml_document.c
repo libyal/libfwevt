@@ -3484,7 +3484,7 @@ int libfwevt_xml_document_read_name(
 
 	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) != 0 )
 	{
-		additional_value_size = 4;
+		additional_value_size += 4;
 	}
 	if( ( additional_value_size + 4 ) > xml_document_data_size )
 	{
@@ -3516,6 +3516,7 @@ int libfwevt_xml_document_read_name(
 #endif
 	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) != 0 )
 	{
+/* TODO determine if this used */
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
@@ -3528,7 +3529,7 @@ int libfwevt_xml_document_read_name(
 			 value_32bit );
 		}
 #endif
-		xml_document_data_offset += additional_value_size;
+		xml_document_data_offset += 4;
 	}
 	byte_stream_copy_to_uint16_little_endian(
 	 &( xml_document_data[ xml_document_data_offset + 2 ] ),
