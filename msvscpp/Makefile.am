@@ -24,6 +24,7 @@ MSVSCPP_FILES = \
 	libfvalue/libfvalue.vcproj \
 	libfwevt/libfwevt.vcproj \
 	libuna/libuna.vcproj \
+	pyfwevt/pyfwevt.vcproj \
 	libfwevt.sln
 
 EXTRA_DIST = \

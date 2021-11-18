@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libfwevt],
- [20211016],
+ [20211118],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -88,6 +88,22 @@ AX_LIBFVALUE_CHECK_ENABLE
 dnl Check if libfwevt required headers and functions are available
 AX_LIBFWEVT_CHECK_LOCAL
 
+dnl Check if libfwevt Python bindings (pyfwevt) required headers and functions are available
+AX_PYTHON_CHECK_ENABLE
+
+AS_IF(
+  [test "x${ac_cv_enable_python}" != xno || test "x${ac_cv_enable_python2}" != xno || test "x${ac_cv_enable_python3}" != xno],
+  [dnl Headers included in pyfwevt/pyfwevt_error.c
+  AC_CHECK_HEADERS([stdarg.h varargs.h])
+
+  AS_IF(
+    [test "x$ac_cv_header_stdarg_h" != xyes && test "x$ac_cv_header_varargs_h" != xyes],
+    [AC_MSG_FAILURE(
+      [Missing headers: stdarg.h and varargs.h],
+      [1])
+    ])
+  ])
+
 dnl Check if DLL support is needed
 AX_LIBFWEVT_CHECK_DLL_SUPPORT
 
@@ -129,6 +145,9 @@ AC_CONFIG_FILES([libfdatetime/Makefile])
 AC_CONFIG_FILES([libfguid/Makefile])
 AC_CONFIG_FILES([libfvalue/Makefile])
 AC_CONFIG_FILES([libfwevt/Makefile])
+AC_CONFIG_FILES([pyfwevt/Makefile])
+AC_CONFIG_FILES([pyfwevt-python2/Makefile])
+AC_CONFIG_FILES([pyfwevt-python3/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([po/Makevars])
 AC_CONFIG_FILES([manuals/Makefile])
@@ -155,18 +174,19 @@ AC_OUTPUT
 dnl Print a summary
 AC_MSG_NOTICE([
 Building:
-   libcerror support:       $ac_cv_libcerror
-   libcthreads support:     $ac_cv_libcthreads
-   libcdata support:        $ac_cv_libcdata
-   libcnotify support:      $ac_cv_libcnotify
-   libuna support:          $ac_cv_libuna
-   libfdatetime support:    $ac_cv_libfdatetime
-   libfguid support:        $ac_cv_libfguid
-   libfvalue support:       $ac_cv_libfvalue
+   libcerror support:        $ac_cv_libcerror
+   libcthreads support:      $ac_cv_libcthreads
+   libcdata support:         $ac_cv_libcdata
+   libcnotify support:       $ac_cv_libcnotify
+   libuna support:           $ac_cv_libuna
+   libfdatetime support:     $ac_cv_libfdatetime
+   libfguid support:         $ac_cv_libfguid
+   libfvalue support:        $ac_cv_libfvalue
 
 Features:
-   Multi-threading support: $ac_cv_libcthreads_multi_threading
-   Verbose output:          $ac_cv_enable_verbose_output
-   Debug output:            $ac_cv_enable_debug_output
+   Multi-threading support:  $ac_cv_libcthreads_multi_threading
+   Python (pyfwevt) support: $ac_cv_enable_python
+   Verbose output:           $ac_cv_enable_verbose_output
+   Debug output:             $ac_cv_enable_debug_output
 ]);
 

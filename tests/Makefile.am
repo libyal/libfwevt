@@ -12,12 +12,20 @@ AM_CPPFLAGS = \
 	@PTHREAD_CPPFLAGS@ \
 	@LIBFWEVT_DLL_IMPORT@
 
+if HAVE_PYTHON_TESTS
+TESTS_PYFWEVT = \
+	test_python_module.sh
+endif
+
 TESTS = \
-	test_library.sh
+	test_library.sh \
+	$(TESTS_PYFWEVT)
 
 check_SCRIPTS = \
+	pyfwevt_test_support.py \
 	test_library.sh \
 	test_manpage.sh \
+	test_python_module.sh \
 	test_runner.sh
 
 EXTRA_DIST = \
