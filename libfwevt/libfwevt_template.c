@@ -404,14 +404,11 @@ int libfwevt_template_read_header(
      size_t data_size,
      libcerror_error_t **error )
 {
-	static char *function       = "libfwevt_template_read_header";
+	static char *function = "libfwevt_template_read_header";
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	system_character_t guid_string[ 48 ];
-
-	libfguid_identifier_t *guid = NULL;
-	uint32_t value_32bit        = 0;
-	int result                  = 0;
+	uint32_t value_32bit  = 0;
+	int result            = 0;
 #endif
 
 	if( internal_template == NULL )
@@ -525,83 +522,29 @@ int libfwevt_template_read_header(
 		 function,
 		 value_32bit );
 
-		if( libfguid_identifier_initialize(
-		     &guid,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create GUID.",
-			 function );
-
-			goto on_error;
-		}
-		if( libfguid_identifier_copy_from_byte_stream(
-		     guid,
+		if( libfwevt_debug_print_guid_value(
+		     function,
+		     "identifier\t\t\t\t",
 		     ( (fwevt_template_header_t *) data )->identifier,
 		     16,
 		     LIBFGUID_ENDIAN_LITTLE,
+		     LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-			 "%s: unable to copy byte stream to GUID.",
+			 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+			 "%s: unable to print GUID value.",
 			 function );
 
-			goto on_error;
-		}
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-		result = libfguid_identifier_copy_to_utf16_string(
-			  guid,
-			  (uint16_t *) guid_string,
-			  48,
-			  LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
-			  error );
-#else
-		result = libfguid_identifier_copy_to_utf8_string(
-			  guid,
-			  (uint8_t *) guid_string,
-			  48,
-			  LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
-			  error );
-#endif
-		if( result != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-			 "%s: unable to copy GUID to string.",
-			 function );
-
-			goto on_error;
-		}
-		libcnotify_printf(
-		 "%s: identifier\t\t\t\t: %" PRIs_SYSTEM "\n",
-		 function,
-		 guid_string );
-
-		if( libfguid_identifier_free(
-		     &guid,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free GUID.",
-			 function );
-
-			goto on_error;
+			return( -1 );
 		}
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( memory_compare(
 	     ( (fwevt_template_header_t *) data )->signature,
 	     "TEMP",
@@ -614,20 +557,9 @@ int libfwevt_template_read_header(
 		 "%s: unsupported template signature.",
 		 function );
 
-		goto on_error;
+		return( -1 );
 	}
 	return( 1 );
-
-on_error:
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( guid != NULL )
-	{
-		libfguid_identifier_free(
-		 &guid,
-		 NULL );
-	}
-#endif
-	return( -1 );
 }
 
 /* Reads the template instance values

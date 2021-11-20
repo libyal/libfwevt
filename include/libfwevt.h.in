@@ -817,8 +817,12 @@ int libfwevt_xml_document_free(
      libfwevt_error_t **error );
 
 /* Clones the binary XML document
+ *
+ * This function is deprecated and threre is no replacement.
+ *
  * Returns 1 if successful or -1 on error
  */
+LIBFWEVT_DEPRECATED \
 LIBFWEVT_EXTERN \
 int libfwevt_xml_document_clone(
      libfwevt_xml_document_t **destination_xml_document,

@@ -32,7 +32,7 @@
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_python.h"
-#include "pyfwevt_template.h"
+#include "pyfwevt_manifest.h"
 #include "pyfwevt_unused.h"
 
 /* The pyfwevt module methods
@@ -156,22 +156,22 @@ PyMODINIT_FUNC initpyfwevt(
 #endif
 	gil_state = PyGILState_Ensure();
 
-	/* Setup the template type object
+	/* Setup the manifest type object
 	 */
-	pyfwevt_template_type_object.tp_new = PyType_GenericNew;
+	pyfwevt_manifest_type_object.tp_new = PyType_GenericNew;
 
 	if( PyType_Ready(
-	     &pyfwevt_template_type_object ) < 0 )
+	     &pyfwevt_manifest_type_object ) < 0 )
 	{
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject *) &pyfwevt_template_type_object );
+	 (PyObject *) &pyfwevt_manifest_type_object );
 
 	PyModule_AddObject(
 	 module,
-	 "template",
-	 (PyObject *) &pyfwevt_template_type_object );
+	 "manifest",
+	 (PyObject *) &pyfwevt_manifest_type_object );
 
 	PyGILState_Release(
 	 gil_state );

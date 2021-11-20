@@ -182,7 +182,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\pyfwevt\pyfwevt_template.c"
+				RelativePath="..\..\pyfwevt\pyfwevt_manifest.c"
 				>
 			</File>
 		</Filter>
@@ -212,11 +212,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\pyfwevt\pyfwevt_python.h"
+				RelativePath="..\..\pyfwevt\pyfwevt_manifest.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\pyfwevt\pyfwevt_template.h"
+				RelativePath="..\..\pyfwevt\pyfwevt_python.h"
 				>
 			</File>
 			<File

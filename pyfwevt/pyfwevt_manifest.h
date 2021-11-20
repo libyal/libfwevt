@@ -1,5 +1,5 @@
 /*
- * Python object wrapper of libfwevt_template_t
+ * Python object wrapper of libfwevt_manifest_t
  *
  * Copyright (C) 2011-2021, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _PYFWEVT_TEMPLATE_H )
-#define _PYFWEVT_TEMPLATE_H
+#if !defined( _PYFWEVT_MANIFEST_H )
+#define _PYFWEVT_MANIFEST_H
 
 #include <common.h>
 #include <types.h>
@@ -32,44 +32,48 @@
 extern "C" {
 #endif
 
-typedef struct pyfwevt_template pyfwevt_template_t;
+typedef struct pyfwevt_manifest pyfwevt_manifest_t;
 
-struct pyfwevt_template
+struct pyfwevt_manifest
 {
 	/* Python object initialization
 	 */
 	PyObject_HEAD
 
-	/* The libfwevt template
+	/* The libfwevt manifest
 	 */
-	libfwevt_template_t *template;
+	libfwevt_manifest_t *manifest;
 
 	/* The parent object
 	 */
 	PyObject *parent_object;
 };
 
-extern PyMethodDef pyfwevt_template_object_methods[];
-extern PyTypeObject pyfwevt_template_type_object;
+extern PyMethodDef pyfwevt_manifest_object_methods[];
+extern PyTypeObject pyfwevt_manifest_type_object;
 
-PyObject *pyfwevt_template_new(
-           libfwevt_template_t *template,
+PyObject *pyfwevt_manifest_new(
+           libfwevt_manifest_t *manifest,
            PyObject *parent_object );
 
-int pyfwevt_template_init(
-     pyfwevt_template_t *pyfwevt_template );
+int pyfwevt_manifest_init(
+     pyfwevt_manifest_t *pyfwevt_manifest );
 
-void pyfwevt_template_free(
-      pyfwevt_template_t *pyfwevt_template );
+void pyfwevt_manifest_free(
+      pyfwevt_manifest_t *pyfwevt_manifest );
 
-PyObject *pyfwevt_template_copy_from_byte_stream(
-           pyfwevt_template_t *pyfwevt_template,
+PyObject *pyfwevt_manifest_copy_from_byte_stream(
+           pyfwevt_manifest_t *pyfwevt_manifest,
            PyObject *arguments,
            PyObject *keywords );
+
+PyObject *pyfwevt_manifest_get_number_of_providers(
+           pyfwevt_manifest_t *pyfwevt_manifest,
+           PyObject *arguments );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _PYFWEVT_TEMPLATE_H ) */
+#endif /* !defined( _PYFWEVT_MANIFEST_H ) */
 

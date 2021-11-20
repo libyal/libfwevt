@@ -1,5 +1,5 @@
 /*
- * Python object wrapper of libfwevt_template_t
+ * Python object wrapper of libfwevt_manifest_t
  *
  * Copyright (C) 2011-2021, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -30,39 +30,52 @@
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_python.h"
-#include "pyfwevt_template.h"
+#include "pyfwevt_manifest.h"
 #include "pyfwevt_unused.h"
 
-PyMethodDef pyfwevt_template_object_methods[] = {
+PyMethodDef pyfwevt_manifest_object_methods[] = {
 
 	{ "copy_from_byte_stream",
-	  (PyCFunction) pyfwevt_template_copy_from_byte_stream,
+	  (PyCFunction) pyfwevt_manifest_copy_from_byte_stream,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "copy_from_byte_stream(byte_stream)\n"
 	  "\n"
-	  "Copies the template from the byte stream." },
+	  "Copies the manifest from the byte stream." },
+
+	{ "get_number_of_providers",
+	  (PyCFunction) pyfwevt_manifest_get_number_of_providers,
+	  METH_NOARGS,
+	  "get_number_of_providers() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of providers." },
 
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
 
-PyGetSetDef pyfwevt_template_object_get_set_definitions[] = {
+PyGetSetDef pyfwevt_manifest_object_get_set_definitions[] = {
+
+	{ "number_of_providers",
+	  (getter) pyfwevt_manifest_get_number_of_providers,
+	  (setter) 0,
+	  "The number of providers.",
+	  NULL },
 
 	/* Sentinel */
 	{ NULL, NULL, NULL, NULL, NULL }
 };
 
-PyTypeObject pyfwevt_template_type_object = {
+PyTypeObject pyfwevt_manifest_type_object = {
 	PyVarObject_HEAD_INIT( NULL, 0 )
 
 	/* tp_name */
-	"pyfwevt.template",
+	"pyfwevt.manifest",
 	/* tp_basicsize */
-	sizeof( pyfwevt_template_t ),
+	sizeof( pyfwevt_manifest_t ),
 	/* tp_itemsize */
 	0,
 	/* tp_dealloc */
-	(destructor) pyfwevt_template_free,
+	(destructor) pyfwevt_manifest_free,
 	/* tp_print */
 	0,
 	/* tp_getattr */
@@ -94,7 +107,7 @@ PyTypeObject pyfwevt_template_type_object = {
 	/* tp_flags */
 	Py_TPFLAGS_DEFAULT,
 	/* tp_doc */
-	"pyfwevt template object (wraps libfwevt_template_t)",
+	"pyfwevt manifest object (wraps libfwevt_manifest_t)",
 	/* tp_traverse */
 	0,
 	/* tp_clear */
@@ -108,11 +121,11 @@ PyTypeObject pyfwevt_template_type_object = {
 	/* tp_iternext */
 	0,
 	/* tp_methods */
-	pyfwevt_template_object_methods,
+	pyfwevt_manifest_object_methods,
 	/* tp_members */
 	0,
 	/* tp_getset */
-	pyfwevt_template_object_get_set_definitions,
+	pyfwevt_manifest_object_get_set_definitions,
 	/* tp_base */
 	0,
 	/* tp_dict */
@@ -124,7 +137,7 @@ PyTypeObject pyfwevt_template_type_object = {
 	/* tp_dictoffset */
 	0,
 	/* tp_init */
-	(initproc) pyfwevt_template_init,
+	(initproc) pyfwevt_manifest_init,
 	/* tp_alloc */
 	0,
 	/* tp_new */
@@ -147,89 +160,89 @@ PyTypeObject pyfwevt_template_type_object = {
 	0
 };
 
-/* Creates a new template object
+/* Creates a new manifest object
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyfwevt_template_new(
-           libfwevt_template_t *template,
+PyObject *pyfwevt_manifest_new(
+           libfwevt_manifest_t *manifest,
            PyObject *parent_object )
 {
-	pyfwevt_template_t *pyfwevt_template = NULL;
-	static char *function                                    = "pyfwevt_template_new";
+	pyfwevt_manifest_t *pyfwevt_manifest = NULL;
+	static char *function                = "pyfwevt_manifest_new";
 
-	if( template == NULL )
+	if( manifest == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid template.",
+		 "%s: invalid manifest.",
 		 function );
 
 		return( NULL );
 	}
 	/* PyObject_New does not invoke tp_init
 	 */
-	pyfwevt_template = PyObject_New(
-	                              struct pyfwevt_template,
-	                              &pyfwevt_template_type_object );
+	pyfwevt_manifest = PyObject_New(
+	                    struct pyfwevt_manifest,
+	                    &pyfwevt_manifest_type_object );
 
-	if( pyfwevt_template == NULL )
+	if( pyfwevt_manifest == NULL )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to initialize template.",
+		 "%s: unable to initialize manifest.",
 		 function );
 
 		goto on_error;
 	}
-	pyfwevt_template->template = template;
-	pyfwevt_template->parent_object       = parent_object;
+	pyfwevt_manifest->manifest = manifest;
+	pyfwevt_manifest->parent_object       = parent_object;
 
-	if( pyfwevt_template->parent_object != NULL )
+	if( pyfwevt_manifest->parent_object != NULL )
 	{
 		Py_IncRef(
-		 pyfwevt_template->parent_object );
+		 pyfwevt_manifest->parent_object );
 	}
-	return( (PyObject *) pyfwevt_template );
+	return( (PyObject *) pyfwevt_manifest );
 
 on_error:
-	if( pyfwevt_template != NULL )
+	if( pyfwevt_manifest != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pyfwevt_template );
+		 (PyObject *) pyfwevt_manifest );
 	}
 	return( NULL );
 }
 
-/* Initializes a template object
+/* Initializes a manifest object
  * Returns 0 if successful or -1 on error
  */
-int pyfwevt_template_init(
-     pyfwevt_template_t *pyfwevt_template )
+int pyfwevt_manifest_init(
+     pyfwevt_manifest_t *pyfwevt_manifest )
 {
 	libcerror_error_t *error = NULL;
-	static char *function    = "pyfwevt_template_init";
+	static char *function    = "pyfwevt_manifest_init";
 
-	if( pyfwevt_template == NULL )
+	if( pyfwevt_manifest == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid template.",
+		 "%s: invalid manifest.",
 		 function );
 
 		return( -1 );
 	}
-	/* Make sure libfwevt template is set to NULL
+	/* Make sure libfwevt manifest is set to NULL
 	 */
-	pyfwevt_template->template = NULL;
+	pyfwevt_manifest->manifest = NULL;
 
-	if( libfwevt_template_initialize(
-	     &( pyfwevt_template->template ),
+	if( libfwevt_manifest_initialize(
+	     &( pyfwevt_manifest->manifest ),
 	     &error ) != 1 )
 	{
 		pyfwevt_error_raise(
 		 error,
 		 PyExc_MemoryError,
-		 "%s: unable to initialize template.",
+		 "%s: unable to initialize manifest.",
 		 function );
 
 		libcerror_error_free(
@@ -240,27 +253,27 @@ int pyfwevt_template_init(
 	return( 0 );
 }
 
-/* Frees a template object
+/* Frees a manifest object
  */
-void pyfwevt_template_free(
-      pyfwevt_template_t *pyfwevt_template )
+void pyfwevt_manifest_free(
+      pyfwevt_manifest_t *pyfwevt_manifest )
 {
 	struct _typeobject *ob_type = NULL;
 	libcerror_error_t *error    = NULL;
-	static char *function       = "pyfwevt_template_free";
+	static char *function       = "pyfwevt_manifest_free";
 	int result                  = 0;
 
-	if( pyfwevt_template == NULL )
+	if( pyfwevt_manifest == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid template.",
+		 "%s: invalid manifest.",
 		 function );
 
 		return;
 	}
 	ob_type = Py_TYPE(
-	           pyfwevt_template );
+	           pyfwevt_manifest );
 
 	if( ob_type == NULL )
 	{
@@ -280,12 +293,12 @@ void pyfwevt_template_free(
 
 		return;
 	}
-	if( pyfwevt_template->template != NULL )
+	if( pyfwevt_manifest->manifest != NULL )
 	{
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libfwevt_template_free(
-		          &( pyfwevt_template->template ),
+		result = libfwevt_manifest_free(
+		          &( pyfwevt_manifest->manifest ),
 		          &error );
 
 		Py_END_ALLOW_THREADS
@@ -295,43 +308,43 @@ void pyfwevt_template_free(
 			pyfwevt_error_raise(
 			 error,
 			 PyExc_MemoryError,
-			 "%s: unable to free libfwevt template.",
+			 "%s: unable to free libfwevt manifest.",
 			 function );
 
 			libcerror_error_free(
 			 &error );
 		}
 	}
-	if( pyfwevt_template->parent_object != NULL )
+	if( pyfwevt_manifest->parent_object != NULL )
 	{
 		Py_DecRef(
-		 pyfwevt_template->parent_object );
+		 pyfwevt_manifest->parent_object );
 	}
 	ob_type->tp_free(
-	 (PyObject*) pyfwevt_template );
+	 (PyObject*) pyfwevt_manifest );
 }
 
-/* Copies the template from a byte stream
+/* Copies the manifest from a byte stream
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyfwevt_template_copy_from_byte_stream(
-           pyfwevt_template_t *pyfwevt_template,
+PyObject *pyfwevt_manifest_copy_from_byte_stream(
+           pyfwevt_manifest_t *pyfwevt_manifest,
            PyObject *arguments,
            PyObject *keywords )
 {
 	PyObject *bytes_object      = NULL;
 	libcerror_error_t *error    = NULL;
 	const char *byte_stream     = NULL;
-	static char *function       = "pyfwevt_template_copy_from_byte_stream";
+	static char *function       = "pyfwevt_manifest_copy_from_byte_stream";
 	static char *keyword_list[] = { "byte_stream", NULL };
 	Py_ssize_t byte_stream_size = 0;
 	int result                  = 0;
 
-	if( pyfwevt_template == NULL )
+	if( pyfwevt_manifest == NULL )
 	{
 		PyErr_Format(
 		 PyExc_TypeError,
-		 "%s: invalid template.",
+		 "%s: invalid manifest.",
 		 function );
 
 		return( NULL );
@@ -401,11 +414,10 @@ PyObject *pyfwevt_template_copy_from_byte_stream(
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libfwevt_template_read(
-	          pyfwevt_template->template,
+	result = libfwevt_manifest_read(
+	          pyfwevt_manifest->manifest,
 	          (uint8_t *) byte_stream,
 	          (size_t) byte_stream_size,
-	          0,
 	          &error );
 
 	Py_END_ALLOW_THREADS
@@ -415,7 +427,7 @@ PyObject *pyfwevt_template_copy_from_byte_stream(
 		pyfwevt_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to copy template from byte stream.",
+		 "%s: unable to copy manifest from byte stream.",
 		 function );
 
 		libcerror_error_free(
@@ -427,5 +439,61 @@ PyObject *pyfwevt_template_copy_from_byte_stream(
 	 Py_None );
 
 	return( Py_None );
+}
+
+/* Retrieves the number of providers
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_manifest_get_number_of_providers(
+           pyfwevt_manifest_t *pyfwevt_manifest,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_manifest_get_number_of_providers";
+	int number_of_providers  = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_manifest == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid manifest.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_manifest_get_number_of_providers(
+	          pyfwevt_manifest->manifest,
+	          &number_of_providers,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of providers.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_providers );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_providers );
+#endif
+	return( integer_object );
 }
 

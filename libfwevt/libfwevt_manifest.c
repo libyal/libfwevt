@@ -178,9 +178,6 @@ int libfwevt_manifest_read(
 	uint32_t provider_index                         = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	system_character_t guid_string[ 48 ];
-
-	libfguid_identifier_t *guid                     = NULL;
 	uint32_t value_32bit                            = 0;
 	int result                                      = 0;
 #endif
@@ -209,24 +206,14 @@ int libfwevt_manifest_read(
 
 		return( -1 );
 	}
-	if( data_size > (size_t) SSIZE_MAX )
+	if( ( data_size < sizeof( fwevt_template_manifest_t ) )
+	 || ( data_size > (size_t) SSIZE_MAX ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid data size value exceeds maximum.",
-		 function );
-
-		return( -1 );
-	}
-	if( data_size < sizeof( fwevt_template_manifest_t ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data value too small.",
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data size value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -294,7 +281,8 @@ int libfwevt_manifest_read(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( memory_compare(
 	     wevt_manifest->signature,
 	     "CRIM",
@@ -329,20 +317,8 @@ int libfwevt_manifest_read(
 	     provider_index < number_of_providers;
 	     provider_index++ )
 	{
-		if( data_offset >= data_size )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid data offset value out of bounds.",
-			 function );
-
-			goto on_error;
-		}
-		provider_entry = (fwevt_template_provider_entry_t *) &( data[ data_offset ] );
-
-		if( ( data_offset + sizeof( fwevt_template_provider_entry_t ) ) >= data_size )
+		if( ( data_size < sizeof( fwevt_template_provider_entry_t ) )
+		 || ( data_offset >= ( data_size - sizeof( fwevt_template_provider_entry_t ) ) ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -353,6 +329,21 @@ int libfwevt_manifest_read(
 
 			goto on_error;
 		}
+		provider_entry = (fwevt_template_provider_entry_t *) &( data[ data_offset ] );
+
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
+		{
+			libcnotify_printf(
+			 "%s: provider entry: %02" PRIu32 " data:\n",
+			 function,
+			 provider_index );
+			libcnotify_print_data(
+			 (uint8_t *) provider_entry,
+			 sizeof( fwevt_template_provider_entry_t ),
+			 0 );
+		}
+#endif
 		byte_stream_copy_to_uint32_little_endian(
 		 provider_entry->data_offset,
 		 provider_data_offset );
@@ -360,87 +351,39 @@ int libfwevt_manifest_read(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
-			if( libfguid_identifier_initialize(
-			     &guid,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-				 "%s: unable to create GUID.",
-				 function );
+			libcnotify_printf(
+			 "%s: provider entry: %02" PRIu32 ":\n",
+			 function,
+			 provider_index );
 
-				goto on_error;
-			}
-			if( libfguid_identifier_copy_from_byte_stream(
-			     guid,
+			if( libfwevt_debug_print_guid_value(
+			     function,
+			     "identifier\t\t\t\t\t",
 			     provider_entry->identifier,
 			     16,
 			     LIBFGUID_ENDIAN_LITTLE,
+			     LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
 				 error,
 				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-				 "%s: unable to copy byte stream to GUID.",
-				 function );
-
-				goto on_error;
-			}
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-			result = libfguid_identifier_copy_to_utf16_string(
-				  guid,
-				  (uint16_t *) guid_string,
-				  48,
-				  LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
-				  error );
-#else
-			result = libfguid_identifier_copy_to_utf8_string(
-				  guid,
-				  (uint8_t *) guid_string,
-				  48,
-				  LIBFGUID_STRING_FORMAT_FLAG_USE_LOWER_CASE,
-				  error );
-#endif
-			if( result != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-				 "%s: unable to copy GUID to string.",
+				 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+				 "%s: unable to print GUID value.",
 				 function );
 
 				goto on_error;
 			}
 			libcnotify_printf(
-			 "%s: provider entry: %02" PRIu32 " identifier\t\t\t: %" PRIs_SYSTEM "\n",
+			 "%s: data offset\t\t\t\t\t: 0x%08" PRIx32 "\n",
 			 function,
-			 provider_index,
-			 guid_string );
-
-			if( libfguid_identifier_free(
-			     &guid,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free GUID.",
-				 function );
-
-				goto on_error;
-			}
-			libcnotify_printf(
-			 "%s: provider entry: %02" PRIu32 " data offset\t\t\t: 0x%08" PRIx32 "\n",
-			 function,
-			 provider_index,
 			 provider_data_offset );
+
+			libcnotify_printf(
+			 "\n" );
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 		data_offset += sizeof( fwevt_template_provider_entry_t );
 
 		if( libfwevt_provider_initialize(
@@ -668,14 +611,6 @@ int libfwevt_manifest_read(
 	return( 1 );
 
 on_error:
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( guid != NULL )
-	{
-		libfguid_identifier_free(
-		 &guid,
-		 NULL );
-	}
-#endif
 	if( provider != NULL )
 	{
 		libfwevt_provider_free(

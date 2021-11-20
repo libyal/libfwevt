@@ -20,8 +20,8 @@ BUILT_SOURCES = \
 	pyfwevt_integer.c pyfwevt_integer.h \
 	pyfwevt_libcerror.h \
 	pyfwevt_libfwevt.h \
+	pyfwevt_manifest.c pyfwevt_manifest.h \
 	pyfwevt_python.h \
-	pyfwevt_template.c pyfwevt_template.h \
 	pyfwevt_unused.h
 
 pyexec_LTLIBRARIES = pyfwevt.la

@@ -162,6 +162,9 @@ int libfwevt_xml_document_free(
 }
 
 /* Clones the binary XML document
+ *
+ * This function is deprecated and threre is no replacement.
+ *
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_xml_document_clone(
@@ -169,9 +172,7 @@ int libfwevt_xml_document_clone(
      libfwevt_xml_document_t *source_xml_document,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_document_t *internal_destination_xml_document = NULL;
-	libfwevt_internal_xml_document_t *internal_source_xml_document      = NULL;
-	static char *function                                               = "libfwevt_xml_document_free";
+	static char *function = "libfwevt_xml_document_free";
 
 	if( destination_xml_document == NULL )
 	{
@@ -204,15 +205,6 @@ int libfwevt_xml_document_clone(
 	/* TODO clone tags */
 
 	return( 1 );
-
-on_error:
-	if( *destination_xml_document != NULL )
-	{
-		libfwevt_xml_document_free(
-		 destination_xml_document,
-		 NULL );
-	}
-	return( -1 );
 }
 
 /* Retrieves the root XML tag
@@ -3248,9 +3240,12 @@ int libfwevt_xml_document_read_fragment_header(
      size_t binary_data_offset,
      libcerror_error_t **error )
 {
-	const uint8_t *xml_document_data = NULL;
 	static char *function            = "libfwevt_xml_document_read_fragment_header";
 	size_t xml_document_data_size    = 0;
+
+#if defined( HAVE_DEBUG_OUTPUT )
+	const uint8_t *xml_document_data = NULL;
+#endif
 
 	if( internal_xml_document == NULL )
 	{
