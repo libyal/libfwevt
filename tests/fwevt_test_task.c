@@ -44,6 +44,8 @@ uint8_t fwevt_test_task_data1[ 100 ] = {
 	0x41, 0x00, 0x54, 0x00, 0x45, 0x00, 0x43, 0x00, 0x48, 0x00, 0x41, 0x00, 0x4e, 0x00, 0x47, 0x00,
 	0x45, 0x00, 0x00, 0x00 };
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 /* Tests the libfwevt_task_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -79,8 +81,8 @@ int fwevt_test_task_initialize(
 	 "error",
 	 error );
 
-	result = libfwevt_task_free(
-	          &task,
+	result = libfwevt_internal_task_free(
+	          (libfwevt_internal_task_t **) &task,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -154,8 +156,8 @@ int fwevt_test_task_initialize(
 
 			if( task != NULL )
 			{
-				libfwevt_task_free(
-				 &task,
+				libfwevt_internal_task_free(
+				 (libfwevt_internal_task_t **) &task,
 				 NULL );
 			}
 		}
@@ -196,8 +198,8 @@ int fwevt_test_task_initialize(
 
 			if( task != NULL )
 			{
-				libfwevt_task_free(
-				 &task,
+				libfwevt_internal_task_free(
+				 (libfwevt_internal_task_t **) &task,
 				 NULL );
 			}
 		}
@@ -232,12 +234,14 @@ on_error:
 	}
 	if( task != NULL )
 	{
-		libfwevt_task_free(
-		 &task,
+		libfwevt_internal_task_free(
+		 (libfwevt_internal_task_t **) &task,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* Tests the libfwevt_task_free function
  * Returns 1 if successful or 0 if not
@@ -276,6 +280,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_task_read function
  * Returns 1 if successful or 0 if not
@@ -469,8 +475,8 @@ int fwevt_test_task_read(
 
 	/* Clean up
 	 */
-	result = libfwevt_task_free(
-	          &task,
+	result = libfwevt_internal_task_free(
+	          (libfwevt_internal_task_t **) &task,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -496,12 +502,14 @@ on_error:
 	}
 	if( task != NULL )
 	{
-		libfwevt_task_free(
-		 &task,
+		libfwevt_internal_task_free(
+		 (libfwevt_internal_task_t **) &task,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -518,17 +526,25 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_task_initialize",
 	 fwevt_test_task_initialize );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_task_free",
 	 fwevt_test_task_free );
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_task_read",
 	 fwevt_test_task_read );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

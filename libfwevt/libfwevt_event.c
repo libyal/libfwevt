@@ -106,15 +106,14 @@ on_error:
 	return( -1 );
 }
 
-/* Frees an even
+/* Frees an event
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_event_free(
      libfwevt_event_t **event,
      libcerror_error_t **error )
 {
-	libfwevt_internal_event_t *internal_event = NULL;
-	static char *function                     = "libfwevt_event_free";
+	static char *function = "libfwevt_event_free";
 
 	if( event == NULL )
 	{
@@ -129,11 +128,37 @@ int libfwevt_event_free(
 	}
 	if( *event != NULL )
 	{
-		internal_event = (libfwevt_internal_event_t *) *event;
-		*event         = NULL;
+		*event = NULL;
+	}
+	return( 1 );
+}
 
+/* Frees an event
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_event_free(
+     libfwevt_internal_event_t **internal_event,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_event_free";
+
+	if( internal_event == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid event.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_event != NULL )
+	{
 		memory_free(
-		 internal_event );
+		 *internal_event );
+
+		*internal_event = NULL;
 	}
 	return( 1 );
 }

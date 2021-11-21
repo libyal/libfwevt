@@ -42,6 +42,8 @@ uint8_t fwevt_test_keyword_data1[ 40 ] = {
 	0x18, 0x00, 0x00, 0x00, 0x53, 0x00, 0x65, 0x00, 0x63, 0x00, 0x75, 0x00, 0x72, 0x00, 0x69, 0x00,
 	0x74, 0x00, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 /* Tests the libfwevt_keyword_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -77,8 +79,8 @@ int fwevt_test_keyword_initialize(
 	 "error",
 	 error );
 
-	result = libfwevt_keyword_free(
-	          &keyword,
+	result = libfwevt_internal_keyword_free(
+	          (libfwevt_internal_keyword_t **) &keyword,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -152,8 +154,8 @@ int fwevt_test_keyword_initialize(
 
 			if( keyword != NULL )
 			{
-				libfwevt_keyword_free(
-				 &keyword,
+				libfwevt_internal_keyword_free(
+				 (libfwevt_internal_keyword_t **) &keyword,
 				 NULL );
 			}
 		}
@@ -194,8 +196,8 @@ int fwevt_test_keyword_initialize(
 
 			if( keyword != NULL )
 			{
-				libfwevt_keyword_free(
-				 &keyword,
+				libfwevt_internal_keyword_free(
+				 (libfwevt_internal_keyword_t **) &keyword,
 				 NULL );
 			}
 		}
@@ -230,12 +232,14 @@ on_error:
 	}
 	if( keyword != NULL )
 	{
-		libfwevt_keyword_free(
-		 &keyword,
+		libfwevt_internal_keyword_free(
+		 (libfwevt_internal_keyword_t **) &keyword,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* Tests the libfwevt_keyword_free function
  * Returns 1 if successful or 0 if not
@@ -274,6 +278,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_keyword_read function
  * Returns 1 if successful or 0 if not
@@ -467,8 +473,8 @@ int fwevt_test_keyword_read(
 
 	/* Clean up
 	 */
-	result = libfwevt_keyword_free(
-	          &keyword,
+	result = libfwevt_internal_keyword_free(
+	          (libfwevt_internal_keyword_t **) &keyword,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -494,12 +500,14 @@ on_error:
 	}
 	if( keyword != NULL )
 	{
-		libfwevt_keyword_free(
-		 &keyword,
+		libfwevt_internal_keyword_free(
+		 (libfwevt_internal_keyword_t **) &keyword,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -516,17 +524,25 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_keyword_initialize",
 	 fwevt_test_keyword_initialize );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_keyword_free",
 	 fwevt_test_keyword_free );
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_keyword_read",
 	 fwevt_test_keyword_read );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

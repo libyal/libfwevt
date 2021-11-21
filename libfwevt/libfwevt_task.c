@@ -118,8 +118,7 @@ int libfwevt_task_free(
      libfwevt_task_t **task,
      libcerror_error_t **error )
 {
-	libfwevt_internal_task_t *internal_task = NULL;
-	static char *function                   = "libfwevt_task_free";
+	static char *function = "libfwevt_task_free";
 
 	if( task == NULL )
 	{
@@ -134,11 +133,37 @@ int libfwevt_task_free(
 	}
 	if( *task != NULL )
 	{
-		internal_task = (libfwevt_internal_task_t *) *task;
-		*task         = NULL;
+		*task = NULL;
+	}
+	return( 1 );
+}
 
+/* Frees a task
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_task_free(
+     libfwevt_internal_task_t **internal_task,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_task_free";
+
+	if( internal_task == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid task.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_task != NULL )
+	{
 		memory_free(
-		 internal_task );
+		 *internal_task );
+
+		*internal_task = NULL;
 	}
 	return( 1 );
 }

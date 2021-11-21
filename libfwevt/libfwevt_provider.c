@@ -208,7 +208,7 @@ int libfwevt_internal_provider_free(
 		{
 			if( libcdata_array_free(
 			     &( ( *internal_provider )->channels_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_channel_free,
+			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_channel_free,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -225,7 +225,7 @@ int libfwevt_internal_provider_free(
 		{
 			if( libcdata_array_free(
 			     &( ( *internal_provider )->events_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_event_free,
+			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_event_free,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -242,7 +242,7 @@ int libfwevt_internal_provider_free(
 		{
 			if( libcdata_array_free(
 			     &( ( *internal_provider )->keywords_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_keyword_free,
+			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_keyword_free,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -259,7 +259,7 @@ int libfwevt_internal_provider_free(
 		{
 			if( libcdata_array_free(
 			     &( ( *internal_provider )->levels_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_level_free,
+			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_level_free,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -276,7 +276,7 @@ int libfwevt_internal_provider_free(
 		{
 			if( libcdata_array_free(
 			     &( ( *internal_provider )->maps_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_map_free,
+			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_map_free,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -293,7 +293,7 @@ int libfwevt_internal_provider_free(
 		{
 			if( libcdata_array_free(
 			     &( ( *internal_provider )->opcodes_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_opcode_free,
+			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_opcode_free,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -310,7 +310,7 @@ int libfwevt_internal_provider_free(
 		{
 			if( libcdata_array_free(
 			     &( ( *internal_provider )->tasks_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_task_free,
+			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_task_free,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -999,15 +999,15 @@ int libfwevt_provider_read_channels(
 on_error:
 	if( channel != NULL )
 	{
-		libfwevt_channel_free(
-		 &channel,
+		libfwevt_internal_channel_free(
+		 (libfwevt_internal_channel_t **) &channel,
 		 NULL );
 	}
 	if( internal_provider->channels_array != NULL )
 	{
 		libcdata_array_free(
 		 &( internal_provider->channels_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_channel_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_channel_free,
 		 NULL );
 	}
 	return( -1 );
@@ -1327,15 +1327,15 @@ int libfwevt_provider_read_events(
 on_error:
 	if( event != NULL )
 	{
-		libfwevt_event_free(
-		 &event,
+		libfwevt_internal_event_free(
+		 (libfwevt_internal_event_t **) &event,
 		 NULL );
 	}
 	if( internal_provider->events_array != NULL )
 	{
 		libcdata_array_free(
 		 &( internal_provider->events_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_event_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_event_free,
 		 NULL );
 	}
 	return( -1 );
@@ -1632,15 +1632,15 @@ int libfwevt_provider_read_keywords(
 on_error:
 	if( keyword != NULL )
 	{
-		libfwevt_keyword_free(
-		 &keyword,
+		libfwevt_internal_keyword_free(
+		 (libfwevt_internal_keyword_t **) &keyword,
 		 NULL );
 	}
 	if( internal_provider->keywords_array != NULL )
 	{
 		libcdata_array_free(
 		 &( internal_provider->keywords_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_keyword_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_keyword_free,
 		 NULL );
 	}
 	return( -1 );
@@ -1948,15 +1948,15 @@ int libfwevt_provider_read_levels(
 on_error:
 	if( level != NULL )
 	{
-		libfwevt_level_free(
-		 &level,
+		libfwevt_internal_level_free(
+		 (libfwevt_internal_level_t **) &level,
 		 NULL );
 	}
 	if( internal_provider->levels_array != NULL )
 	{
 		libcdata_array_free(
 		 &( internal_provider->levels_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_level_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_level_free,
 		 NULL );
 	}
 	return( -1 );
@@ -2344,15 +2344,15 @@ int libfwevt_provider_read_maps(
 on_error:
 	if( map != NULL )
 	{
-		libfwevt_map_free(
-		 &map,
+		libfwevt_internal_map_free(
+		 (libfwevt_internal_map_t **) &map,
 		 NULL );
 	}
 	if( internal_provider->maps_array != NULL )
 	{
 		libcdata_array_free(
 		 &( internal_provider->maps_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_map_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_map_free,
 		 NULL );
 	}
 	return( -1 );
@@ -2660,15 +2660,15 @@ int libfwevt_provider_read_opcodes(
 on_error:
 	if( opcode != NULL )
 	{
-		libfwevt_opcode_free(
-		 &opcode,
+		libfwevt_internal_opcode_free(
+		 (libfwevt_internal_opcode_t **) &opcode,
 		 NULL );
 	}
 	if( internal_provider->opcodes_array != NULL )
 	{
 		libcdata_array_free(
 		 &( internal_provider->opcodes_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_opcode_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_opcode_free,
 		 NULL );
 	}
 	return( -1 );
@@ -2976,15 +2976,15 @@ int libfwevt_provider_read_tasks(
 on_error:
 	if( task != NULL )
 	{
-		libfwevt_task_free(
-		 &task,
+		libfwevt_internal_task_free(
+		 (libfwevt_internal_task_t **) &task,
 		 NULL );
 	}
 	if( internal_provider->tasks_array != NULL )
 	{
 		libcdata_array_free(
 		 &( internal_provider->tasks_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_task_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_task_free,
 		 NULL );
 	}
 	return( -1 );

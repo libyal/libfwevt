@@ -117,8 +117,7 @@ int libfwevt_channel_free(
      libfwevt_channel_t **channel,
      libcerror_error_t **error )
 {
-	libfwevt_internal_channel_t *internal_channel = NULL;
-	static char *function                         = "libfwevt_channel_free";
+	static char *function = "libfwevt_channel_free";
 
 	if( channel == NULL )
 	{
@@ -133,11 +132,37 @@ int libfwevt_channel_free(
 	}
 	if( *channel != NULL )
 	{
-		internal_channel = (libfwevt_internal_channel_t *) *channel;
-		*channel         = NULL;
+		*channel = NULL;
+	}
+	return( 1 );
+}
 
+/* Frees a channel
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_channel_free(
+     libfwevt_internal_channel_t **internal_channel,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_channel_free";
+
+	if( internal_channel == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid WEVT channel descriptor.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_channel != NULL )
+	{
 		memory_free(
-		 internal_channel );
+		 *internal_channel );
+
+		*internal_channel = NULL;
 	}
 	return( 1 );
 }

@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_LEVEL_H )
-#define _LIBFWEVT_INTERNAL_LEVEL_H
+#if !defined( _LIBFWEVT_LEVEL_H )
+#define _LIBFWEVT_LEVEL_H
 
 #include <common.h>
 #include <types.h>
@@ -42,7 +42,6 @@ struct libfwevt_internal_level
 	uint16_t identifier;
 };
 
-LIBFWEVT_EXTERN \
 int libfwevt_level_initialize(
      libfwevt_level_t **level,
      libcerror_error_t **error );
@@ -52,7 +51,10 @@ int libfwevt_level_free(
      libfwevt_level_t **level,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
+int libfwevt_internal_level_free(
+     libfwevt_internal_level_t **internal_level,
+     libcerror_error_t **error );
+
 int libfwevt_level_read(
      libfwevt_level_t *level,
      const uint8_t *data,
@@ -64,5 +66,5 @@ int libfwevt_level_read(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_LEVEL_H ) */
+#endif /* !defined( _LIBFWEVT_LEVEL_H ) */
 

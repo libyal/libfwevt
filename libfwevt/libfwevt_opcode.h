@@ -42,7 +42,6 @@ struct libfwevt_internal_opcode
 	uint16_t identifier;
 };
 
-LIBFWEVT_EXTERN \
 int libfwevt_opcode_initialize(
      libfwevt_opcode_t **opcode,
      libcerror_error_t **error );
@@ -52,7 +51,10 @@ int libfwevt_opcode_free(
      libfwevt_opcode_t **opcode,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
+int libfwevt_internal_opcode_free(
+     libfwevt_internal_opcode_t **internal_opcode,
+     libcerror_error_t **error );
+
 int libfwevt_opcode_read(
      libfwevt_opcode_t *opcode,
      const uint8_t *data,

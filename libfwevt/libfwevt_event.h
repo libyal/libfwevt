@@ -62,7 +62,6 @@ struct libfwevt_internal_event
 	uint32_t template_offset;
 };
 
-LIBFWEVT_EXTERN \
 int libfwevt_event_initialize(
      libfwevt_event_t **event,
      libcerror_error_t **error );
@@ -72,7 +71,10 @@ int libfwevt_event_free(
      libfwevt_event_t **event,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
+int libfwevt_internal_event_free(
+     libfwevt_internal_event_t **internal_event,
+     libcerror_error_t **error );
+
 int libfwevt_event_read(
      libfwevt_event_t *event,
      const uint8_t *data,

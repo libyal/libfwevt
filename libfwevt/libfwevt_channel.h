@@ -42,7 +42,6 @@ struct libfwevt_internal_channel
 	uint32_t identifier;
 };
 
-LIBFWEVT_EXTERN \
 int libfwevt_channel_initialize(
      libfwevt_channel_t **channel,
      libcerror_error_t **error );
@@ -52,7 +51,10 @@ int libfwevt_channel_free(
      libfwevt_channel_t **channel,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
+int libfwevt_internal_channel_free(
+     libfwevt_internal_channel_t **internal_channel,
+     libcerror_error_t **error );
+
 int libfwevt_channel_read(
      libfwevt_channel_t *channel,
      const uint8_t *data,

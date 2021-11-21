@@ -94,15 +94,6 @@ int libfwevt_error_backtrace_sprint(
  * Channel functions
  * ------------------------------------------------------------------------- */
 
-/* Creates a channel
- * Make sure the value channel is referencing, is set to NULL
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_channel_initialize(
-     libfwevt_channel_t **channel,
-     libfwevt_error_t **error );
-
 /* Frees a channel
  * Returns 1 if successful or -1 on error
  */
@@ -111,29 +102,9 @@ int libfwevt_channel_free(
      libfwevt_channel_t **channel,
      libfwevt_error_t **error );
 
-/* Reads the channel
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_channel_read(
-     libfwevt_channel_t *channel,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
-     libfwevt_error_t **error );
-
 /* -------------------------------------------------------------------------
  * Event functions
  * ------------------------------------------------------------------------- */
-
-/* Creates an event
- * Make sure the value channel is referencing, is set to NULL
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_event_initialize(
-     libfwevt_event_t **event,
-     libfwevt_error_t **error );
 
 /* Frees an event
  * Returns 1 if successful or -1 on error
@@ -141,17 +112,6 @@ int libfwevt_event_initialize(
 LIBFWEVT_EXTERN \
 int libfwevt_event_free(
      libfwevt_event_t **event,
-     libfwevt_error_t **error );
-
-/* Reads the event
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_event_read(
-     libfwevt_event_t *event,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
      libfwevt_error_t **error );
 
 /* Retrieves the identifier
@@ -185,15 +145,6 @@ int libfwevt_event_get_template_offset(
  * Keyword functions
  * ------------------------------------------------------------------------- */
 
-/* Creates a keyword
- * Make sure the value channel is referencing, is set to NULL
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_keyword_initialize(
-     libfwevt_keyword_t **keyword,
-     libfwevt_error_t **error );
-
 /* Frees a keyword
  * Returns 1 if successful or -1 on error
  */
@@ -202,29 +153,9 @@ int libfwevt_keyword_free(
      libfwevt_keyword_t **keyword,
      libfwevt_error_t **error );
 
-/* Reads the keyword
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_keyword_read(
-     libfwevt_keyword_t *keyword,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
-     libfwevt_error_t **error );
-
 /* -------------------------------------------------------------------------
  * Level functions
  * ------------------------------------------------------------------------- */
-
-/* Creates a level
- * Make sure the value channel is referencing, is set to NULL
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_level_initialize(
-     libfwevt_level_t **level,
-     libfwevt_error_t **error );
 
 /* Frees a level
  * Returns 1 if successful or -1 on error
@@ -232,17 +163,6 @@ int libfwevt_level_initialize(
 LIBFWEVT_EXTERN \
 int libfwevt_level_free(
      libfwevt_level_t **level,
-     libfwevt_error_t **error );
-
-/* Reads the level
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_level_read(
-     libfwevt_level_t *level,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
      libfwevt_error_t **error );
 
 /* -------------------------------------------------------------------------
@@ -321,15 +241,6 @@ int libfwevt_manifest_get_provider_by_identifier(
  * Map functions
  * ------------------------------------------------------------------------- */
 
-/* Creates a map
- * Make sure the value channel is referencing, is set to NULL
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_map_initialize(
-     libfwevt_map_t **map,
-     libfwevt_error_t **error );
-
 /* Frees a map
  * Returns 1 if successful or -1 on error
  */
@@ -338,29 +249,9 @@ int libfwevt_map_free(
      libfwevt_map_t **map,
      libfwevt_error_t **error );
 
-/* Reads the map
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_map_read(
-     libfwevt_map_t *map,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
-     libfwevt_error_t **error );
-
 /* -------------------------------------------------------------------------
  * Opcode functions
  * ------------------------------------------------------------------------- */
-
-/* Creates an opcode
- * Make sure the value channel is referencing, is set to NULL
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_opcode_initialize(
-     libfwevt_opcode_t **opcode,
-     libfwevt_error_t **error );
 
 /* Frees an opcode
  * Returns 1 if successful or -1 on error
@@ -368,17 +259,6 @@ int libfwevt_opcode_initialize(
 LIBFWEVT_EXTERN \
 int libfwevt_opcode_free(
      libfwevt_opcode_t **opcode,
-     libfwevt_error_t **error );
-
-/* Reads the opcode
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_opcode_read(
-     libfwevt_opcode_t *opcode,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
      libfwevt_error_t **error );
 
 /* -------------------------------------------------------------------------
@@ -579,32 +459,12 @@ int libfwevt_provider_get_template_by_offset(
  * Task functions
  * ------------------------------------------------------------------------- */
 
-/* Creates a task
- * Make sure the value channel is referencing, is set to NULL
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_task_initialize(
-     libfwevt_task_t **task,
-     libfwevt_error_t **error );
-
 /* Frees a task
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
 int libfwevt_task_free(
      libfwevt_task_t **task,
-     libfwevt_error_t **error );
-
-/* Reads the task
- * Returns 1 if successful or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_task_read(
-     libfwevt_task_t *task,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
      libfwevt_error_t **error );
 
 /* -------------------------------------------------------------------------

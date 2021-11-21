@@ -25,19 +25,11 @@ Error functions
 .Pp
 Channel functions
 .Ft int
-.Fn libfwevt_channel_initialize "libfwevt_channel_t **channel" "libfwevt_error_t **error"
-.Ft int
 .Fn libfwevt_channel_free "libfwevt_channel_t **channel" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_channel_read "libfwevt_channel_t *channel" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
 .Pp
 Event functions
 .Ft int
-.Fn libfwevt_event_initialize "libfwevt_event_t **event" "libfwevt_error_t **error"
-.Ft int
 .Fn libfwevt_event_free "libfwevt_event_t **event" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_event_read "libfwevt_event_t *event" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_event_get_identifier "libfwevt_event_t *event" "uint32_t *identifier" "libfwevt_error_t **error"
 .Ft int
@@ -47,19 +39,11 @@ Event functions
 .Pp
 Keyword functions
 .Ft int
-.Fn libfwevt_keyword_initialize "libfwevt_keyword_t **keyword" "libfwevt_error_t **error"
-.Ft int
 .Fn libfwevt_keyword_free "libfwevt_keyword_t **keyword" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_keyword_read "libfwevt_keyword_t *keyword" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
 .Pp
 Level functions
 .Ft int
-.Fn libfwevt_level_initialize "libfwevt_level_t **level" "libfwevt_error_t **error"
-.Ft int
 .Fn libfwevt_level_free "libfwevt_level_t **level" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_level_read "libfwevt_level_t *level" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
 .Pp
 Manifest functions
 .Ft int
@@ -77,19 +61,11 @@ Manifest functions
 .Pp
 Map functions
 .Ft int
-.Fn libfwevt_map_initialize "libfwevt_map_t **map" "libfwevt_error_t **error"
-.Ft int
 .Fn libfwevt_map_free "libfwevt_map_t **map" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_map_read "libfwevt_map_t *map" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
 .Pp
 Opcode functions
 .Ft int
-.Fn libfwevt_opcode_initialize "libfwevt_opcode_t **opcode" "libfwevt_error_t **error"
-.Ft int
 .Fn libfwevt_opcode_free "libfwevt_opcode_t **opcode" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_opcode_read "libfwevt_opcode_t *opcode" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
 .Pp
 Provider functions
 .Ft int
@@ -133,11 +109,7 @@ Provider functions
 .Pp
 Task functions
 .Ft int
-.Fn libfwevt_task_initialize "libfwevt_task_t **task" "libfwevt_error_t **error"
-.Ft int
 .Fn libfwevt_task_free "libfwevt_task_t **task" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_task_read "libfwevt_task_t *task" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
 .Pp
 Template functions
 .Ft int

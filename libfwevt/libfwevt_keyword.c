@@ -117,8 +117,7 @@ int libfwevt_keyword_free(
      libfwevt_keyword_t **keyword,
      libcerror_error_t **error )
 {
-	libfwevt_internal_keyword_t *internal_keyword = NULL;
-	static char *function                         = "libfwevt_keyword_free";
+	static char *function = "libfwevt_keyword_free";
 
 	if( keyword == NULL )
 	{
@@ -133,11 +132,37 @@ int libfwevt_keyword_free(
 	}
 	if( *keyword != NULL )
 	{
-		internal_keyword = (libfwevt_internal_keyword_t *) *keyword;
-		*keyword         = NULL;
+		*keyword = NULL;
+	}
+	return( 1 );
+}
 
+/* Frees a keyword
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_keyword_free(
+     libfwevt_internal_keyword_t **internal_keyword,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_keyword_free";
+
+	if( internal_keyword == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid keyword.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_keyword != NULL )
+	{
 		memory_free(
-		 internal_keyword );
+		 *internal_keyword );
+
+		*internal_keyword = NULL;
 	}
 	return( 1 );
 }

@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_MAP_H )
-#define _LIBFWEVT_INTERNAL_MAP_H
+#if !defined( _LIBFWEVT_MAP_H )
+#define _LIBFWEVT_MAP_H
 
 #include <common.h>
 #include <types.h>
@@ -42,7 +42,6 @@ struct libfwevt_internal_map
 	uint16_t identifier;
 };
 
-LIBFWEVT_EXTERN \
 int libfwevt_map_initialize(
      libfwevt_map_t **map,
      libcerror_error_t **error );
@@ -52,7 +51,10 @@ int libfwevt_map_free(
      libfwevt_map_t **map,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
+int libfwevt_internal_map_free(
+     libfwevt_internal_map_t **internal_map,
+     libcerror_error_t **error );
+
 int libfwevt_map_read(
      libfwevt_map_t *map,
      const uint8_t *data,
@@ -64,5 +66,5 @@ int libfwevt_map_read(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_MAP_H ) */
+#endif /* !defined( _LIBFWEVT_MAP_H ) */
 

@@ -117,8 +117,7 @@ int libfwevt_opcode_free(
      libfwevt_opcode_t **opcode,
      libcerror_error_t **error )
 {
-	libfwevt_internal_opcode_t *internal_opcode = NULL;
-	static char *function                       = "libfwevt_opcode_free";
+	static char *function = "libfwevt_opcode_free";
 
 	if( opcode == NULL )
 	{
@@ -133,11 +132,37 @@ int libfwevt_opcode_free(
 	}
 	if( *opcode != NULL )
 	{
-		internal_opcode = (libfwevt_internal_opcode_t *) *opcode;
-		*opcode         = NULL;
+		*opcode = NULL;
+	}
+	return( 1 );
+}
 
+/* Frees an opcode
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_opcode_free(
+     libfwevt_internal_opcode_t **internal_opcode,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_opcode_free";
+
+	if( internal_opcode == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid opcode.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_opcode != NULL )
+	{
 		memory_free(
-		 internal_opcode );
+		 *internal_opcode );
+
+		*internal_opcode = NULL;
 	}
 	return( 1 );
 }

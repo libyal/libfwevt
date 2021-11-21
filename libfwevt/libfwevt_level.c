@@ -117,8 +117,7 @@ int libfwevt_level_free(
      libfwevt_level_t **level,
      libcerror_error_t **error )
 {
-	libfwevt_internal_level_t *internal_level = NULL;
-	static char *function                     = "libfwevt_level_free";
+	static char *function = "libfwevt_level_free";
 
 	if( level == NULL )
 	{
@@ -133,11 +132,37 @@ int libfwevt_level_free(
 	}
 	if( *level != NULL )
 	{
-		internal_level = (libfwevt_internal_level_t *) *level;
-		*level         = NULL;
+		*level = NULL;
+	}
+	return( 1 );
+}
 
+/* Frees a level
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_level_free(
+     libfwevt_internal_level_t **internal_level,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_level_free";
+
+	if( internal_level == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid level.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_level != NULL )
+	{
 		memory_free(
-		 internal_level );
+		 *internal_level );
+
+		*internal_level = NULL;
 	}
 	return( 1 );
 }

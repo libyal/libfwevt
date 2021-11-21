@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_TASK_H )
-#define _LIBFWEVT_INTERNAL_TASK_H
+#if !defined( _LIBFWEVT_TASK_H )
+#define _LIBFWEVT_TASK_H
 
 #include <common.h>
 #include <types.h>
@@ -42,7 +42,6 @@ struct libfwevt_internal_task
 	uint32_t identifier;
 };
 
-LIBFWEVT_EXTERN \
 int libfwevt_task_initialize(
      libfwevt_task_t **task,
      libcerror_error_t **error );
@@ -52,7 +51,10 @@ int libfwevt_task_free(
      libfwevt_task_t **task,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
+int libfwevt_internal_task_free(
+     libfwevt_internal_task_t **internal_task,
+     libcerror_error_t **error );
+
 int libfwevt_task_read(
      libfwevt_task_t *task,
      const uint8_t *data,
@@ -64,5 +66,5 @@ int libfwevt_task_read(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_TASK_H ) */
+#endif /* !defined( _LIBFWEVT_TASK_H ) */
 

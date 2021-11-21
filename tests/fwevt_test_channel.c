@@ -40,6 +40,8 @@ uint8_t fwevt_test_channel_data1[ 40 ] = {
 	0x18, 0x00, 0x00, 0x00, 0x53, 0x00, 0x65, 0x00, 0x63, 0x00, 0x75, 0x00, 0x72, 0x00, 0x69, 0x00,
 	0x74, 0x00, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 /* Tests the libfwevt_channel_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -75,8 +77,8 @@ int fwevt_test_channel_initialize(
 	 "error",
 	 error );
 
-	result = libfwevt_channel_free(
-	          &channel,
+	result = libfwevt_internal_channel_free(
+	          (libfwevt_internal_channel_t **) &channel,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -150,8 +152,8 @@ int fwevt_test_channel_initialize(
 
 			if( channel != NULL )
 			{
-				libfwevt_channel_free(
-				 &channel,
+				libfwevt_internal_channel_free(
+				 (libfwevt_internal_channel_t **) &channel,
 				 NULL );
 			}
 		}
@@ -192,8 +194,8 @@ int fwevt_test_channel_initialize(
 
 			if( channel != NULL )
 			{
-				libfwevt_channel_free(
-				 &channel,
+				libfwevt_internal_channel_free(
+				 (libfwevt_internal_channel_t **) &channel,
 				 NULL );
 			}
 		}
@@ -228,12 +230,14 @@ on_error:
 	}
 	if( channel != NULL )
 	{
-		libfwevt_channel_free(
-		 &channel,
+		libfwevt_internal_channel_free(
+		 (libfwevt_internal_channel_t **) &channel,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* Tests the libfwevt_channel_free function
  * Returns 1 if successful or 0 if not
@@ -272,6 +276,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_channel_read function
  * Returns 1 if successful or 0 if not
@@ -465,8 +471,8 @@ int fwevt_test_channel_read(
 
 	/* Clean up
 	 */
-	result = libfwevt_channel_free(
-	          &channel,
+	result = libfwevt_internal_channel_free(
+	          (libfwevt_internal_channel_t **) &channel,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -492,12 +498,14 @@ on_error:
 	}
 	if( channel != NULL )
 	{
-		libfwevt_channel_free(
-		 &channel,
+		libfwevt_internal_channel_free(
+		 (libfwevt_internal_channel_t **) &channel,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -514,17 +522,25 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_channel_initialize",
 	 fwevt_test_channel_initialize );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_channel_free",
 	 fwevt_test_channel_free );
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_channel_read",
 	 fwevt_test_channel_read );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

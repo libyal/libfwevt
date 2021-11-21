@@ -40,6 +40,8 @@ uint8_t fwevt_test_opcode_data1[ 36 ] = {
 	0x77, 0x00, 0x69, 0x00, 0x6e, 0x00, 0x3a, 0x00, 0x49, 0x00, 0x6e, 0x00, 0x66, 0x00, 0x6f, 0x00,
 	0x00, 0x00, 0x00, 0x00 };
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 /* Tests the libfwevt_opcode_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -75,8 +77,8 @@ int fwevt_test_opcode_initialize(
 	 "error",
 	 error );
 
-	result = libfwevt_opcode_free(
-	          &opcode,
+	result = libfwevt_internal_opcode_free(
+	          (libfwevt_internal_opcode_t **) &opcode,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -150,8 +152,8 @@ int fwevt_test_opcode_initialize(
 
 			if( opcode != NULL )
 			{
-				libfwevt_opcode_free(
-				 &opcode,
+				libfwevt_internal_opcode_free(
+				 (libfwevt_internal_opcode_t **) &opcode,
 				 NULL );
 			}
 		}
@@ -192,8 +194,8 @@ int fwevt_test_opcode_initialize(
 
 			if( opcode != NULL )
 			{
-				libfwevt_opcode_free(
-				 &opcode,
+				libfwevt_internal_opcode_free(
+				 (libfwevt_internal_opcode_t **) &opcode,
 				 NULL );
 			}
 		}
@@ -228,12 +230,14 @@ on_error:
 	}
 	if( opcode != NULL )
 	{
-		libfwevt_opcode_free(
-		 &opcode,
+		libfwevt_internal_opcode_free(
+		 (libfwevt_internal_opcode_t **) &opcode,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* Tests the libfwevt_opcode_free function
  * Returns 1 if successful or 0 if not
@@ -272,6 +276,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_opcode_read function
  * Returns 1 if successful or 0 if not
@@ -465,8 +471,8 @@ int fwevt_test_opcode_read(
 
 	/* Clean up
 	 */
-	result = libfwevt_opcode_free(
-	          &opcode,
+	result = libfwevt_internal_opcode_free(
+	          (libfwevt_internal_opcode_t **) &opcode,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -492,12 +498,14 @@ on_error:
 	}
 	if( opcode != NULL )
 	{
-		libfwevt_opcode_free(
-		 &opcode,
+		libfwevt_internal_opcode_free(
+		 (libfwevt_internal_opcode_t **) &opcode,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -514,17 +522,25 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_opcode_initialize",
 	 fwevt_test_opcode_initialize );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_opcode_free",
 	 fwevt_test_opcode_free );
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_opcode_read",
 	 fwevt_test_opcode_read );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

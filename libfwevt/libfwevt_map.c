@@ -112,8 +112,7 @@ int libfwevt_map_free(
      libfwevt_map_t **map,
      libcerror_error_t **error )
 {
-	libfwevt_internal_map_t *internal_map = NULL;
-	static char *function                 = "libfwevt_map_free";
+	static char *function = "libfwevt_map_free";
 
 	if( map == NULL )
 	{
@@ -128,11 +127,38 @@ int libfwevt_map_free(
 	}
 	if( *map != NULL )
 	{
-		internal_map = (libfwevt_internal_map_t *) *map;
-		*map         = NULL;
+		*map = NULL;
+	}
+	return( 1 );
+}
 
+
+/* Frees a map
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_map_free(
+     libfwevt_internal_map_t **internal_map,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_map_free";
+
+	if( internal_map == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid map.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_map != NULL )
+	{
 		memory_free(
-		 internal_map );
+		 *internal_map );
+
+		*internal_map = NULL;
 	}
 	return( 1 );
 }

@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_PROVIDER_H )
-#define _LIBFWEVT_INTERNAL_PROVIDER_H
+#if !defined( _LIBFWEVT_PROVIDER_H )
+#define _LIBFWEVT_PROVIDER_H
 
 #include <common.h>
 #include <types.h>
@@ -314,5 +314,5 @@ int libfwevt_provider_get_template_by_offset(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_PROVIDER_H ) */
+#endif /* !defined( _LIBFWEVT_PROVIDER_H ) */
 

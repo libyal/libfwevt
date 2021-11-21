@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_KEYWORD_H )
-#define _LIBFWEVT_INTERNAL_KEYWORD_H
+#if !defined( _LIBFWEVT_KEYWORD_H )
+#define _LIBFWEVT_KEYWORD_H
 
 #include <common.h>
 #include <types.h>
@@ -42,7 +42,6 @@ struct libfwevt_internal_keyword
 	uint16_t identifier;
 };
 
-LIBFWEVT_EXTERN \
 int libfwevt_keyword_initialize(
      libfwevt_keyword_t **keyword,
      libcerror_error_t **error );
@@ -52,7 +51,10 @@ int libfwevt_keyword_free(
      libfwevt_keyword_t **keyword,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
+int libfwevt_internal_keyword_free(
+     libfwevt_internal_keyword_t **internal_keyword,
+     libcerror_error_t **error );
+
 int libfwevt_keyword_read(
      libfwevt_keyword_t *keyword,
      const uint8_t *data,
@@ -64,5 +66,5 @@ int libfwevt_keyword_read(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_KEYWORD_H ) */
+#endif /* !defined( _LIBFWEVT_KEYWORD_H ) */
 

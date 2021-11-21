@@ -38,6 +38,8 @@
 uint8_t fwevt_test_map_data1[ 4 ] = {
 	0x4d, 0x41, 0x50, 0x53 };
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 /* Tests the libfwevt_map_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -73,8 +75,8 @@ int fwevt_test_map_initialize(
 	 "error",
 	 error );
 
-	result = libfwevt_map_free(
-	          &map,
+	result = libfwevt_internal_map_free(
+	          (libfwevt_internal_map_t **) &map,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -148,8 +150,8 @@ int fwevt_test_map_initialize(
 
 			if( map != NULL )
 			{
-				libfwevt_map_free(
-				 &map,
+				libfwevt_internal_map_free(
+				 (libfwevt_internal_map_t **) &map,
 				 NULL );
 			}
 		}
@@ -190,8 +192,8 @@ int fwevt_test_map_initialize(
 
 			if( map != NULL )
 			{
-				libfwevt_map_free(
-				 &map,
+				libfwevt_internal_map_free(
+				 (libfwevt_internal_map_t **) &map,
 				 NULL );
 			}
 		}
@@ -226,12 +228,14 @@ on_error:
 	}
 	if( map != NULL )
 	{
-		libfwevt_map_free(
-		 &map,
+		libfwevt_internal_map_free(
+		 (libfwevt_internal_map_t **) &map,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* Tests the libfwevt_map_free function
  * Returns 1 if successful or 0 if not
@@ -270,6 +274,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_map_read function
  * Returns 1 if successful or 0 if not
@@ -421,8 +427,8 @@ int fwevt_test_map_read(
 
 	/* Clean up
 	 */
-	result = libfwevt_map_free(
-	          &map,
+	result = libfwevt_internal_map_free(
+	          (libfwevt_internal_map_t **) &map,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -448,12 +454,14 @@ on_error:
 	}
 	if( map != NULL )
 	{
-		libfwevt_map_free(
-		 &map,
+		libfwevt_internal_map_free(
+		 (libfwevt_internal_map_t **) &map,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -470,17 +478,25 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_map_initialize",
 	 fwevt_test_map_initialize );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_map_free",
 	 fwevt_test_map_free );
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_map_read",
 	 fwevt_test_map_read );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

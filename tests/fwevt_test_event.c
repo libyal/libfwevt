@@ -40,6 +40,8 @@ uint8_t fwevt_test_event_data1[ 48 ] = {
 	0x00, 0x12, 0x00, 0xb0, 0x00, 0x00, 0x00, 0x00, 0x44, 0x06, 0x05, 0x00, 0x74, 0x06, 0x05, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x00, 0x00, 0x00 };
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 /* Tests the libfwevt_event_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -75,8 +77,8 @@ int fwevt_test_event_initialize(
 	 "error",
 	 error );
 
-	result = libfwevt_event_free(
-	          &event,
+	result = libfwevt_internal_event_free(
+	          (libfwevt_internal_event_t **) &event,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -150,8 +152,8 @@ int fwevt_test_event_initialize(
 
 			if( event != NULL )
 			{
-				libfwevt_event_free(
-				 &event,
+				libfwevt_internal_event_free(
+				 (libfwevt_internal_event_t **) &event,
 				 NULL );
 			}
 		}
@@ -192,8 +194,8 @@ int fwevt_test_event_initialize(
 
 			if( event != NULL )
 			{
-				libfwevt_event_free(
-				 &event,
+				libfwevt_internal_event_free(
+				 (libfwevt_internal_event_t **) &event,
 				 NULL );
 			}
 		}
@@ -228,12 +230,14 @@ on_error:
 	}
 	if( event != NULL )
 	{
-		libfwevt_event_free(
-		 &event,
+		libfwevt_internal_event_free(
+		 (libfwevt_internal_event_t **) &event,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* Tests the libfwevt_event_free function
  * Returns 1 if successful or 0 if not
@@ -272,6 +276,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_event_read function
  * Returns 1 if successful or 0 if not
@@ -423,8 +429,8 @@ int fwevt_test_event_read(
 
 	/* Clean up
 	 */
-	result = libfwevt_event_free(
-	          &event,
+	result = libfwevt_internal_event_free(
+	          (libfwevt_internal_event_t **) &event,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -450,12 +456,14 @@ on_error:
 	}
 	if( event != NULL )
 	{
-		libfwevt_event_free(
-		 &event,
+		libfwevt_internal_event_free(
+		 (libfwevt_internal_event_t **) &event,
 		 NULL );
 	}
 	return( 0 );
 }
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* Tests the libfwevt_event_get_identifier function
  * Returns 1 if successful or 0 if not
@@ -695,13 +703,19 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_event_initialize",
 	 fwevt_test_event_initialize );
 
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_event_free",
 	 fwevt_test_event_free );
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_event_read",
@@ -779,10 +793,12 @@ int main(
 	 error );
 
 #endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 
 on_error:
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 	if( error != NULL )
 	{
 		libcerror_error_free(
@@ -794,6 +810,8 @@ on_error:
 		 &event,
 		 NULL );
 	}
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
+
 	return( EXIT_FAILURE );
 }
 
