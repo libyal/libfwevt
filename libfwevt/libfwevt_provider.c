@@ -161,9 +161,7 @@ int libfwevt_provider_free(
      libfwevt_provider_t **provider,
      libcerror_error_t **error )
 {
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_free";
-	int result                                      = 1;
+	static char *function = "libfwevt_provider_free";
 
 	if( provider == NULL )
 	{
@@ -178,13 +176,38 @@ int libfwevt_provider_free(
 	}
 	if( *provider != NULL )
 	{
-		internal_provider = (libfwevt_internal_provider_t *) *provider;
-		*provider         = NULL;
+		*provider = NULL;
+	}
+	return( 1 );
+}
 
-		if( internal_provider->channels_array != NULL )
+/* Frees a provider
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_provider_free(
+     libfwevt_internal_provider_t **internal_provider,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_provider_free";
+	int result            = 1;
+
+	if( internal_provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_provider != NULL )
+	{
+		if( ( *internal_provider )->channels_array != NULL )
 		{
 			if( libcdata_array_free(
-			     &( internal_provider->channels_array ),
+			     &( ( *internal_provider )->channels_array ),
 			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_channel_free,
 			     error ) != 1 )
 			{
@@ -198,10 +221,10 @@ int libfwevt_provider_free(
 				result = -1;
 			}
 		}
-		if( internal_provider->events_array != NULL )
+		if( ( *internal_provider )->events_array != NULL )
 		{
 			if( libcdata_array_free(
-			     &( internal_provider->events_array ),
+			     &( ( *internal_provider )->events_array ),
 			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_event_free,
 			     error ) != 1 )
 			{
@@ -215,10 +238,10 @@ int libfwevt_provider_free(
 				result = -1;
 			}
 		}
-		if( internal_provider->keywords_array != NULL )
+		if( ( *internal_provider )->keywords_array != NULL )
 		{
 			if( libcdata_array_free(
-			     &( internal_provider->keywords_array ),
+			     &( ( *internal_provider )->keywords_array ),
 			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_keyword_free,
 			     error ) != 1 )
 			{
@@ -232,10 +255,10 @@ int libfwevt_provider_free(
 				result = -1;
 			}
 		}
-		if( internal_provider->levels_array != NULL )
+		if( ( *internal_provider )->levels_array != NULL )
 		{
 			if( libcdata_array_free(
-			     &( internal_provider->levels_array ),
+			     &( ( *internal_provider )->levels_array ),
 			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_level_free,
 			     error ) != 1 )
 			{
@@ -249,10 +272,10 @@ int libfwevt_provider_free(
 				result = -1;
 			}
 		}
-		if( internal_provider->maps_array != NULL )
+		if( ( *internal_provider )->maps_array != NULL )
 		{
 			if( libcdata_array_free(
-			     &( internal_provider->maps_array ),
+			     &( ( *internal_provider )->maps_array ),
 			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_map_free,
 			     error ) != 1 )
 			{
@@ -266,10 +289,10 @@ int libfwevt_provider_free(
 				result = -1;
 			}
 		}
-		if( internal_provider->opcodes_array != NULL )
+		if( ( *internal_provider )->opcodes_array != NULL )
 		{
 			if( libcdata_array_free(
-			     &( internal_provider->opcodes_array ),
+			     &( ( *internal_provider )->opcodes_array ),
 			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_opcode_free,
 			     error ) != 1 )
 			{
@@ -283,10 +306,10 @@ int libfwevt_provider_free(
 				result = -1;
 			}
 		}
-		if( internal_provider->tasks_array != NULL )
+		if( ( *internal_provider )->tasks_array != NULL )
 		{
 			if( libcdata_array_free(
-			     &( internal_provider->tasks_array ),
+			     &( ( *internal_provider )->tasks_array ),
 			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_task_free,
 			     error ) != 1 )
 			{
@@ -300,10 +323,10 @@ int libfwevt_provider_free(
 				result = -1;
 			}
 		}
-		if( internal_provider->templates_array != NULL )
+		if( ( *internal_provider )->templates_array != NULL )
 		{
 			if( libcdata_array_free(
-			     &( internal_provider->templates_array ),
+			     &( ( *internal_provider )->templates_array ),
 			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_template_free,
 			     error ) != 1 )
 			{
@@ -318,7 +341,9 @@ int libfwevt_provider_free(
 			}
 		}
 		memory_free(
-		 internal_provider );
+		 *internal_provider );
+
+		*internal_provider = NULL;
 	}
 	return( result );
 }

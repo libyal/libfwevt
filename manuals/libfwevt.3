@@ -1,4 +1,4 @@
-.Dd November 12, 2020
+.Dd November 21, 2021
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -71,7 +71,7 @@ Manifest functions
 .Ft int
 .Fn libfwevt_manifest_get_number_of_providers "libfwevt_manifest_t *manifest" "int *number_of_providers" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_manifest_get_provider "libfwevt_manifest_t *manifest" "int provider_index" "libfwevt_provider_t **provider" "libfwevt_error_t **error"
+.Fn libfwevt_manifest_get_provider_by_index "libfwevt_manifest_t *manifest" "int provider_index" "libfwevt_provider_t **provider" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_manifest_get_provider_by_identifier "libfwevt_manifest_t *manifest" "const uint8_t *provider_identifier" "size_t provider_identifier_size" "libfwevt_provider_t **provider" "libfwevt_error_t **error"
 .Pp
@@ -93,29 +93,7 @@ Opcode functions
 .Pp
 Provider functions
 .Ft int
-.Fn libfwevt_provider_initialize "libfwevt_provider_t **provider" "const uint8_t *identifier" "size_t identifier_size" "libfwevt_error_t **error"
-.Ft int
 .Fn libfwevt_provider_free "libfwevt_provider_t **provider" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read_channels "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read_events "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read_keywords "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read_levels "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read_maps "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read_opcodes "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read_tasks "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_read_templates "libfwevt_provider_t *provider" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_provider_compare_identifier "libfwevt_provider_t *provider" "const uint8_t *identifier" "size_t identifier_size" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_provider_get_number_of_channels "libfwevt_provider_t *provider" "int *number_of_channels" "libfwevt_error_t **error"
 .Ft int

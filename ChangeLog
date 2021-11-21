@@ -1,5 +1,6 @@
 TODO
 * Remove deprecated libfwevt_xml_document_clone, previously used by libevtx
+* Remove deprecated libfwevt_manifest_get_provider, previously used by libwrc
 
 20140928
 * see `git log' for more recent change log

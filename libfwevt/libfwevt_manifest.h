@@ -82,6 +82,13 @@ int libfwevt_manifest_get_provider(
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
+int libfwevt_manifest_get_provider_by_index(
+     libfwevt_manifest_t *manifest,
+     int provider_index,
+     libfwevt_provider_t **provider,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
 int libfwevt_manifest_get_provider_by_identifier(
      libfwevt_manifest_t *manifest,
      const uint8_t *provider_identifier,

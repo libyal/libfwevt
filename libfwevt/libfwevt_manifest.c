@@ -140,7 +140,7 @@ int libfwevt_manifest_free(
 		{
 			if( libcdata_array_free(
 			     &( internal_manifest->providers_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_provider_free,
+			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_provider_free,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -168,15 +168,16 @@ int libfwevt_manifest_read(
      size_t data_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_manifest_t *internal_manifest = NULL;
-	libfwevt_provider_t *provider                   = NULL;
 	fwevt_template_manifest_t *wevt_manifest        = NULL;
 	fwevt_template_provider_entry_t *provider_entry = NULL;
+	libfwevt_internal_manifest_t *internal_manifest = NULL;
+	libfwevt_provider_t *provider                   = NULL;
 	static char *function                           = "libfwevt_manifest_read";
 	size_t data_offset                              = 0;
 	uint32_t number_of_providers                    = 0;
 	uint32_t provider_data_offset                   = 0;
 	uint32_t provider_index                         = 0;
+	int entry_index                                 = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint32_t value_32bit                            = 0;
@@ -301,7 +302,7 @@ int libfwevt_manifest_read(
 
 	if( libcdata_array_initialize(
 	     &( internal_manifest->providers_array ),
-	     number_of_providers,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -317,8 +318,7 @@ int libfwevt_manifest_read(
 	     provider_index < number_of_providers;
 	     provider_index++ )
 	{
-		if( ( data_size < sizeof( fwevt_template_provider_entry_t ) )
-		 || ( data_offset >= ( data_size - sizeof( fwevt_template_provider_entry_t ) ) ) )
+		if( ( data_size - data_offset ) < sizeof( fwevt_template_provider_entry_t ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -419,17 +419,17 @@ int libfwevt_manifest_read(
 
 			goto on_error;
 		}
-		if( libcdata_array_set_entry_by_index(
+		if( libcdata_array_append_entry(
 		     internal_manifest->providers_array,
-		     (int) provider_index,
+		     &entry_index,
 		     (intptr_t *) provider,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-			 "%s: unable to set provider: %" PRIu32 ".",
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append provider: %" PRIu32 ".",
 			 function,
 			 provider_index );
 
@@ -613,15 +613,15 @@ int libfwevt_manifest_read(
 on_error:
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	if( internal_manifest->providers_array != NULL )
 	{
 		libcdata_array_free(
 		 &( internal_manifest->providers_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_provider_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_provider_free,
 		 NULL );
 	}
 	return( -1 );
@@ -712,6 +712,50 @@ int libfwevt_manifest_get_provider(
 	return( 1 );
 }
 
+/* Retrieves a specific provider
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_manifest_get_provider_by_index(
+     libfwevt_manifest_t *manifest,
+     int provider_index,
+     libfwevt_provider_t **provider,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_manifest_t *internal_manifest = NULL;
+	static char *function                           = "libfwevt_manifest_get_provider_by_index";
+
+	if( manifest == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid manifest.",
+		 function );
+
+		return( -1 );
+	}
+	internal_manifest = (libfwevt_internal_manifest_t *) manifest;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_manifest->providers_array,
+	     provider_index,
+	     (intptr_t **) provider,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 provider_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
 /* Retrieves a specific provider by identifier (GUID)
  * Returns 1 if successful, 0 if not available or -1 on error
  */
@@ -723,6 +767,7 @@ int libfwevt_manifest_get_provider_by_identifier(
      libcerror_error_t **error )
 {
 	libfwevt_internal_manifest_t *internal_manifest = NULL;
+	libfwevt_provider_t *safe_provider              = NULL;
 	static char *function                           = "libfwevt_manifest_get_provider_by_identifier";
 	int number_of_providers                         = 0;
 	int provider_index                              = 0;
@@ -752,6 +797,18 @@ int libfwevt_manifest_get_provider_by_identifier(
 
 		return( -1 );
 	}
+	if( ( provider_identifier_size < 16 )
+	 || ( provider_identifier_size > (size_t) SSIZE_MAX ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid provider identifier size value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
 	if( provider == NULL )
 	{
 		libcerror_error_set(
@@ -759,28 +816,6 @@ int libfwevt_manifest_get_provider_by_identifier(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	if( provider_identifier_size < 16 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid provider identifier value too small.",
-		 function );
-
-		return( -1 );
-	}
-	if( provider_identifier_size > (size_t) SSIZE_MAX )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid provider identifier size value exceeds maximum.",
 		 function );
 
 		return( -1 );
@@ -806,7 +841,7 @@ int libfwevt_manifest_get_provider_by_identifier(
 		if( libcdata_array_get_entry_by_index(
 		     internal_manifest->providers_array,
 		     provider_index,
-		     (intptr_t **) provider,
+		     (intptr_t **) &safe_provider,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -817,10 +852,10 @@ int libfwevt_manifest_get_provider_by_identifier(
 			 function,
 			 provider_index );
 
-			goto on_error;
+			return( -1 );
 		}
 		result = libfwevt_provider_compare_identifier(
-		          *provider,
+		          safe_provider,
 		          provider_identifier,
 		          16,
 		          error );
@@ -835,20 +870,15 @@ int libfwevt_manifest_get_provider_by_identifier(
 			 function,
 			 provider_index );
 
-			goto on_error;
+			return( -1 );
 		}
 		else if( result != 0 )
 		{
+			*provider = safe_provider;
+
 			return( 1 );
 		}
 	}
-	*provider = NULL;
-
 	return( 0 );
-
-on_error:
-	*provider = NULL;
-
-	return( -1 );
 }
 

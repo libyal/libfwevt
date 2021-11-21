@@ -21,6 +21,8 @@ BUILT_SOURCES = \
 	pyfwevt_libcerror.h \
 	pyfwevt_libfwevt.h \
 	pyfwevt_manifest.c pyfwevt_manifest.h \
+	pyfwevt_provider.c pyfwevt_provider.h \
+	pyfwevt_providers.c pyfwevt_providers.h \
 	pyfwevt_python.h \
 	pyfwevt_unused.h
 

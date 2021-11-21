@@ -31,6 +31,8 @@
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_python.h"
 #include "pyfwevt_manifest.h"
+#include "pyfwevt_provider.h"
+#include "pyfwevt_providers.h"
 #include "pyfwevt_unused.h"
 
 PyMethodDef pyfwevt_manifest_object_methods[] = {
@@ -49,6 +51,13 @@ PyMethodDef pyfwevt_manifest_object_methods[] = {
 	  "\n"
 	  "Retrieves the number of providers." },
 
+	{ "get_provider",
+	  (PyCFunction) pyfwevt_manifest_get_provider,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_provider(provider_index) -> Object\n"
+	  "\n"
+	  "Retrieves the provider specified by the index." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
@@ -59,6 +68,12 @@ PyGetSetDef pyfwevt_manifest_object_get_set_definitions[] = {
 	  (getter) pyfwevt_manifest_get_number_of_providers,
 	  (setter) 0,
 	  "The number of providers.",
+	  NULL },
+
+	{ "providers",
+	  (getter) pyfwevt_manifest_get_providers,
+	  (setter) 0,
+	  "The providers.",
 	  NULL },
 
 	/* Sentinel */
@@ -495,5 +510,168 @@ PyObject *pyfwevt_manifest_get_number_of_providers(
 	                  (long) number_of_providers );
 #endif
 	return( integer_object );
+}
+
+/* Retrieves a specific provider by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_manifest_get_provider_by_index(
+           PyObject *pyfwevt_manifest,
+           int provider_index )
+{
+	PyObject *provider_object    = NULL;
+	libcerror_error_t *error     = NULL;
+	libfwevt_provider_t *provider = NULL;
+	static char *function        = "pyfwevt_manifest_get_provider_by_index";
+	int result                   = 0;
+
+	if( pyfwevt_manifest == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid manifest.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_manifest_get_provider_by_index(
+	          ( (pyfwevt_manifest_t *) pyfwevt_manifest )->manifest,
+	          provider_index,
+	          &provider,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve provider: %d.",
+		 function,
+		 provider_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	provider_object = pyfwevt_provider_new(
+	                   provider,
+	                   pyfwevt_manifest );
+
+	if( provider_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create provider object.",
+		 function );
+
+		goto on_error;
+	}
+	return( provider_object );
+
+on_error:
+	if( provider != NULL )
+	{
+		libfwevt_provider_free(
+		 &provider,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific provider
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_manifest_get_provider(
+           pyfwevt_manifest_t *pyfwevt_manifest,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *provider_object   = NULL;
+	static char *keyword_list[] = { "provider_index", NULL };
+	int provider_index          = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &provider_index ) == 0 )
+	{
+		return( NULL );
+	}
+	provider_object = pyfwevt_manifest_get_provider_by_index(
+	                   (PyObject *) pyfwevt_manifest,
+	                   provider_index );
+
+	return( provider_object );
+}
+
+/* Retrieves a sequence and iterator object for the providers
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_manifest_get_providers(
+           pyfwevt_manifest_t *pyfwevt_manifest,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_manifest_get_providers";
+	int number_of_providers   = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_manifest == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid manifest.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_manifest_get_number_of_providers(
+	          pyfwevt_manifest->manifest,
+	          &number_of_providers,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of providers.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_providers_new(
+	                   (PyObject *) pyfwevt_manifest,
+	                   &pyfwevt_manifest_get_provider_by_index,
+	                   number_of_providers );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
 }
 

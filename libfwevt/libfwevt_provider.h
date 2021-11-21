@@ -116,7 +116,6 @@ struct libfwevt_internal_provider
 	libcdata_array_t *templates_array;
 };
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_initialize(
      libfwevt_provider_t **provider,
      const uint8_t *identifier,
@@ -128,7 +127,10 @@ int libfwevt_provider_free(
      libfwevt_provider_t **provider,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
+int libfwevt_internal_provider_free(
+     libfwevt_internal_provider_t **internal_provider,
+     libcerror_error_t **error );
+
 int libfwevt_provider_read(
      libfwevt_provider_t *provider,
      const uint8_t *data,
@@ -136,63 +138,54 @@ int libfwevt_provider_read(
      size_t data_offset,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_read_channels(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_read_events(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_read_keywords(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_read_levels(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_read_maps(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_read_opcodes(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_read_tasks(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_read_templates(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
      libcerror_error_t **error );
 
-LIBFWEVT_EXTERN \
 int libfwevt_provider_compare_identifier(
      libfwevt_provider_t *provider,
      const uint8_t *identifier,

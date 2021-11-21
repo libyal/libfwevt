@@ -103,6 +103,14 @@ class TemplateTypeTests(unittest.TestCase):
     number_of_providers = manifest.get_number_of_providers()
     self.assertEqual(number_of_providers, 1)
 
+  def test_get_provider(self):
+    """Tests the get_provider function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(1)
+    self.assertIsNotNone(provider)
+
 
 if __name__ == "__main__":
   unittest.main(verbosity=2)

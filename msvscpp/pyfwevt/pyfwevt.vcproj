@@ -185,6 +185,14 @@
 				RelativePath="..\..\pyfwevt\pyfwevt_manifest.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_provider.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_providers.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -213,6 +221,14 @@
 			</File>
 			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_manifest.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_provider.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_providers.h"
 				>
 			</File>
 			<File

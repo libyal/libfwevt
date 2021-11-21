@@ -31,8 +31,10 @@
 #include "pyfwevt_error.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
-#include "pyfwevt_python.h"
 #include "pyfwevt_manifest.h"
+#include "pyfwevt_provider.h"
+#include "pyfwevt_providers.h"
+#include "pyfwevt_python.h"
 #include "pyfwevt_unused.h"
 
 /* The pyfwevt module methods
@@ -172,6 +174,40 @@ PyMODINIT_FUNC initpyfwevt(
 	 module,
 	 "manifest",
 	 (PyObject *) &pyfwevt_manifest_type_object );
+
+	/* Setup the provider type object
+	 */
+	pyfwevt_provider_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_provider_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_provider_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "provider",
+	 (PyObject *) &pyfwevt_provider_type_object );
+
+	/* Setup the providers type object
+	 */
+	pyfwevt_providers_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_providers_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_providers_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "providers",
+	 (PyObject *) &pyfwevt_providers_type_object );
 
 	PyGILState_Release(
 	 gil_state );

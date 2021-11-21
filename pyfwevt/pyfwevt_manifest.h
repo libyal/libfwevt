@@ -71,6 +71,19 @@ PyObject *pyfwevt_manifest_get_number_of_providers(
            pyfwevt_manifest_t *pyfwevt_manifest,
            PyObject *arguments );
 
+PyObject *pyfwevt_manifest_get_provider_by_index(
+           PyObject *pyfwevt_manifest,
+           int provider_index );
+
+PyObject *pyfwevt_manifest_get_provider(
+           pyfwevt_manifest_t *pyfwevt_manifest,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_manifest_get_providers(
+           pyfwevt_manifest_t *pyfwevt_manifest,
+           PyObject *arguments );
+
 #if defined( __cplusplus )
 }
 #endif
