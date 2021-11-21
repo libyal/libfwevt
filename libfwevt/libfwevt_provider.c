@@ -3391,7 +3391,7 @@ int libfwevt_provider_get_channel(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->channels_array,
 	     channel_index,
-	     (intptr_t **) &channel,
+	     (intptr_t **) channel,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3435,7 +3435,7 @@ int libfwevt_provider_get_channel_by_index(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->channels_array,
 	     channel_index,
-	     (intptr_t **) &channel,
+	     (intptr_t **) channel,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3520,7 +3520,7 @@ int libfwevt_provider_get_event(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->events_array,
 	     event_index,
-	     (intptr_t **) &event,
+	     (intptr_t **) event,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3564,7 +3564,7 @@ int libfwevt_provider_get_event_by_index(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->events_array,
 	     event_index,
-	     (intptr_t **) &event,
+	     (intptr_t **) event,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3753,7 +3753,7 @@ int libfwevt_provider_get_keyword(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->keywords_array,
 	     keyword_index,
-	     (intptr_t **) &keyword,
+	     (intptr_t **) keyword,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3797,7 +3797,7 @@ int libfwevt_provider_get_keyword_by_index(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->keywords_array,
 	     keyword_index,
-	     (intptr_t **) &keyword,
+	     (intptr_t **) keyword,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3882,7 +3882,7 @@ int libfwevt_provider_get_level(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->levels_array,
 	     level_index,
-	     (intptr_t **) &level,
+	     (intptr_t **) level,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3926,7 +3926,7 @@ int libfwevt_provider_get_level_by_index(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->levels_array,
 	     level_index,
-	     (intptr_t **) &level,
+	     (intptr_t **) level,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -4011,7 +4011,7 @@ int libfwevt_provider_get_map(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->maps_array,
 	     map_index,
-	     (intptr_t **) &map,
+	     (intptr_t **) map,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -4055,7 +4055,7 @@ int libfwevt_provider_get_map_by_index(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->maps_array,
 	     map_index,
-	     (intptr_t **) &map,
+	     (intptr_t **) map,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -4140,7 +4140,7 @@ int libfwevt_provider_get_task(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->tasks_array,
 	     task_index,
-	     (intptr_t **) &task,
+	     (intptr_t **) task,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -4184,7 +4184,7 @@ int libfwevt_provider_get_task_by_index(
 	if( libcdata_array_get_entry_by_index(
 	     internal_provider->tasks_array,
 	     task_index,
-	     (intptr_t **) &task,
+	     (intptr_t **) task,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

@@ -198,7 +198,31 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_keyword.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_keywords.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_level.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_levels.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_manifest.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_map.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_maps.c"
 				>
 			</File>
 			<File
@@ -244,6 +268,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_keyword.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_keywords.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_level.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_levels.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_libcerror.h"
 				>
 			</File>
@@ -253,6 +293,14 @@
 			</File>
 			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_manifest.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_map.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_maps.h"
 				>
 			</File>
 			<File

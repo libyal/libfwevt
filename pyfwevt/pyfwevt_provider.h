@@ -96,6 +96,57 @@ PyObject *pyfwevt_provider_get_events(
            pyfwevt_provider_t *pyfwevt_provider,
            PyObject *arguments );
 
+PyObject *pyfwevt_provider_get_number_of_keywords(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_keyword_by_index(
+           PyObject *pyfwevt_provider,
+           int keyword_index );
+
+PyObject *pyfwevt_provider_get_keyword(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_provider_get_keywords(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_number_of_levels(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_level_by_index(
+           PyObject *pyfwevt_provider,
+           int level_index );
+
+PyObject *pyfwevt_provider_get_level(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_provider_get_levels(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_number_of_maps(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_map_by_index(
+           PyObject *pyfwevt_provider,
+           int map_index );
+
+PyObject *pyfwevt_provider_get_map(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_provider_get_maps(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
 #if defined( __cplusplus )
 }
 #endif

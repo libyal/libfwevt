@@ -33,9 +33,15 @@
 #include "pyfwevt_error.h"
 #include "pyfwevt_event.h"
 #include "pyfwevt_events.h"
+#include "pyfwevt_keyword.h"
+#include "pyfwevt_keywords.h"
+#include "pyfwevt_level.h"
+#include "pyfwevt_levels.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_manifest.h"
+#include "pyfwevt_map.h"
+#include "pyfwevt_maps.h"
 #include "pyfwevt_provider.h"
 #include "pyfwevt_providers.h"
 #include "pyfwevt_python.h"
@@ -230,6 +236,74 @@ PyMODINIT_FUNC initpyfwevt(
 	 "events",
 	 (PyObject *) &pyfwevt_events_type_object );
 
+	/* Setup the keyword type object
+	 */
+	pyfwevt_keyword_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_keyword_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_keyword_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "keyword",
+	 (PyObject *) &pyfwevt_keyword_type_object );
+
+	/* Setup the keywords type object
+	 */
+	pyfwevt_keywords_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_keywords_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_keywords_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "keywords",
+	 (PyObject *) &pyfwevt_keywords_type_object );
+
+	/* Setup the level type object
+	 */
+	pyfwevt_level_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_level_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_level_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "level",
+	 (PyObject *) &pyfwevt_level_type_object );
+
+	/* Setup the levels type object
+	 */
+	pyfwevt_levels_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_levels_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_levels_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "levels",
+	 (PyObject *) &pyfwevt_levels_type_object );
+
 	/* Setup the manifest type object
 	 */
 	pyfwevt_manifest_type_object.tp_new = PyType_GenericNew;
@@ -246,6 +320,40 @@ PyMODINIT_FUNC initpyfwevt(
 	 module,
 	 "manifest",
 	 (PyObject *) &pyfwevt_manifest_type_object );
+
+	/* Setup the map type object
+	 */
+	pyfwevt_map_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_map_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_map_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "map",
+	 (PyObject *) &pyfwevt_map_type_object );
+
+	/* Setup the maps type object
+	 */
+	pyfwevt_maps_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_maps_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_maps_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "maps",
+	 (PyObject *) &pyfwevt_maps_type_object );
 
 	/* Setup the provider type object
 	 */

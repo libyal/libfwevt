@@ -31,8 +31,14 @@
 #include "pyfwevt_error.h"
 #include "pyfwevt_event.h"
 #include "pyfwevt_events.h"
+#include "pyfwevt_keyword.h"
+#include "pyfwevt_keywords.h"
+#include "pyfwevt_level.h"
+#include "pyfwevt_levels.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
+#include "pyfwevt_map.h"
+#include "pyfwevt_maps.h"
 #include "pyfwevt_provider.h"
 #include "pyfwevt_python.h"
 #include "pyfwevt_unused.h"
@@ -67,6 +73,48 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "\n"
 	  "Retrieves the event specified by the index." },
 
+	{ "get_number_of_keywords",
+	  (PyCFunction) pyfwevt_provider_get_number_of_keywords,
+	  METH_NOARGS,
+	  "get_number_of_keywords() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of keywords." },
+
+	{ "get_keyword",
+	  (PyCFunction) pyfwevt_provider_get_keyword,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_keyword(keyword_index) -> Object\n"
+	  "\n"
+	  "Retrieves the keyword specified by the index." },
+
+	{ "get_number_of_levels",
+	  (PyCFunction) pyfwevt_provider_get_number_of_levels,
+	  METH_NOARGS,
+	  "get_number_of_levels() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of levels." },
+
+	{ "get_level",
+	  (PyCFunction) pyfwevt_provider_get_level,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_level(level_index) -> Object\n"
+	  "\n"
+	  "Retrieves the level specified by the index." },
+
+	{ "get_number_of_maps",
+	  (PyCFunction) pyfwevt_provider_get_number_of_maps,
+	  METH_NOARGS,
+	  "get_number_of_maps() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of maps." },
+
+	{ "get_map",
+	  (PyCFunction) pyfwevt_provider_get_map,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_map(map_index) -> Object\n"
+	  "\n"
+	  "Retrieves the map specified by the index." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
@@ -95,6 +143,42 @@ PyGetSetDef pyfwevt_provider_object_get_set_definitions[] = {
 	  (getter) pyfwevt_provider_get_events,
 	  (setter) 0,
 	  "The events.",
+	  NULL },
+
+	{ "number_of_keywords",
+	  (getter) pyfwevt_provider_get_number_of_keywords,
+	  (setter) 0,
+	  "The number of keywords.",
+	  NULL },
+
+	{ "keywords",
+	  (getter) pyfwevt_provider_get_keywords,
+	  (setter) 0,
+	  "The keywords.",
+	  NULL },
+
+	{ "number_of_levels",
+	  (getter) pyfwevt_provider_get_number_of_levels,
+	  (setter) 0,
+	  "The number of levels.",
+	  NULL },
+
+	{ "levels",
+	  (getter) pyfwevt_provider_get_levels,
+	  (setter) 0,
+	  "The levels.",
+	  NULL },
+
+	{ "number_of_maps",
+	  (getter) pyfwevt_provider_get_number_of_maps,
+	  (setter) 0,
+	  "The number of maps.",
+	  NULL },
+
+	{ "maps",
+	  (getter) pyfwevt_provider_get_maps,
+	  (setter) 0,
+	  "The maps.",
 	  NULL },
 
 	/* Sentinel */
@@ -773,6 +857,663 @@ PyObject *pyfwevt_provider_get_events(
 	                   (PyObject *) pyfwevt_provider,
 	                   &pyfwevt_provider_get_event_by_index,
 	                   number_of_events );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
+}
+
+/* Retrieves the number of keywords
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_number_of_keywords(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_provider_get_number_of_keywords";
+	int number_of_keywords   = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_keywords(
+	          pyfwevt_provider->provider,
+	          &number_of_keywords,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of keywords.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_keywords );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_keywords );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific keyword by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_keyword_by_index(
+           PyObject *pyfwevt_provider,
+           int keyword_index )
+{
+	PyObject *keyword_object    = NULL;
+	libcerror_error_t *error    = NULL;
+	libfwevt_keyword_t *keyword = NULL;
+	static char *function       = "pyfwevt_provider_get_keyword_by_index";
+	int result                  = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_keyword_by_index(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          keyword_index,
+	          &keyword,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve keyword: %d.",
+		 function,
+		 keyword_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	keyword_object = pyfwevt_keyword_new(
+	                  keyword,
+	                  pyfwevt_provider );
+
+	if( keyword_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create keyword object.",
+		 function );
+
+		goto on_error;
+	}
+	return( keyword_object );
+
+on_error:
+	if( keyword != NULL )
+	{
+		libfwevt_keyword_free(
+		 &keyword,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific keyword
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_keyword(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *keyword_object    = NULL;
+	static char *keyword_list[] = { "keyword_index", NULL };
+	int keyword_index           = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &keyword_index ) == 0 )
+	{
+		return( NULL );
+	}
+	keyword_object = pyfwevt_provider_get_keyword_by_index(
+	                  (PyObject *) pyfwevt_provider,
+	                  keyword_index );
+
+	return( keyword_object );
+}
+
+/* Retrieves a sequence and iterator object for the keywords
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_keywords(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_provider_get_keywords";
+	int number_of_keywords    = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_keywords(
+	          pyfwevt_provider->provider,
+	          &number_of_keywords,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of keywords.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_keywords_new(
+	                   (PyObject *) pyfwevt_provider,
+	                   &pyfwevt_provider_get_keyword_by_index,
+	                   number_of_keywords );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
+}
+
+/* Retrieves the number of levels
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_number_of_levels(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_provider_get_number_of_levels";
+	int number_of_levels     = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_levels(
+	          pyfwevt_provider->provider,
+	          &number_of_levels,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of levels.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_levels );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_levels );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific level by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_level_by_index(
+           PyObject *pyfwevt_provider,
+           int level_index )
+{
+	PyObject *level_object   = NULL;
+	libcerror_error_t *error = NULL;
+	libfwevt_level_t *level  = NULL;
+	static char *function    = "pyfwevt_provider_get_level_by_index";
+	int result               = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_level_by_index(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          level_index,
+	          &level,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve level: %d.",
+		 function,
+		 level_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	level_object = pyfwevt_level_new(
+	                level,
+	                pyfwevt_provider );
+
+	if( level_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create level object.",
+		 function );
+
+		goto on_error;
+	}
+	return( level_object );
+
+on_error:
+	if( level != NULL )
+	{
+		libfwevt_level_free(
+		 &level,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific level
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_level(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *level_object      = NULL;
+	static char *keyword_list[] = { "level_index", NULL };
+	int level_index             = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &level_index ) == 0 )
+	{
+		return( NULL );
+	}
+	level_object = pyfwevt_provider_get_level_by_index(
+	                (PyObject *) pyfwevt_provider,
+	                level_index );
+
+	return( level_object );
+}
+
+/* Retrieves a sequence and iterator object for the levels
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_levels(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_provider_get_levels";
+	int number_of_levels      = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_levels(
+	          pyfwevt_provider->provider,
+	          &number_of_levels,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of levels.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_levels_new(
+	                   (PyObject *) pyfwevt_provider,
+	                   &pyfwevt_provider_get_level_by_index,
+	                   number_of_levels );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
+}
+
+/* Retrieves the number of maps
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_number_of_maps(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_provider_get_number_of_maps";
+	int number_of_maps       = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_maps(
+	          pyfwevt_provider->provider,
+	          &number_of_maps,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of maps.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_maps );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_maps );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific map by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_map_by_index(
+           PyObject *pyfwevt_provider,
+           int map_index )
+{
+	PyObject *map_object     = NULL;
+	libcerror_error_t *error = NULL;
+	libfwevt_map_t *map      = NULL;
+	static char *function    = "pyfwevt_provider_get_map_by_index";
+	int result               = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_map_by_index(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          map_index,
+	          &map,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve map: %d.",
+		 function,
+		 map_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	map_object = pyfwevt_map_new(
+	              map,
+	              pyfwevt_provider );
+
+	if( map_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create map object.",
+		 function );
+
+		goto on_error;
+	}
+	return( map_object );
+
+on_error:
+	if( map != NULL )
+	{
+		libfwevt_map_free(
+		 &map,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific map
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_map(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *map_object        = NULL;
+	static char *keyword_list[] = { "map_index", NULL };
+	int map_index               = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &map_index ) == 0 )
+	{
+		return( NULL );
+	}
+	map_object = pyfwevt_provider_get_map_by_index(
+	              (PyObject *) pyfwevt_provider,
+	              map_index );
+
+	return( map_object );
+}
+
+/* Retrieves a sequence and iterator object for the maps
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_maps(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_provider_get_maps";
+	int number_of_maps        = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_maps(
+	          pyfwevt_provider->provider,
+	          &number_of_maps,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of maps.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_maps_new(
+	                   (PyObject *) pyfwevt_provider,
+	                   &pyfwevt_provider_get_map_by_index,
+	                   number_of_maps );
 
 	if( sequence_object == NULL )
 	{

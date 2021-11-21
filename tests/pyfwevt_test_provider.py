@@ -104,7 +104,95 @@ class ProviderTypeTests(unittest.TestCase):
     self.assertIsNotNone(provider)
 
     with self.assertRaises(IOError):
-      channel = provider.get_channel(0)
+      provider.get_channel(0)
+
+  def test_get_number_of_events(self):
+    """Tests the get_number_of_events function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    number_of_events = provider.get_number_of_events()
+    self.assertEqual(number_of_events, 1)
+
+  def test_get_event(self):
+    """Tests the get_event function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    event = provider.get_event(0)
+    self.assertIsNotNone(event)
+
+  def test_get_number_of_keywords(self):
+    """Tests the get_number_of_keywords function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    number_of_keywords = provider.get_number_of_keywords()
+    self.assertEqual(number_of_keywords, 0)
+
+  def test_get_keyword(self):
+    """Tests the get_keyword function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    with self.assertRaises(IOError):
+      provider.get_keyword(0)
+
+  def test_get_number_of_levels(self):
+    """Tests the get_number_of_levels function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    number_of_levels = provider.get_number_of_levels()
+    self.assertEqual(number_of_levels, 0)
+
+  def test_get_level(self):
+    """Tests the get_level function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    with self.assertRaises(IOError):
+      provider.get_level(0)
+
+  def test_get_number_of_maps(self):
+    """Tests the get_number_of_maps function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    number_of_maps = provider.get_number_of_maps()
+    self.assertEqual(number_of_maps, 0)
+
+  def test_get_map(self):
+    """Tests the get_map function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    with self.assertRaises(IOError):
+      provider.get_map(0)
 
 
 if __name__ == "__main__":

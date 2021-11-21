@@ -16,9 +16,15 @@ pyfwevt_la_SOURCES = \
 	pyfwevt_event.c pyfwevt_event.h \
 	pyfwevt_events.c pyfwevt_events.h \
 	pyfwevt_integer.c pyfwevt_integer.h \
+	pyfwevt_keyword.c pyfwevt_keyword.h \
+	pyfwevt_keywords.c pyfwevt_keywords.h \
+	pyfwevt_level.c pyfwevt_level.h \
+	pyfwevt_levels.c pyfwevt_levels.h \
 	pyfwevt_libcerror.h \
 	pyfwevt_libfwevt.h \
 	pyfwevt_manifest.c pyfwevt_manifest.h \
+	pyfwevt_map.c pyfwevt_map.h \
+	pyfwevt_maps.c pyfwevt_maps.h \
 	pyfwevt_provider.c pyfwevt_provider.h \
 	pyfwevt_providers.c pyfwevt_providers.h \
 	pyfwevt_python.h \
