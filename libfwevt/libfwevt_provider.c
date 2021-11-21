@@ -393,14 +393,13 @@ int libfwevt_provider_read(
 
 		return( -1 );
 	}
-	if( ( data_size < sizeof( fwevt_template_provider_t ) )
-	 || ( data_offset > ( data_size - sizeof( fwevt_template_provider_t ) ) ) )
+	if( ( data_size - data_offset ) < sizeof( fwevt_template_provider_t ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data value too small.",
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data size value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -473,7 +472,8 @@ int libfwevt_provider_read(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	data_offset += sizeof( fwevt_template_provider_t );
 
 	if( memory_compare(
@@ -490,178 +490,183 @@ int libfwevt_provider_read(
 
 		return( -1 );
 	}
-	if( ( ( data_size / 8 ) < number_of_descriptors )
-	 || ( data_offset > ( data_size - ( number_of_descriptors * 8 ) ) ) )
+	if( number_of_descriptors > 0 )
 	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data value too small.",
-		 function );
-
-		return( -1 );
-	}
-	for( descriptor_index = 0;
-	     descriptor_index < number_of_descriptors;
-	     descriptor_index++ )
-	{
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			libcnotify_printf(
-			 "%s: descriptor: %02" PRIu32 " data:\n",
-			 function,
-			 descriptor_index );
-			libcnotify_print_data(
-			 &( data[ data_offset ] ),
-			 8,
-			 0 );
-		}
-#endif
-		byte_stream_copy_to_uint32_little_endian(
-		 &( data[ data_offset ] ),
-		 descriptor_offset );
-
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			libcnotify_printf(
-			 "%s: descriptor: %02" PRIu32 " offset\t\t\t\t: 0x%08" PRIx32 "\n",
-			 function,
-			 descriptor_index,
-			 descriptor_offset );
-
-			byte_stream_copy_to_uint32_little_endian(
-			 &( data[ data_offset + 4 ] ),
-			 value_32bit );
-			libcnotify_printf(
-			 "%s: descriptor: %02" PRIu32 " unknown1\t\t\t\t: %" PRIu32 "\n",
-			 function,
-			 descriptor_index,
-			 value_32bit );
-
-			libcnotify_printf(
-			 "%s: descriptor: %02" PRIu32 " type\t\t\t\t: %c%c%c%c\n",
-			 function,
-			 descriptor_index,
-			 data[ descriptor_offset ],
-			 data[ descriptor_offset + 1 ],
-			 data[ descriptor_offset + 2 ],
-			 data[ descriptor_offset + 3 ] );
-		}
-#endif
-		if( descriptor_offset > data_size )
+		if( ( number_of_descriptors > ( (uint32_t) UINT32_MAX / 8 ) )
+		 || ( ( number_of_descriptors * 8 ) > ( data_size - data_offset ) ) )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid descriptor offset value out of bounds.",
+			 "%s: invalid number of descriptors value out of bounds.",
 			 function );
 
 			return( -1 );
 		}
-		byte_stream_copy_to_uint32_big_endian(
-		 &( data[ descriptor_offset ] ),
-		 descriptor_type );
-
-		data_offset += 8;
-
-		switch( descriptor_type )
+		for( descriptor_index = 0;
+		     descriptor_index < number_of_descriptors;
+		     descriptor_index++ )
 		{
-			/* CHAN */
-			case 0x4348414e:
-				internal_provider->channels_offset = descriptor_offset;
-				break;
-
-			/* EVTN */
-			case 0x45564e54:
-				internal_provider->events_offset = descriptor_offset;
-				break;
-
-			/* KEYW */
-			case 0x4b455957:
-				internal_provider->keywords_offset = descriptor_offset;
-				break;
-
-			/* LEVL */
-			case 0x4c45564c:
-				internal_provider->levels_offset = descriptor_offset;
-				break;
-
-			/* MAPS */
-			case 0x4d415053:
-				internal_provider->maps_offset = descriptor_offset;
-				break;
-
-			/* TASK */
-			case 0x5441534b:
-				internal_provider->tasks_offset = descriptor_offset;
-				break;
-
-			/* TTBL */
-			case 0x5454424c:
-				internal_provider->templates_offset = descriptor_offset;
-				break;
-
-			/* OPCO */
-			case 0x4f50434f:
-				internal_provider->opcodes_offset = descriptor_offset;
-				break;
-		}
-	}
 #if defined( HAVE_DEBUG_OUTPUT )
-	if( libcnotify_verbose != 0 )
-	{
-		if( number_of_descriptors > 0 )
-		{
-			libcnotify_printf(
-			 "\n" );
-		}
-	}
+			if( libcnotify_verbose != 0 )
+			{
+				libcnotify_printf(
+				 "%s: descriptor: %02" PRIu32 " data:\n",
+				 function,
+				 descriptor_index );
+				libcnotify_print_data(
+				 &( data[ data_offset ] ),
+				 8,
+				 0 );
+			}
 #endif
-	if( ( ( data_size / 4 ) < number_of_unknown2 )
-	 || ( data_offset > ( data_size - ( number_of_unknown2 * 4 ) ) ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data value too small.",
-		 function );
+			byte_stream_copy_to_uint32_little_endian(
+			 &( data[ data_offset ] ),
+			 descriptor_offset );
 
-		return( -1 );
-	}
-	for( unknown2_index = 0;
-	     unknown2_index < number_of_unknown2;
-	     unknown2_index++ )
-	{
+#if defined( HAVE_DEBUG_OUTPUT )
+			if( libcnotify_verbose != 0 )
+			{
+				libcnotify_printf(
+				 "%s: descriptor: %02" PRIu32 " offset\t\t\t\t: 0x%08" PRIx32 "\n",
+				 function,
+				 descriptor_index,
+				 descriptor_offset );
+
+				byte_stream_copy_to_uint32_little_endian(
+				 &( data[ data_offset + 4 ] ),
+				 value_32bit );
+				libcnotify_printf(
+				 "%s: descriptor: %02" PRIu32 " unknown1\t\t\t\t: %" PRIu32 "\n",
+				 function,
+				 descriptor_index,
+				 value_32bit );
+			}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+			data_offset += 8;
+
+			if( descriptor_offset >= ( data_size - 4 ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid descriptor offset value out of bounds.",
+				 function );
+
+				return( -1 );
+			}
+#if defined( HAVE_DEBUG_OUTPUT )
+			if( libcnotify_verbose != 0 )
+			{
+				libcnotify_printf(
+				 "%s: descriptor: %02" PRIu32 " type\t\t\t\t: %c%c%c%c\n",
+				 function,
+				 descriptor_index,
+				 data[ descriptor_offset ],
+				 data[ descriptor_offset + 1 ],
+				 data[ descriptor_offset + 2 ],
+				 data[ descriptor_offset + 3 ] );
+			}
+#endif
+			byte_stream_copy_to_uint32_big_endian(
+			 &( data[ descriptor_offset ] ),
+			 descriptor_type );
+
+			switch( descriptor_type )
+			{
+				/* CHAN */
+				case 0x4348414e:
+					internal_provider->channels_offset = descriptor_offset;
+					break;
+
+				/* EVTN */
+				case 0x45564e54:
+					internal_provider->events_offset = descriptor_offset;
+					break;
+
+				/* KEYW */
+				case 0x4b455957:
+					internal_provider->keywords_offset = descriptor_offset;
+					break;
+
+				/* LEVL */
+				case 0x4c45564c:
+					internal_provider->levels_offset = descriptor_offset;
+					break;
+
+				/* MAPS */
+				case 0x4d415053:
+					internal_provider->maps_offset = descriptor_offset;
+					break;
+
+				/* TASK */
+				case 0x5441534b:
+					internal_provider->tasks_offset = descriptor_offset;
+					break;
+
+				/* TTBL */
+				case 0x5454424c:
+					internal_provider->templates_offset = descriptor_offset;
+					break;
+
+				/* OPCO */
+				case 0x4f50434f:
+					internal_provider->opcodes_offset = descriptor_offset;
+					break;
+			}
+		}
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
-			byte_stream_copy_to_uint32_little_endian(
-			 &( data[ data_offset ] ),
-			 value_32bit );
 			libcnotify_printf(
-			 "%s: unknown2: %02" PRIu32 " value\t\t\t\t: 0x%08" PRIx32 "\n",
-			 function,
-			 unknown2_index,
-			 value_32bit );
+			 "\n" );
 		}
 #endif
-		data_offset += 4;
 	}
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( libcnotify_verbose != 0 )
+	if( number_of_unknown2 > 0 )
 	{
-		if( number_of_unknown2 > 0 )
+		if( ( number_of_unknown2 > ( (uint32_t) UINT32_MAX / 4 ) )
+		 || ( ( number_of_unknown2 * 4 ) > ( data_size - data_offset ) ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid number of unknown2 value out of bounds.",
+			 function );
+
+			return( -1 );
+		}
+		for( unknown2_index = 0;
+		     unknown2_index < number_of_unknown2;
+		     unknown2_index++ )
+		{
+#if defined( HAVE_DEBUG_OUTPUT )
+			if( libcnotify_verbose != 0 )
+			{
+				byte_stream_copy_to_uint32_little_endian(
+				 &( data[ data_offset ] ),
+				 value_32bit );
+				libcnotify_printf(
+				 "%s: unknown2: %02" PRIu32 " value\t\t\t\t: 0x%08" PRIx32 "\n",
+				 function,
+				 unknown2_index,
+				 value_32bit );
+			}
+#endif
+			data_offset += 4;
+		}
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
 			 "\n" );
 		}
-	}
 #endif
+	}
 	return( 1 );
 }
 
@@ -674,14 +679,15 @@ int libfwevt_provider_read_channels(
      size_t data_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	libfwevt_channel_t *channel                     = NULL;
 	fwevt_template_channels_t *wevt_channels        = NULL;
+	libfwevt_channel_t *channel                     = NULL;
+	libfwevt_internal_provider_t *internal_provider = NULL;
 	static char *function                           = "libfwevt_provider_read_channels";
 	size_t data_offset                              = 0;
 	uint32_t channel_index                          = 0;
 	uint32_t channels_data_size                     = 0;
 	uint32_t number_of_channels                     = 0;
+	int entry_index                                 = 0;
 
 	if( provider == NULL )
 	{
@@ -740,7 +746,7 @@ int libfwevt_provider_read_channels(
 
 		return( -1 );
 	}
-	if( ( (size_t) internal_provider->channels_offset + sizeof( fwevt_template_channels_t ) ) > data_size )
+	if( ( data_size - (size_t) internal_provider->channels_offset ) < sizeof( fwevt_template_channels_t ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -775,7 +781,8 @@ int libfwevt_provider_read_channels(
 		 sizeof( fwevt_template_channels_t ),
 		 0 );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	byte_stream_copy_to_uint32_little_endian(
 	 wevt_channels->size,
 	 channels_data_size );
@@ -808,7 +815,8 @@ int libfwevt_provider_read_channels(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	data_offset += sizeof( fwevt_template_channels_t );
 
 	if( memory_compare(
@@ -825,7 +833,7 @@ int libfwevt_provider_read_channels(
 
 		goto on_error;
 	}
-	if( ( data_offset + ( number_of_channels * sizeof( fwevt_template_channel_t ) ) ) > data_size )
+	if( number_of_channels > ( ( data_size - data_offset ) / sizeof( fwevt_template_channel_t ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -838,7 +846,7 @@ int libfwevt_provider_read_channels(
 	}
 	if( libcdata_array_initialize(
 	     &( internal_provider->channels_array ),
-	     (int) number_of_channels,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -926,17 +934,17 @@ int libfwevt_provider_read_channels(
 		data_offset        += sizeof( fwevt_template_channel_t );
 		channels_data_size -= sizeof( fwevt_template_channel_t );
 
-		if( libcdata_array_set_entry_by_index(
+		if( libcdata_array_append_entry(
 		     internal_provider->channels_array,
-		     (int) channel_index,
+		     &entry_index,
 		     (intptr_t *) channel,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-			 "%s: unable to set channel: %" PRIu32 " to array.",
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append channel: %" PRIu32 " to array.",
 			 function,
 			 channel_index );
 
@@ -974,7 +982,7 @@ on_error:
 	{
 		libcdata_array_free(
 		 &( internal_provider->channels_array ),
-		 NULL,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_channel_free,
 		 NULL );
 	}
 	return( -1 );
@@ -989,14 +997,15 @@ int libfwevt_provider_read_events(
      size_t data_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	libfwevt_event_t *event                         = NULL;
 	fwevt_template_events_t *wevt_events            = NULL;
+	libfwevt_event_t *event                         = NULL;
+	libfwevt_internal_provider_t *internal_provider = NULL;
 	static char *function                           = "libfwevt_provider_read_events";
 	size_t data_offset                              = 0;
 	uint32_t event_index                            = 0;
 	uint32_t events_data_size                       = 0;
 	uint32_t number_of_events                       = 0;
+	int entry_index                                 = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint32_t value_32bit                            = 0;
@@ -1059,7 +1068,7 @@ int libfwevt_provider_read_events(
 
 		return( -1 );
 	}
-	if( ( (size_t) internal_provider->events_offset + sizeof( fwevt_template_events_t ) ) > data_size )
+	if( ( data_size - (size_t) internal_provider->events_offset ) < sizeof( fwevt_template_events_t ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1094,7 +1103,8 @@ int libfwevt_provider_read_events(
 		 sizeof( fwevt_template_events_t ),
 		 0 );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	byte_stream_copy_to_uint32_little_endian(
 	 wevt_events->size,
 	 events_data_size );
@@ -1135,7 +1145,8 @@ int libfwevt_provider_read_events(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	data_offset += sizeof( fwevt_template_events_t );
 
 	if( memory_compare(
@@ -1152,7 +1163,7 @@ int libfwevt_provider_read_events(
 
 		goto on_error;
 	}
-	if( ( data_offset + ( number_of_events * sizeof( fwevt_template_event_t ) ) ) > data_size )
+	if( number_of_events > ( ( data_size - data_offset ) / sizeof( fwevt_template_event_t ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1165,7 +1176,7 @@ int libfwevt_provider_read_events(
 	}
 	if( libcdata_array_initialize(
 	     &( internal_provider->events_array ),
-	     (int) number_of_events,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1253,17 +1264,17 @@ int libfwevt_provider_read_events(
 		data_offset      += sizeof( fwevt_template_event_t );
 		events_data_size -= sizeof( fwevt_template_event_t );
 
-		if( libcdata_array_set_entry_by_index(
+		if( libcdata_array_append_entry(
 		     internal_provider->events_array,
-		     (int) event_index,
+		     &entry_index,
 		     (intptr_t *) event,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-			 "%s: unable to set event: %" PRIu32 " to array.",
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append event: %" PRIu32 " to array.",
 			 function,
 			 event_index );
 
@@ -1299,7 +1310,7 @@ on_error:
 	{
 		libcdata_array_free(
 		 &( internal_provider->events_array ),
-		 NULL,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_event_free,
 		 NULL );
 	}
 	return( -1 );
@@ -1314,14 +1325,15 @@ int libfwevt_provider_read_keywords(
      size_t data_size,
      libcerror_error_t **error )
 {
+	fwevt_template_keywords_t *keywords             = NULL;
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	libfwevt_keyword_t *keyword                     = NULL;
-	fwevt_template_keywords_t *keywords             = NULL;
 	static char *function                           = "libfwevt_provider_read_keywords";
 	size_t data_offset                              = 0;
 	uint32_t keyword_index                          = 0;
 	uint32_t keywords_data_size                     = 0;
 	uint32_t number_of_keywords                     = 0;
+	int entry_index                                 = 0;
 
 	if( provider == NULL )
 	{
@@ -1369,7 +1381,7 @@ int libfwevt_provider_read_keywords(
 
 		return( -1 );
 	}
-	if( ( (size_t) internal_provider->keywords_offset + sizeof( fwevt_template_keywords_t ) ) > data_size )
+	if( ( data_size - (size_t) internal_provider->keywords_offset ) < sizeof( fwevt_template_keywords_t ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1454,7 +1466,7 @@ int libfwevt_provider_read_keywords(
 
 		goto on_error;
 	}
-	if( ( data_offset + ( number_of_keywords * sizeof( fwevt_template_keyword_t ) ) ) > data_size )
+	if( number_of_keywords > ( ( data_size - data_offset ) / sizeof( fwevt_template_keyword_t ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1467,7 +1479,7 @@ int libfwevt_provider_read_keywords(
 	}
 	if( libcdata_array_initialize(
 	     &( internal_provider->keywords_array ),
-	     (int) number_of_keywords,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1555,17 +1567,17 @@ int libfwevt_provider_read_keywords(
 		data_offset        += sizeof( fwevt_template_keyword_t );
 		keywords_data_size -= sizeof( fwevt_template_keyword_t );
 
-		if( libcdata_array_set_entry_by_index(
+		if( libcdata_array_append_entry(
 		     internal_provider->keywords_array,
-		     (int) keyword_index,
+		     &entry_index,
 		     (intptr_t *) keyword,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-			 "%s: unable to set keyword: %" PRIu32 " to array.",
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append keyword: %" PRIu32 " to array.",
 			 function,
 			 keyword_index );
 
@@ -1603,7 +1615,7 @@ on_error:
 	{
 		libcdata_array_free(
 		 &( internal_provider->keywords_array ),
-		 NULL,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_keyword_free,
 		 NULL );
 	}
 	return( -1 );
@@ -1618,14 +1630,15 @@ int libfwevt_provider_read_levels(
      size_t data_size,
      libcerror_error_t **error )
 {
+	fwevt_template_levels_t *levels                 = NULL;
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	libfwevt_level_t *level                         = NULL;
-	fwevt_template_levels_t *levels                 = NULL;
 	static char *function                           = "libfwevt_provider_read_levels";
 	size_t data_offset                              = 0;
 	uint32_t level_index                            = 0;
 	uint32_t levels_data_size                       = 0;
 	uint32_t number_of_levels                       = 0;
+	int entry_index                                 = 0;
 
 	if( provider == NULL )
 	{
@@ -1684,7 +1697,7 @@ int libfwevt_provider_read_levels(
 
 		return( -1 );
 	}
-	if( ( (size_t) internal_provider->levels_offset + sizeof( fwevt_template_levels_t ) ) > data_size )
+	if( ( data_size - (size_t) internal_provider->levels_offset ) < sizeof( fwevt_template_levels_t ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1769,7 +1782,7 @@ int libfwevt_provider_read_levels(
 
 		goto on_error;
 	}
-	if( ( data_offset + ( number_of_levels * sizeof( fwevt_template_level_t ) ) ) > data_size )
+	if( number_of_levels > ( ( data_size - data_offset ) / sizeof( fwevt_template_level_t ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1782,7 +1795,7 @@ int libfwevt_provider_read_levels(
 	}
 	if( libcdata_array_initialize(
 	     &( internal_provider->levels_array ),
-	     (int) number_of_levels,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1870,17 +1883,17 @@ int libfwevt_provider_read_levels(
 		data_offset      += sizeof( fwevt_template_level_t );
 		levels_data_size -= sizeof( fwevt_template_level_t );
 
-		if( libcdata_array_set_entry_by_index(
+		if( libcdata_array_append_entry(
 		     internal_provider->levels_array,
-		     (int) level_index,
+		     &entry_index,
 		     (intptr_t *) level,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-			 "%s: unable to set level: %" PRIu32 " to array.",
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append level: %" PRIu32 " to array.",
 			 function,
 			 level_index );
 
@@ -1918,7 +1931,7 @@ on_error:
 	{
 		libcdata_array_free(
 		 &( internal_provider->levels_array ),
-		 NULL,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_level_free,
 		 NULL );
 	}
 	return( -1 );
@@ -1933,9 +1946,9 @@ int libfwevt_provider_read_maps(
      size_t data_size,
      libcerror_error_t **error )
 {
+	fwevt_template_maps_t *maps                     = NULL;
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	libfwevt_map_t *map                             = NULL;
-	fwevt_template_maps_t *maps                     = NULL;
 	const uint8_t *map_offsets_data                 = NULL;
 	static char *function                           = "libfwevt_provider_read_maps";
 	size_t data_offset                              = 0;
@@ -1944,6 +1957,7 @@ int libfwevt_provider_read_maps(
 	uint32_t map_offset                             = 0;
 	uint32_t maps_data_size                         = 0;
 	uint32_t number_of_maps                         = 0;
+	int entry_index                                 = 0;
 
 	if( provider == NULL )
 	{
@@ -2002,7 +2016,7 @@ int libfwevt_provider_read_maps(
 
 		return( -1 );
 	}
-	if( ( (size_t) internal_provider->maps_offset + sizeof( fwevt_template_maps_t ) ) > data_size )
+	if( ( data_size - (size_t) internal_provider->maps_offset ) < sizeof( fwevt_template_maps_t ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -2091,7 +2105,7 @@ int libfwevt_provider_read_maps(
 	{
 		map_offsets_data = &( data[ data_offset ] );
 
-		if( ( data_offset + ( ( number_of_maps - 1 ) * sizeof( uint32_t ) ) ) > data_size )
+		if( ( number_of_maps - 1 ) > ( ( data_size - data_offset ) / sizeof( uint32_t ) ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -2138,7 +2152,7 @@ int libfwevt_provider_read_maps(
 	}
 	if( number_of_maps > 0 )
 	{
-		if( ( data_offset + ( number_of_maps * sizeof( fwevt_template_map_t ) ) ) > data_size )
+		if( number_of_maps > ( ( data_size - data_offset ) / sizeof( fwevt_template_map_t ) ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -2151,7 +2165,7 @@ int libfwevt_provider_read_maps(
 		}
 		if( libcdata_array_initialize(
 		     &( internal_provider->maps_array ),
-		     (int) number_of_maps,
+		     0,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -2264,17 +2278,17 @@ int libfwevt_provider_read_maps(
 			}
 			maps_data_size -= sizeof( fwevt_template_map_t );
 
-			if( libcdata_array_set_entry_by_index(
+			if( libcdata_array_append_entry(
 			     internal_provider->maps_array,
-			     (int) map_index,
+			     &entry_index,
 			     (intptr_t *) map,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
 				 error,
 				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-				 "%s: unable to set map: %" PRIu32 " to array.",
+				 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+				 "%s: unable to append map: %" PRIu32 " to array.",
 				 function,
 				 map_index );
 
@@ -2313,7 +2327,7 @@ on_error:
 	{
 		libcdata_array_free(
 		 &( internal_provider->maps_array ),
-		 NULL,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_map_free,
 		 NULL );
 	}
 	return( -1 );
@@ -2328,14 +2342,15 @@ int libfwevt_provider_read_opcodes(
      size_t data_size,
      libcerror_error_t **error )
 {
+	fwevt_template_opcodes_t *opcodes               = NULL;
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	libfwevt_opcode_t *opcode                       = NULL;
-	fwevt_template_opcodes_t *opcodes               = NULL;
 	static char *function                           = "libfwevt_provider_read_opcodes";
 	size_t data_offset                              = 0;
+	uint32_t number_of_opcodes                      = 0;
 	uint32_t opcode_index                           = 0;
 	uint32_t opcodes_data_size                      = 0;
-	uint32_t number_of_opcodes                      = 0;
+	int entry_index                                 = 0;
 
 	if( provider == NULL )
 	{
@@ -2394,7 +2409,7 @@ int libfwevt_provider_read_opcodes(
 
 		return( -1 );
 	}
-	if( ( (size_t) internal_provider->opcodes_offset + sizeof( fwevt_template_opcodes_t ) ) > data_size )
+	if( ( data_size - (size_t) internal_provider->opcodes_offset ) < sizeof( fwevt_template_opcodes_t ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -2479,7 +2494,7 @@ int libfwevt_provider_read_opcodes(
 
 		goto on_error;
 	}
-	if( ( data_offset + ( number_of_opcodes * sizeof( fwevt_template_opcode_t ) ) ) > data_size )
+	if( number_of_opcodes > ( ( data_size - data_offset ) / sizeof( fwevt_template_opcode_t ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -2492,7 +2507,7 @@ int libfwevt_provider_read_opcodes(
 	}
 	if( libcdata_array_initialize(
 	     &( internal_provider->opcodes_array ),
-	     (int) number_of_opcodes,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -2580,17 +2595,17 @@ int libfwevt_provider_read_opcodes(
 		data_offset       += sizeof( fwevt_template_opcode_t );
 		opcodes_data_size -= sizeof( fwevt_template_opcode_t );
 
-		if( libcdata_array_set_entry_by_index(
+		if( libcdata_array_append_entry(
 		     internal_provider->opcodes_array,
-		     (int) opcode_index,
+		     &entry_index,
 		     (intptr_t *) opcode,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-			 "%s: unable to set opcode: %" PRIu32 " to array.",
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append opcode: %" PRIu32 " to array.",
 			 function,
 			 opcode_index );
 
@@ -2628,7 +2643,7 @@ on_error:
 	{
 		libcdata_array_free(
 		 &( internal_provider->opcodes_array ),
-		 NULL,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_opcode_free,
 		 NULL );
 	}
 	return( -1 );
@@ -2643,14 +2658,15 @@ int libfwevt_provider_read_tasks(
      size_t data_size,
      libcerror_error_t **error )
 {
+	fwevt_template_tasks_t *tasks                   = NULL;
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	libfwevt_task_t *task                           = NULL;
-	fwevt_template_tasks_t *tasks                   = NULL;
 	static char *function                           = "libfwevt_provider_read_tasks";
 	size_t data_offset                              = 0;
+	uint32_t number_of_tasks                        = 0;
 	uint32_t task_index                             = 0;
 	uint32_t tasks_data_size                        = 0;
-	uint32_t number_of_tasks                        = 0;
+	int entry_index                                 = 0;
 
 	if( provider == NULL )
 	{
@@ -2709,7 +2725,7 @@ int libfwevt_provider_read_tasks(
 
 		return( -1 );
 	}
-	if( ( (size_t) internal_provider->tasks_offset + sizeof( fwevt_template_tasks_t ) ) > data_size )
+	if( ( data_size - (size_t) internal_provider->tasks_offset ) < sizeof( fwevt_template_tasks_t ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -2794,7 +2810,7 @@ int libfwevt_provider_read_tasks(
 
 		goto on_error;
 	}
-	if( ( data_offset + ( number_of_tasks * sizeof( fwevt_template_task_t ) ) ) > data_size )
+	if( number_of_tasks > ( ( data_size - data_offset ) / sizeof( fwevt_template_task_t ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -2807,7 +2823,7 @@ int libfwevt_provider_read_tasks(
 	}
 	if( libcdata_array_initialize(
 	     &( internal_provider->tasks_array ),
-	     (int) number_of_tasks,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -2895,17 +2911,17 @@ int libfwevt_provider_read_tasks(
 		data_offset     += sizeof( fwevt_template_task_t );
 		tasks_data_size -= sizeof( fwevt_template_task_t );
 
-		if( libcdata_array_set_entry_by_index(
+		if( libcdata_array_append_entry(
 		     internal_provider->tasks_array,
-		     (int) task_index,
+		     &entry_index,
 		     (intptr_t *) task,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-			 "%s: unable to set task: %" PRIu32 " to array.",
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append task: %" PRIu32 " to array.",
 			 function,
 			 task_index );
 
@@ -2943,7 +2959,7 @@ on_error:
 	{
 		libcdata_array_free(
 		 &( internal_provider->tasks_array ),
-		 NULL,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_task_free,
 		 NULL );
 	}
 	return( -1 );
@@ -2967,6 +2983,7 @@ int libfwevt_provider_read_templates(
 	uint32_t template_index                         = 0;
 	uint32_t template_size                          = 0;
 	uint32_t template_table_size                    = 0;
+	int entry_index                                 = 0;
 
 	if( provider == NULL )
 	{
@@ -3025,13 +3042,13 @@ int libfwevt_provider_read_templates(
 
 		return( -1 );
 	}
-	if( ( (size_t) internal_provider->templates_offset + sizeof( fwevt_template_table_t ) ) > data_size )
+	if( ( data_size - (size_t) internal_provider->templates_offset ) < sizeof( fwevt_template_table_t ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data value too small.",
+		 "%s: invalid data size value too small.",
 		 function );
 
 		return( -1 );
@@ -3093,7 +3110,8 @@ int libfwevt_provider_read_templates(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	data_offset += sizeof( fwevt_template_table_t );
 
 	if( memory_compare(
@@ -3110,7 +3128,7 @@ int libfwevt_provider_read_templates(
 
 		goto on_error;
 	}
-	if( ( data_offset + ( number_of_templates * sizeof( fwevt_template_header_t ) ) ) > data_size )
+	if( number_of_templates > ( ( data_size - data_offset ) / sizeof( fwevt_template_header_t ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -3123,7 +3141,7 @@ int libfwevt_provider_read_templates(
 	}
 	if( libcdata_array_initialize(
 	     &( internal_provider->templates_array ),
-	     (int) number_of_templates,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3226,16 +3244,16 @@ int libfwevt_provider_read_templates(
 		data_offset         += template_size;
 		template_table_size -= template_size;
 
-		if( libcdata_array_set_entry_by_index(
+		if( libcdata_array_append_entry(
 		     internal_provider->templates_array,
-		     (int) template_index,
+		     &entry_index,
 		     (intptr_t *) wevt_template,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
 			 "%s: unable to set templates: %" PRIu32 " to array.",
 			 function,
 			 template_index );
@@ -3274,7 +3292,7 @@ on_error:
 	{
 		libcdata_array_free(
 		 &( internal_provider->templates_array ),
-		 NULL,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_template_free,
 		 NULL );
 	}
 	return( -1 );

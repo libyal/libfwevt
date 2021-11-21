@@ -25,6 +25,7 @@
 #include <system_string.h>
 #include <types.h>
 
+#include "libfwevt_debug.h"
 #include "libfwevt_libcerror.h"
 #include "libfwevt_libcnotify.h"
 #include "libfwevt_libfguid.h"
@@ -179,7 +180,6 @@ int libfwevt_manifest_read(
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint32_t value_32bit                            = 0;
-	int result                                      = 0;
 #endif
 
 	if( manifest == NULL )

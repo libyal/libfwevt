@@ -408,7 +408,6 @@ int libfwevt_template_read_header(
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint32_t value_32bit  = 0;
-	int result            = 0;
 #endif
 
 	if( internal_template == NULL )
