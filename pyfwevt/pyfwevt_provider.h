@@ -66,6 +66,36 @@ PyObject *pyfwevt_provider_get_number_of_channels(
            pyfwevt_provider_t *pyfwevt_provider,
            PyObject *arguments );
 
+PyObject *pyfwevt_provider_get_channel_by_index(
+           PyObject *pyfwevt_provider,
+           int channel_index );
+
+PyObject *pyfwevt_provider_get_channel(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_provider_get_channels(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_number_of_events(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_event_by_index(
+           PyObject *pyfwevt_provider,
+           int event_index );
+
+PyObject *pyfwevt_provider_get_event(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_provider_get_events(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
 #if defined( __cplusplus )
 }
 #endif

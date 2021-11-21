@@ -26,10 +26,14 @@
 #include <stdlib.h>
 #endif
 
-#include "pyfwevt_provider.h"
+#include "pyfwevt_channel.h"
+#include "pyfwevt_channels.h"
 #include "pyfwevt_error.h"
+#include "pyfwevt_event.h"
+#include "pyfwevt_events.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
+#include "pyfwevt_provider.h"
 #include "pyfwevt_python.h"
 #include "pyfwevt_unused.h"
 
@@ -42,6 +46,27 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "\n"
 	  "Retrieves the number of channels." },
 
+	{ "get_channel",
+	  (PyCFunction) pyfwevt_provider_get_channel,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_channel(channel_index) -> Object\n"
+	  "\n"
+	  "Retrieves the channel specified by the index." },
+
+	{ "get_number_of_events",
+	  (PyCFunction) pyfwevt_provider_get_number_of_events,
+	  METH_NOARGS,
+	  "get_number_of_events() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of events." },
+
+	{ "get_event",
+	  (PyCFunction) pyfwevt_provider_get_event,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_event(event_index) -> Object\n"
+	  "\n"
+	  "Retrieves the event specified by the index." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
@@ -52,6 +77,24 @@ PyGetSetDef pyfwevt_provider_object_get_set_definitions[] = {
 	  (getter) pyfwevt_provider_get_number_of_channels,
 	  (setter) 0,
 	  "The number of channels.",
+	  NULL },
+
+	{ "channels",
+	  (getter) pyfwevt_provider_get_channels,
+	  (setter) 0,
+	  "The channels.",
+	  NULL },
+
+	{ "number_of_events",
+	  (getter) pyfwevt_provider_get_number_of_events,
+	  (setter) 0,
+	  "The number of events.",
+	  NULL },
+
+	{ "events",
+	  (getter) pyfwevt_provider_get_events,
+	  (setter) 0,
+	  "The events.",
 	  NULL },
 
 	/* Sentinel */
@@ -360,5 +403,387 @@ PyObject *pyfwevt_provider_get_number_of_channels(
 	                  (long) number_of_channels );
 #endif
 	return( integer_object );
+}
+
+/* Retrieves a specific channel by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_channel_by_index(
+           PyObject *pyfwevt_provider,
+           int channel_index )
+{
+	PyObject *channel_object    = NULL;
+	libcerror_error_t *error    = NULL;
+	libfwevt_channel_t *channel = NULL;
+	static char *function       = "pyfwevt_provider_get_channel_by_index";
+	int result                  = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_channel_by_index(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          channel_index,
+	          &channel,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve channel: %d.",
+		 function,
+		 channel_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	channel_object = pyfwevt_channel_new(
+	                  channel,
+	                  pyfwevt_provider );
+
+	if( channel_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create channel object.",
+		 function );
+
+		goto on_error;
+	}
+	return( channel_object );
+
+on_error:
+	if( channel != NULL )
+	{
+		libfwevt_channel_free(
+		 &channel,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific channel
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_channel(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *channel_object    = NULL;
+	static char *keyword_list[] = { "channel_index", NULL };
+	int channel_index           = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &channel_index ) == 0 )
+	{
+		return( NULL );
+	}
+	channel_object = pyfwevt_provider_get_channel_by_index(
+	                  (PyObject *) pyfwevt_provider,
+	                  channel_index );
+
+	return( channel_object );
+}
+
+/* Retrieves a sequence and iterator object for the channels
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_channels(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_provider_get_channels";
+	int number_of_channels    = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_channels(
+	          pyfwevt_provider->provider,
+	          &number_of_channels,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of channels.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_channels_new(
+	                   (PyObject *) pyfwevt_provider,
+	                   &pyfwevt_provider_get_channel_by_index,
+	                   number_of_channels );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
+}
+
+/* Retrieves the number of events
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_number_of_events(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_provider_get_number_of_events";
+	int number_of_events     = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_events(
+	          pyfwevt_provider->provider,
+	          &number_of_events,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of events.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_events );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_events );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific event by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_event_by_index(
+           PyObject *pyfwevt_provider,
+           int event_index )
+{
+	PyObject *event_object   = NULL;
+	libcerror_error_t *error = NULL;
+	libfwevt_event_t *event  = NULL;
+	static char *function    = "pyfwevt_provider_get_event_by_index";
+	int result               = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_event_by_index(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          event_index,
+	          &event,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve event: %d.",
+		 function,
+		 event_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	event_object = pyfwevt_event_new(
+	                event,
+	                pyfwevt_provider );
+
+	if( event_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create event object.",
+		 function );
+
+		goto on_error;
+	}
+	return( event_object );
+
+on_error:
+	if( event != NULL )
+	{
+		libfwevt_event_free(
+		 &event,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific event
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_event(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *event_object      = NULL;
+	static char *keyword_list[] = { "event_index", NULL };
+	int event_index             = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &event_index ) == 0 )
+	{
+		return( NULL );
+	}
+	event_object = pyfwevt_provider_get_event_by_index(
+	                (PyObject *) pyfwevt_provider,
+	                event_index );
+
+	return( event_object );
+}
+
+/* Retrieves a sequence and iterator object for the events
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_events(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_provider_get_events";
+	int number_of_events      = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_events(
+	          pyfwevt_provider->provider,
+	          &number_of_events,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of events.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_events_new(
+	                   (PyObject *) pyfwevt_provider,
+	                   &pyfwevt_provider_get_event_by_index,
+	                   number_of_events );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
 }
 

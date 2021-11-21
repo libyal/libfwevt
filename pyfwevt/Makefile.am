@@ -10,7 +10,11 @@ pyexec_LTLIBRARIES = pyfwevt.la
 
 pyfwevt_la_SOURCES = \
 	pyfwevt.c pyfwevt.h \
+	pyfwevt_channel.c pyfwevt_channel.h \
+	pyfwevt_channels.c pyfwevt_channels.h \
 	pyfwevt_error.c pyfwevt_error.h \
+	pyfwevt_event.c pyfwevt_event.h \
+	pyfwevt_events.c pyfwevt_events.h \
 	pyfwevt_integer.c pyfwevt_integer.h \
 	pyfwevt_libcerror.h \
 	pyfwevt_libfwevt.h \

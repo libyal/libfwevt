@@ -28,7 +28,11 @@
 #endif
 
 #include "pyfwevt.h"
+#include "pyfwevt_channel.h"
+#include "pyfwevt_channels.h"
 #include "pyfwevt_error.h"
+#include "pyfwevt_event.h"
+#include "pyfwevt_events.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_manifest.h"
@@ -157,6 +161,74 @@ PyMODINIT_FUNC initpyfwevt(
 	PyEval_InitThreads();
 #endif
 	gil_state = PyGILState_Ensure();
+
+	/* Setup the channel type object
+	 */
+	pyfwevt_channel_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_channel_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_channel_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "channel",
+	 (PyObject *) &pyfwevt_channel_type_object );
+
+	/* Setup the channels type object
+	 */
+	pyfwevt_channels_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_channels_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_channels_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "channels",
+	 (PyObject *) &pyfwevt_channels_type_object );
+
+	/* Setup the event type object
+	 */
+	pyfwevt_event_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_event_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_event_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "event",
+	 (PyObject *) &pyfwevt_event_type_object );
+
+	/* Setup the events type object
+	 */
+	pyfwevt_events_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_events_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_events_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "events",
+	 (PyObject *) &pyfwevt_events_type_object );
 
 	/* Setup the manifest type object
 	 */

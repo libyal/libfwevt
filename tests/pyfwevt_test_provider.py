@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Python-bindings manifest type test script
+# Python-bindings provider type test script
 #
 # Copyright (C) 2011-2021, Joachim Metz <joachim.metz@gmail.com>
 #
@@ -26,8 +26,8 @@ import unittest
 import pyfwevt
 
 
-class ManifestTypeTests(unittest.TestCase):
-  """Tests the manifest type."""
+class ProviderTypeTests(unittest.TestCase):
+  """Tests the provider type."""
 
   _TEST_DATA = bytes(bytearray([
 	  0x43, 0x52, 0x49, 0x4d, 0x78, 0x02, 0x00, 0x00, 0x05, 0x00, 0x01, 0x00,
@@ -84,32 +84,27 @@ class ManifestTypeTests(unittest.TestCase):
       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
       0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
-  def test_copy_from_byte_stream(self):
-    """Tests the copy_from_byte_stream function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
-
-    with self.assertRaises(TypeError):
-      manifest.copy_from_byte_stream(None)
-
-    with self.assertRaises(IOError):
-      manifest.copy_from_byte_stream(self._TEST_DATA[:4])
-
-  def test_get_number_of_providers(self):
-    """Tests the get_number_of_providers function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
-
-    number_of_providers = manifest.get_number_of_providers()
-    self.assertEqual(number_of_providers, 1)
-
-  def test_get_provider(self):
-    """Tests the get_provider function."""
+  def test_get_number_of_channels(self):
+    """Tests the get_number_of_channels function."""
     manifest = pyfwevt.manifest()
     manifest.copy_from_byte_stream(self._TEST_DATA)
 
     provider = manifest.get_provider(0)
     self.assertIsNotNone(provider)
+
+    number_of_channels = provider.get_number_of_channels()
+    self.assertEqual(number_of_channels, 0)
+
+  def test_get_channel(self):
+    """Tests the get_channel function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    with self.assertRaises(IOError):
+      channel = provider.get_channel(0)
 
 
 if __name__ == "__main__":

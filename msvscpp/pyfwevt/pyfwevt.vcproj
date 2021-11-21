@@ -174,7 +174,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_channel.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_channels.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_error.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_event.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_events.c"
 				>
 			</File>
 			<File
@@ -204,7 +220,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_channel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_channels.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_error.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_event.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_events.h"
 				>
 			</File>
 			<File

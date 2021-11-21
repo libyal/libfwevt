@@ -125,7 +125,10 @@ int libfwevt_provider_initialize(
 		 "%s: unable to clear provider.",
 		 function );
 
-		goto on_error;
+		memory_free(
+		 internal_provider );
+
+		return( -1 );
 	}
 	if( memory_copy(
 	     internal_provider->identifier,
@@ -141,6 +144,118 @@ int libfwevt_provider_initialize(
 
 		goto on_error;
 	}
+	if( libcdata_array_initialize(
+	     &( internal_provider->channels_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create channels array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_array_initialize(
+	     &( internal_provider->events_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create events array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_array_initialize(
+	     &( internal_provider->keywords_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create keywords array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_array_initialize(
+	     &( internal_provider->levels_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create levels array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_array_initialize(
+	     &( internal_provider->maps_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create maps array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_array_initialize(
+	     &( internal_provider->opcodes_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create opcodes array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_array_initialize(
+	     &( internal_provider->tasks_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create tasks array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_array_initialize(
+	     &( internal_provider->templates_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create templates array.",
+		 function );
+
+		goto on_error;
+	}
 	*provider = (libfwevt_provider_t *) internal_provider;
 
 	return( 1 );
@@ -148,6 +263,62 @@ int libfwevt_provider_initialize(
 on_error:
 	if( internal_provider != NULL )
 	{
+		if( internal_provider->templates_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_provider->templates_array ),
+			 NULL,
+			 NULL );
+		}
+		if( internal_provider->tasks_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_provider->tasks_array ),
+			 NULL,
+			 NULL );
+		}
+		if( internal_provider->opcodes_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_provider->opcodes_array ),
+			 NULL,
+			 NULL );
+		}
+		if( internal_provider->maps_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_provider->maps_array ),
+			 NULL,
+			 NULL );
+		}
+		if( internal_provider->levels_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_provider->levels_array ),
+			 NULL,
+			 NULL );
+		}
+		if( internal_provider->keywords_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_provider->keywords_array ),
+			 NULL,
+			 NULL );
+		}
+		if( internal_provider->events_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_provider->events_array ),
+			 NULL,
+			 NULL );
+		}
+		if( internal_provider->channels_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_provider->channels_array ),
+			 NULL,
+			 NULL );
+		}
 		memory_free(
 		 internal_provider );
 	}
@@ -204,141 +375,117 @@ int libfwevt_internal_provider_free(
 	}
 	if( *internal_provider != NULL )
 	{
-		if( ( *internal_provider )->channels_array != NULL )
+		if( libcdata_array_free(
+		     &( ( *internal_provider )->channels_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_channel_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( ( *internal_provider )->channels_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_channel_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free channels array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free channels array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
-		if( ( *internal_provider )->events_array != NULL )
+		if( libcdata_array_free(
+		     &( ( *internal_provider )->events_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_event_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( ( *internal_provider )->events_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_event_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free events array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free events array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
-		if( ( *internal_provider )->keywords_array != NULL )
+		if( libcdata_array_free(
+		     &( ( *internal_provider )->keywords_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_keyword_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( ( *internal_provider )->keywords_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_keyword_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free keywords array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free keywords array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
-		if( ( *internal_provider )->levels_array != NULL )
+		if( libcdata_array_free(
+		     &( ( *internal_provider )->levels_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_level_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( ( *internal_provider )->levels_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_level_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free levels array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free levels array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
-		if( ( *internal_provider )->maps_array != NULL )
+		if( libcdata_array_free(
+		     &( ( *internal_provider )->maps_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_map_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( ( *internal_provider )->maps_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_map_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free maps array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free maps array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
-		if( ( *internal_provider )->opcodes_array != NULL )
+		if( libcdata_array_free(
+		     &( ( *internal_provider )->opcodes_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_opcode_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( ( *internal_provider )->opcodes_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_opcode_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free opcodes array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free opcodes array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
-		if( ( *internal_provider )->tasks_array != NULL )
+		if( libcdata_array_free(
+		     &( ( *internal_provider )->tasks_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_task_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( ( *internal_provider )->tasks_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_task_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free tasks array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free tasks array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
-		if( ( *internal_provider )->templates_array != NULL )
+		if( libcdata_array_free(
+		     &( ( *internal_provider )->templates_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_template_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( ( *internal_provider )->templates_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_template_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free templates array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free templates array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
 		memory_free(
 		 *internal_provider );
@@ -727,17 +874,6 @@ int libfwevt_provider_read_channels(
 	}
 	internal_provider = (libfwevt_internal_provider_t *) provider;
 
-	if( internal_provider->channels_array != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid provider - channels array value already set.",
-		 function );
-
-		return( -1 );
-	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -869,20 +1005,6 @@ int libfwevt_provider_read_channels(
 
 		goto on_error;
 	}
-	if( libcdata_array_initialize(
-	     &( internal_provider->channels_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create channels array.",
-		 function );
-
-		goto on_error;
-	}
 	if( channels_data_size > 0 )
 	{
 		if( ( channels_data_size < sizeof( fwevt_template_channels_t ) )
@@ -1003,13 +1125,11 @@ on_error:
 		 (libfwevt_internal_channel_t **) &channel,
 		 NULL );
 	}
-	if( internal_provider->channels_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_provider->channels_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_channel_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_provider->channels_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_channel_free,
+	 NULL );
+
 	return( -1 );
 }
 
@@ -1049,17 +1169,6 @@ int libfwevt_provider_read_events(
 	}
 	internal_provider = (libfwevt_internal_provider_t *) provider;
 
-	if( internal_provider->events_array != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid provider - events array value already set.",
-		 function );
-
-		return( -1 );
-	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -1199,20 +1308,6 @@ int libfwevt_provider_read_events(
 
 		goto on_error;
 	}
-	if( libcdata_array_initialize(
-	     &( internal_provider->events_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create events array.",
-		 function );
-
-		goto on_error;
-	}
 	if( events_data_size > 0 )
 	{
 		if( ( events_data_size < sizeof( fwevt_template_events_t ) )
@@ -1331,13 +1426,11 @@ on_error:
 		 (libfwevt_internal_event_t **) &event,
 		 NULL );
 	}
-	if( internal_provider->events_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_provider->events_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_event_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_provider->events_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_event_free,
+	 NULL );
+
 	return( -1 );
 }
 
@@ -1502,20 +1595,6 @@ int libfwevt_provider_read_keywords(
 
 		goto on_error;
 	}
-	if( libcdata_array_initialize(
-	     &( internal_provider->keywords_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create keywords array.",
-		 function );
-
-		goto on_error;
-	}
 	if( keywords_data_size > 0 )
 	{
 		if( ( keywords_data_size < sizeof( fwevt_template_keywords_t ) )
@@ -1636,13 +1715,11 @@ on_error:
 		 (libfwevt_internal_keyword_t **) &keyword,
 		 NULL );
 	}
-	if( internal_provider->keywords_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_provider->keywords_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_keyword_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_provider->keywords_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_keyword_free,
+	 NULL );
+
 	return( -1 );
 }
 
@@ -1678,17 +1755,6 @@ int libfwevt_provider_read_levels(
 	}
 	internal_provider = (libfwevt_internal_provider_t *) provider;
 
-	if( internal_provider->levels_array != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid provider - levels array value already set.",
-		 function );
-
-		return( -1 );
-	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -1818,20 +1884,6 @@ int libfwevt_provider_read_levels(
 
 		goto on_error;
 	}
-	if( libcdata_array_initialize(
-	     &( internal_provider->levels_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create levels array.",
-		 function );
-
-		goto on_error;
-	}
 	if( levels_data_size > 0 )
 	{
 		if( ( levels_data_size < sizeof( fwevt_template_levels_t ) )
@@ -1952,13 +2004,11 @@ on_error:
 		 (libfwevt_internal_level_t **) &level,
 		 NULL );
 	}
-	if( internal_provider->levels_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_provider->levels_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_level_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_provider->levels_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_level_free,
+	 NULL );
+
 	return( -1 );
 }
 
@@ -1997,17 +2047,6 @@ int libfwevt_provider_read_maps(
 	}
 	internal_provider = (libfwevt_internal_provider_t *) provider;
 
-	if( internal_provider->maps_array != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid provider - maps array value already set.",
-		 function );
-
-		return( -1 );
-	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -2188,20 +2227,6 @@ int libfwevt_provider_read_maps(
 
 			goto on_error;
 		}
-		if( libcdata_array_initialize(
-		     &( internal_provider->maps_array ),
-		     0,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create maps array.",
-			 function );
-
-			goto on_error;
-		}
 		if( maps_data_size > 0 )
 		{
 			maps_header_size = sizeof( fwevt_template_maps_t )
@@ -2348,13 +2373,11 @@ on_error:
 		 (libfwevt_internal_map_t **) &map,
 		 NULL );
 	}
-	if( internal_provider->maps_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_provider->maps_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_map_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_provider->maps_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_map_free,
+	 NULL );
+
 	return( -1 );
 }
 
@@ -2390,17 +2413,6 @@ int libfwevt_provider_read_opcodes(
 	}
 	internal_provider = (libfwevt_internal_provider_t *) provider;
 
-	if( internal_provider->opcodes_array != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid provider - opcodes array value already set.",
-		 function );
-
-		return( -1 );
-	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -2530,20 +2542,6 @@ int libfwevt_provider_read_opcodes(
 
 		goto on_error;
 	}
-	if( libcdata_array_initialize(
-	     &( internal_provider->opcodes_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create opcodes array.",
-		 function );
-
-		goto on_error;
-	}
 	if( opcodes_data_size > 0 )
 	{
 		if( ( opcodes_data_size < sizeof( fwevt_template_opcodes_t ) )
@@ -2664,13 +2662,11 @@ on_error:
 		 (libfwevt_internal_opcode_t **) &opcode,
 		 NULL );
 	}
-	if( internal_provider->opcodes_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_provider->opcodes_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_opcode_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_provider->opcodes_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_opcode_free,
+	 NULL );
+
 	return( -1 );
 }
 
@@ -2706,17 +2702,6 @@ int libfwevt_provider_read_tasks(
 	}
 	internal_provider = (libfwevt_internal_provider_t *) provider;
 
-	if( internal_provider->tasks_array != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid provider - tasks array value already set.",
-		 function );
-
-		return( -1 );
-	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -2846,20 +2831,6 @@ int libfwevt_provider_read_tasks(
 
 		goto on_error;
 	}
-	if( libcdata_array_initialize(
-	     &( internal_provider->tasks_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create tasks array.",
-		 function );
-
-		goto on_error;
-	}
 	if( tasks_data_size > 0 )
 	{
 		if( ( tasks_data_size < sizeof( fwevt_template_task_t ) )
@@ -2980,13 +2951,11 @@ on_error:
 		 (libfwevt_internal_task_t **) &task,
 		 NULL );
 	}
-	if( internal_provider->tasks_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_provider->tasks_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_task_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_provider->tasks_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_task_free,
+	 NULL );
+
 	return( -1 );
 }
 
@@ -3023,17 +2992,6 @@ int libfwevt_provider_read_templates(
 	}
 	internal_provider = (libfwevt_internal_provider_t *) provider;
 
-	if( internal_provider->templates_array != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid provider - templates array value already set.",
-		 function );
-
-		return( -1 );
-	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -3160,20 +3118,6 @@ int libfwevt_provider_read_templates(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
 		 "%s: invalid data value too small.",
-		 function );
-
-		goto on_error;
-	}
-	if( libcdata_array_initialize(
-	     &( internal_provider->templates_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create templates array.",
 		 function );
 
 		goto on_error;
@@ -3313,13 +3257,11 @@ on_error:
 		 &wevt_template,
 		 NULL );
 	}
-	if( internal_provider->templates_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_provider->templates_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_template_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_provider->templates_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_template_free,
+	 NULL );
+
 	return( -1 );
 }
 
@@ -3465,6 +3407,50 @@ int libfwevt_provider_get_channel(
 	return( 1 );
 }
 
+/* Retrieves a specific channel
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_channel_by_index(
+     libfwevt_provider_t *provider,
+     int channel_index,
+     libfwevt_channel_t **channel,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_channel_by_index";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->channels_array,
+	     channel_index,
+	     (intptr_t **) &channel,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 channel_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
 /* Retrieves the number of events
  * Returns 1 if successful or -1 on error
  */
@@ -3517,6 +3503,50 @@ int libfwevt_provider_get_event(
 {
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	static char *function                           = "libfwevt_provider_get_event";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->events_array,
+	     event_index,
+	     (intptr_t **) &event,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 event_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves a specific event
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_event_by_index(
+     libfwevt_provider_t *provider,
+     int event_index,
+     libfwevt_event_t **event,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_event_by_index";
 
 	if( provider == NULL )
 	{
@@ -3739,6 +3769,50 @@ int libfwevt_provider_get_keyword(
 	return( 1 );
 }
 
+/* Retrieves a specific keyword
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_keyword_by_index(
+     libfwevt_provider_t *provider,
+     int keyword_index,
+     libfwevt_keyword_t **keyword,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_keyword_by_index";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->keywords_array,
+	     keyword_index,
+	     (intptr_t **) &keyword,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 keyword_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
 /* Retrieves the number of levels
  * Returns 1 if successful or -1 on error
  */
@@ -3791,6 +3865,50 @@ int libfwevt_provider_get_level(
 {
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	static char *function                           = "libfwevt_provider_get_level";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->levels_array,
+	     level_index,
+	     (intptr_t **) &level,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 level_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves a specific level
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_level_by_index(
+     libfwevt_provider_t *provider,
+     int level_index,
+     libfwevt_level_t **level,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_level_by_index";
 
 	if( provider == NULL )
 	{
@@ -3909,6 +4027,50 @@ int libfwevt_provider_get_map(
 	return( 1 );
 }
 
+/* Retrieves a specific map
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_map_by_index(
+     libfwevt_provider_t *provider,
+     int map_index,
+     libfwevt_map_t **map,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_map_by_index";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->maps_array,
+	     map_index,
+	     (intptr_t **) &map,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 map_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
 /* Retrieves the number of tasks
  * Returns 1 if successful or -1 on error
  */
@@ -3961,6 +4123,50 @@ int libfwevt_provider_get_task(
 {
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	static char *function                           = "libfwevt_provider_get_task";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->tasks_array,
+	     task_index,
+	     (intptr_t **) &task,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 task_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves a specific task
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_task_by_index(
+     libfwevt_provider_t *provider,
+     int task_index,
+     libfwevt_task_t **task,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_task_by_index";
 
 	if( provider == NULL )
 	{
@@ -4079,6 +4285,50 @@ int libfwevt_provider_get_template(
 	return( 1 );
 }
 
+/* Retrieves a specific template
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_template_by_index(
+     libfwevt_provider_t *provider,
+     int template_index,
+     libfwevt_template_t **wevt_template,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_template_by_index";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->templates_array,
+	     template_index,
+	     (intptr_t **) wevt_template,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 template_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
 /* Retrieves a specific template by offset
  * Returns 1 if successful, 0 if not available or -1 on error
  */
@@ -4089,10 +4339,11 @@ int libfwevt_provider_get_template_by_offset(
      libcerror_error_t **error )
 {
 	libfwevt_internal_provider_t *internal_provider = NULL;
+	libfwevt_template_t *safe_wevt_template         = NULL;
 	static char *function                           = "libfwevt_provider_get_template_by_offset";
 	uint32_t template_offset                        = 0;
-	int template_index                              = 0;
 	int number_of_templates                         = 0;
+	int template_index                              = 0;
 
 	if( provider == NULL )
 	{
@@ -4139,7 +4390,7 @@ int libfwevt_provider_get_template_by_offset(
 		if( libcdata_array_get_entry_by_index(
 		     internal_provider->templates_array,
 		     template_index,
-		     (intptr_t **) wevt_template,
+		     (intptr_t **) &safe_wevt_template,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -4150,10 +4401,10 @@ int libfwevt_provider_get_template_by_offset(
 			 function,
 			 template_index );
 
-			goto on_error;
+			return( -1 );
 		}
 		if( libfwevt_template_get_offset(
-		     *wevt_template,
+		     safe_wevt_template,
 		     &template_offset,
 		     error ) != 1 )
 		{
@@ -4165,20 +4416,17 @@ int libfwevt_provider_get_template_by_offset(
 			 function,
 			 template_index );
 
-			goto on_error;
+			return( -1 );
 		}
 		if( offset == template_offset )
 		{
+			*wevt_template = safe_wevt_template;
+
 			return( 1 );
 		}
 	}
 	*wevt_template = NULL;
 
 	return( 0 );
-
-on_error:
-	*wevt_template = NULL;
-
-	return( -1 );
 }
 

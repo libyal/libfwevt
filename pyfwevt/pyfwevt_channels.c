@@ -1,5 +1,5 @@
 /*
- * Python object definition of the sequence and iterator object of providers
+ * Python object definition of the sequence and iterator object of channels
  *
  * Copyright (C) 2009-2021, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -26,21 +26,21 @@
 #include <stdlib.h>
 #endif
 
-#include "pyfwevt_providers.h"
+#include "pyfwevt_channels.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
-#include "pyfwevt_provider.h"
+#include "pyfwevt_channel.h"
 #include "pyfwevt_python.h"
 
-PySequenceMethods pyfwevt_providers_sequence_methods = {
+PySequenceMethods pyfwevt_channels_sequence_methods = {
 	/* sq_length */
-	(lenfunc) pyfwevt_providers_len,
+	(lenfunc) pyfwevt_channels_len,
 	/* sq_concat */
 	0,
 	/* sq_repeat */
 	0,
 	/* sq_item */
-	(ssizeargfunc) pyfwevt_providers_getitem,
+	(ssizeargfunc) pyfwevt_channels_getitem,
 	/* sq_slice */
 	0,
 	/* sq_ass_item */
@@ -55,17 +55,17 @@ PySequenceMethods pyfwevt_providers_sequence_methods = {
 	0
 };
 
-PyTypeObject pyfwevt_providers_type_object = {
+PyTypeObject pyfwevt_channels_type_object = {
 	PyVarObject_HEAD_INIT( NULL, 0 )
 
 	/* tp_name */
-	"pyfwevt.providers",
+	"pyfwevt.channels",
 	/* tp_basicsize */
-	sizeof( pyfwevt_providers_t ),
+	sizeof( pyfwevt_channels_t ),
 	/* tp_itemsize */
 	0,
 	/* tp_dealloc */
-	(destructor) pyfwevt_providers_free,
+	(destructor) pyfwevt_channels_free,
 	/* tp_print */
 	0,
 	/* tp_getattr */
@@ -79,7 +79,7 @@ PyTypeObject pyfwevt_providers_type_object = {
 	/* tp_as_number */
 	0,
 	/* tp_as_sequence */
-	&pyfwevt_providers_sequence_methods,
+	&pyfwevt_channels_sequence_methods,
 	/* tp_as_mapping */
 	0,
 	/* tp_hash */
@@ -97,7 +97,7 @@ PyTypeObject pyfwevt_providers_type_object = {
 	/* tp_flags */
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_ITER,
 	/* tp_doc */
-	"pyfwevt sequence and iterator object of providers",
+	"pyfwevt sequence and iterator object of channels",
 	/* tp_traverse */
 	0,
 	/* tp_clear */
@@ -107,9 +107,9 @@ PyTypeObject pyfwevt_providers_type_object = {
 	/* tp_weaklistoffset */
 	0,
 	/* tp_iter */
-	(getiterfunc) pyfwevt_providers_iter,
+	(getiterfunc) pyfwevt_channels_iter,
 	/* tp_iternext */
-	(iternextfunc) pyfwevt_providers_iternext,
+	(iternextfunc) pyfwevt_channels_iternext,
 	/* tp_methods */
 	0,
 	/* tp_members */
@@ -127,7 +127,7 @@ PyTypeObject pyfwevt_providers_type_object = {
 	/* tp_dictoffset */
 	0,
 	/* tp_init */
-	(initproc) pyfwevt_providers_init,
+	(initproc) pyfwevt_channels_init,
 	/* tp_alloc */
 	0,
 	/* tp_new */
@@ -150,18 +150,18 @@ PyTypeObject pyfwevt_providers_type_object = {
 	0
 };
 
-/* Creates a new providers sequence and iterator object
+/* Creates a new channels sequence and iterator object
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyfwevt_providers_new(
+PyObject *pyfwevt_channels_new(
            PyObject *parent_object,
            PyObject* (*get_item_by_index)(
                         PyObject *parent_object,
                         int index ),
            int number_of_items )
 {
-	pyfwevt_providers_t *sequence_object = NULL;
-	static char *function                = "pyfwevt_providers_new";
+	pyfwevt_channels_t *sequence_object = NULL;
+	static char *function               = "pyfwevt_channels_new";
 
 	if( parent_object == NULL )
 	{
@@ -181,11 +181,11 @@ PyObject *pyfwevt_providers_new(
 
 		return( NULL );
 	}
-	/* Make sure the providers values are initialized
+	/* Make sure the channels values are initialized
 	 */
 	sequence_object = PyObject_New(
-	                   struct pyfwevt_providers,
-	                   &pyfwevt_providers_type_object );
+	                   struct pyfwevt_channels,
+	                   &pyfwevt_channels_type_object );
 
 	if( sequence_object == NULL )
 	{
@@ -196,7 +196,7 @@ PyObject *pyfwevt_providers_new(
 
 		goto on_error;
 	}
-	if( pyfwevt_providers_init(
+	if( pyfwevt_channels_init(
 	     sequence_object ) != 0 )
 	{
 		PyErr_Format(
@@ -224,13 +224,13 @@ on_error:
 	return( NULL );
 }
 
-/* Initializes an providers sequence and iterator object
+/* Initializes an channels sequence and iterator object
  * Returns 0 if successful or -1 on error
  */
-int pyfwevt_providers_init(
-     pyfwevt_providers_t *sequence_object )
+int pyfwevt_channels_init(
+     pyfwevt_channels_t *sequence_object )
 {
-	static char *function = "pyfwevt_providers_init";
+	static char *function = "pyfwevt_channels_init";
 
 	if( sequence_object == NULL )
 	{
@@ -241,7 +241,7 @@ int pyfwevt_providers_init(
 
 		return( -1 );
 	}
-	/* Make sure the providers values are initialized
+	/* Make sure the channels values are initialized
 	 */
 	sequence_object->parent_object     = NULL;
 	sequence_object->get_item_by_index = NULL;
@@ -250,19 +250,19 @@ int pyfwevt_providers_init(
 
 	PyErr_Format(
 	 PyExc_NotImplementedError,
-	 "%s: initialize of providers not supported.",
+	 "%s: initialize of channels not supported.",
 	 function );
 
 	return( 0 );
 }
 
-/* Frees an providers sequence object
+/* Frees an channels sequence object
  */
-void pyfwevt_providers_free(
-      pyfwevt_providers_t *sequence_object )
+void pyfwevt_channels_free(
+      pyfwevt_channels_t *sequence_object )
 {
 	struct _typeobject *ob_type = NULL;
-	static char *function       = "pyfwevt_providers_free";
+	static char *function       = "pyfwevt_channels_free";
 
 	if( sequence_object == NULL )
 	{
@@ -303,12 +303,12 @@ void pyfwevt_providers_free(
 	 (PyObject*) sequence_object );
 }
 
-/* The providers len() function
+/* The channels len() function
  */
-Py_ssize_t pyfwevt_providers_len(
-            pyfwevt_providers_t *sequence_object )
+Py_ssize_t pyfwevt_channels_len(
+            pyfwevt_channels_t *sequence_object )
 {
-	static char *function = "pyfwevt_providers_len";
+	static char *function = "pyfwevt_channels_len";
 
 	if( sequence_object == NULL )
 	{
@@ -322,14 +322,14 @@ Py_ssize_t pyfwevt_providers_len(
 	return( (Py_ssize_t) sequence_object->number_of_items );
 }
 
-/* The providers getitem() function
+/* The channels getitem() function
  */
-PyObject *pyfwevt_providers_getitem(
-           pyfwevt_providers_t *sequence_object,
+PyObject *pyfwevt_channels_getitem(
+           pyfwevt_channels_t *sequence_object,
            Py_ssize_t item_index )
 {
-	PyObject *provider_object = NULL;
-	static char *function     = "pyfwevt_providers_getitem";
+	PyObject *channel_object = NULL;
+	static char *function    = "pyfwevt_channels_getitem";
 
 	if( sequence_object == NULL )
 	{
@@ -368,19 +368,19 @@ PyObject *pyfwevt_providers_getitem(
 
 		return( NULL );
 	}
-	provider_object = sequence_object->get_item_by_index(
-	                   sequence_object->parent_object,
-	                   (int) item_index );
+	channel_object = sequence_object->get_item_by_index(
+	                  sequence_object->parent_object,
+	                  (int) item_index );
 
-	return( provider_object );
+	return( channel_object );
 }
 
-/* The providers iter() function
+/* The channels iter() function
  */
-PyObject *pyfwevt_providers_iter(
-           pyfwevt_providers_t *sequence_object )
+PyObject *pyfwevt_channels_iter(
+           pyfwevt_channels_t *sequence_object )
 {
-	static char *function = "pyfwevt_providers_iter";
+	static char *function = "pyfwevt_channels_iter";
 
 	if( sequence_object == NULL )
 	{
@@ -397,13 +397,13 @@ PyObject *pyfwevt_providers_iter(
 	return( (PyObject *) sequence_object );
 }
 
-/* The providers iternext() function
+/* The channels iternext() function
  */
-PyObject *pyfwevt_providers_iternext(
-           pyfwevt_providers_t *sequence_object )
+PyObject *pyfwevt_channels_iternext(
+           pyfwevt_channels_t *sequence_object )
 {
-	PyObject *provider_object = NULL;
-	static char *function     = "pyfwevt_providers_iternext";
+	PyObject *channel_object = NULL;
+	static char *function    = "pyfwevt_channels_iternext";
 
 	if( sequence_object == NULL )
 	{
@@ -448,14 +448,14 @@ PyObject *pyfwevt_providers_iternext(
 
 		return( NULL );
 	}
-	provider_object = sequence_object->get_item_by_index(
-	                   sequence_object->parent_object,
-	                   sequence_object->current_index );
+	channel_object = sequence_object->get_item_by_index(
+	                  sequence_object->parent_object,
+	                  sequence_object->current_index );
 
-	if( provider_object != NULL )
+	if( channel_object != NULL )
 	{
 		sequence_object->current_index++;
 	}
-	return( provider_object );
+	return( channel_object );
 }
 

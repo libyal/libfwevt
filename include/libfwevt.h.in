@@ -206,6 +206,9 @@ int libfwevt_manifest_get_number_of_providers(
      libfwevt_error_t **error );
 
 /* Retrieves a specific provider
+ *
+ * This function is deprecated, use libfwevt_manifest_get_provider_by_index instead
+ *
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_DEPRECATED \
@@ -293,10 +296,24 @@ int libfwevt_provider_get_number_of_channels(
      libfwevt_error_t **error );
 
 /* Retrieves a specific channel
+ *
+ * This function is deprecated, use libfwevt_provider_get_channel_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_DEPRECATED \
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_channel(
+     libfwevt_provider_t *provider,
+     int channel_index,
+     libfwevt_channel_t **channel,
+     libfwevt_error_t **error );
+
+/* Retrieves a specific channel
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_channel(
+int libfwevt_provider_get_channel_by_index(
      libfwevt_provider_t *provider,
      int channel_index,
      libfwevt_channel_t **channel,
@@ -312,10 +329,24 @@ int libfwevt_provider_get_number_of_events(
      libfwevt_error_t **error );
 
 /* Retrieves a specific event
+ *
+ * This function is deprecated, use libfwevt_provider_get_event_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_DEPRECATED \
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_event(
+     libfwevt_provider_t *provider,
+     int event_index,
+     libfwevt_event_t **event,
+     libfwevt_error_t **error );
+
+/* Retrieves a specific event
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_event(
+int libfwevt_provider_get_event_by_index(
      libfwevt_provider_t *provider,
      int event_index,
      libfwevt_event_t **event,
@@ -341,10 +372,24 @@ int libfwevt_provider_get_number_of_keywords(
      libfwevt_error_t **error );
 
 /* Retrieves a specific keyword
+ *
+ * This function is deprecated, use libfwevt_provider_get_keyword_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_DEPRECATED \
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_keyword(
+     libfwevt_provider_t *provider,
+     int keyword_index,
+     libfwevt_keyword_t **keyword,
+     libfwevt_error_t **error );
+
+/* Retrieves a specific keyword
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_keyword(
+int libfwevt_provider_get_keyword_by_index(
      libfwevt_provider_t *provider,
      int keyword_index,
      libfwevt_keyword_t **keyword,
@@ -360,10 +405,24 @@ int libfwevt_provider_get_number_of_levels(
      libfwevt_error_t **error );
 
 /* Retrieves a specific level
+ *
+ * This function is deprecated, use libfwevt_provider_get_level_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_DEPRECATED \
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_level(
+     libfwevt_provider_t *provider,
+     int level_index,
+     libfwevt_level_t **level,
+     libfwevt_error_t **error );
+
+/* Retrieves a specific level
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_level(
+int libfwevt_provider_get_level_by_index(
      libfwevt_provider_t *provider,
      int level_index,
      libfwevt_level_t **level,
@@ -379,10 +438,24 @@ int libfwevt_provider_get_number_of_maps(
      libfwevt_error_t **error );
 
 /* Retrieves a specific map
+ *
+ * This function is deprecated, use libfwevt_provider_get_map_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_DEPRECATED \
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_map(
+     libfwevt_provider_t *provider,
+     int map_index,
+     libfwevt_map_t **map,
+     libfwevt_error_t **error );
+
+/* Retrieves a specific map
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_map(
+int libfwevt_provider_get_map_by_index(
      libfwevt_provider_t *provider,
      int map_index,
      libfwevt_map_t **map,
@@ -398,10 +471,24 @@ int libfwevt_provider_get_number_of_opcodes(
      libfwevt_error_t **error );
 
 /* Retrieves a specific opcode
+ *
+ * This function is deprecated, use libfwevt_provider_get_opcode_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_DEPRECATED \
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_opcode(
+     libfwevt_provider_t *provider,
+     int opcode_index,
+     libfwevt_opcode_t **opcode,
+     libfwevt_error_t **error );
+
+/* Retrieves a specific opcode
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_opcode(
+int libfwevt_provider_get_opcode_by_index(
      libfwevt_provider_t *provider,
      int opcode_index,
      libfwevt_opcode_t **opcode,
@@ -417,10 +504,24 @@ int libfwevt_provider_get_number_of_tasks(
      libfwevt_error_t **error );
 
 /* Retrieves a specific task
+ *
+ * This function is deprecated, use libfwevt_provider_get_task_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_DEPRECATED \
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_task(
+     libfwevt_provider_t *provider,
+     int task_index,
+     libfwevt_task_t **task,
+     libfwevt_error_t **error );
+
+/* Retrieves a specific task
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_task(
+int libfwevt_provider_get_task_by_index(
      libfwevt_provider_t *provider,
      int task_index,
      libfwevt_task_t **task,
@@ -436,10 +537,24 @@ int libfwevt_provider_get_number_of_templates(
      libfwevt_error_t **error );
 
 /* Retrieves a specific template
+ *
+ * This function is deprecated, use libfwevt_provider_get_template_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_DEPRECATED \
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_template(
+     libfwevt_provider_t *provider,
+     int template_index,
+     libfwevt_template_t **wevt_template,
+     libfwevt_error_t **error );
+
+/* Retrieves a specific template
  * Returns 1 if successful or -1 on error
  */
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_template(
+int libfwevt_provider_get_template_by_index(
      libfwevt_provider_t *provider,
      int template_index,
      libfwevt_template_t **wevt_template,

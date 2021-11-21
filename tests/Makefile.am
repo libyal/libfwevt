@@ -22,8 +22,9 @@ TESTS = \
 	$(TESTS_PYFWEVT)
 
 check_SCRIPTS = \
-	pyfwevt_test_support.py \
 	pyfwevt_test_manifest.py \
+	pyfwevt_test_provider.py \
+	pyfwevt_test_support.py \
 	test_library.sh \
 	test_manpage.sh \
 	test_python_module.sh \

@@ -879,6 +879,8 @@ int libfwevt_manifest_get_provider_by_identifier(
 			return( 1 );
 		}
 	}
+	*provider = NULL;
+
 	return( 0 );
 }
 
