@@ -42,6 +42,8 @@ uint8_t fwevt_test_provider_data1[ 32 ] = {
 	0x57, 0x45, 0x56, 0x54, 0x2c, 0x5b, 0x05, 0x00, 0xff, 0xff, 0xff, 0xff, 0x01, 0x00, 0x00, 0x00,
 	0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 /* Tests the libfwevt_provider_initialize function
  * Returns 1 if successful or 0 if not
  */
@@ -285,6 +287,8 @@ on_error:
 	return( 0 );
 }
 
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
+
 /* Tests the libfwevt_provider_free function
  * Returns 1 if successful or 0 if not
  */
@@ -322,6 +326,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_provider_read function
  * Returns 1 if successful or 0 if not
@@ -632,6 +638,8 @@ on_error:
 	return( 0 );
 }
 
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -651,13 +659,19 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_provider_initialize",
 	 fwevt_test_provider_initialize );
 
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
+
 	FWEVT_TEST_RUN(
 	 "libfwevt_provider_free",
 	 fwevt_test_provider_free );
+
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_provider_read",
@@ -779,10 +793,12 @@ int main(
 	 error );
 
 #endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 
 on_error:
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 	if( error != NULL )
 	{
 		libcerror_error_free(
@@ -794,6 +810,8 @@ on_error:
 		 &provider,
 		 NULL );
 	}
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
+
 	return( EXIT_FAILURE );
 }
 
