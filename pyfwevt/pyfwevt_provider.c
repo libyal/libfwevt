@@ -39,8 +39,14 @@
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_map.h"
 #include "pyfwevt_maps.h"
+#include "pyfwevt_opcode.h"
+#include "pyfwevt_opcodes.h"
 #include "pyfwevt_provider.h"
 #include "pyfwevt_python.h"
+#include "pyfwevt_task.h"
+#include "pyfwevt_tasks.h"
+#include "pyfwevt_template.h"
+#include "pyfwevt_templates.h"
 #include "pyfwevt_unused.h"
 
 PyMethodDef pyfwevt_provider_object_methods[] = {
@@ -115,6 +121,48 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "\n"
 	  "Retrieves the map specified by the index." },
 
+	{ "get_number_of_opcodes",
+	  (PyCFunction) pyfwevt_provider_get_number_of_opcodes,
+	  METH_NOARGS,
+	  "get_number_of_opcodes() -> Integer or None\n"
+	  "\n"
+	  "Retrieves the template by offset." },
+
+	{ "get_opcode",
+	  (PyCFunction) pyfwevt_provider_get_opcode,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_opcode(opcode_index) -> Object\n"
+	  "\n"
+	  "Retrieves the opcode specified by the index." },
+
+	{ "get_number_of_tasks",
+	  (PyCFunction) pyfwevt_provider_get_number_of_tasks,
+	  METH_NOARGS,
+	  "get_number_of_tasks() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of tasks." },
+
+	{ "get_task",
+	  (PyCFunction) pyfwevt_provider_get_task,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_task(task_index) -> Object\n"
+	  "\n"
+	  "Retrieves the task specified by the index." },
+
+	{ "get_number_of_templates",
+	  (PyCFunction) pyfwevt_provider_get_number_of_templates,
+	  METH_NOARGS,
+	  "get_number_of_templates() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of templates." },
+
+	{ "get_template",
+	  (PyCFunction) pyfwevt_provider_get_template,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_template(template_index) -> Object\n"
+	  "\n"
+	  "Retrieves the template specified by the index." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
@@ -179,6 +227,42 @@ PyGetSetDef pyfwevt_provider_object_get_set_definitions[] = {
 	  (getter) pyfwevt_provider_get_maps,
 	  (setter) 0,
 	  "The maps.",
+	  NULL },
+
+	{ "number_of_opcodes",
+	  (getter) pyfwevt_provider_get_number_of_opcodes,
+	  (setter) 0,
+	  "The template by offset.",
+	  NULL },
+
+	{ "opcodes",
+	  (getter) pyfwevt_provider_get_opcodes,
+	  (setter) 0,
+	  "The opcodes.",
+	  NULL },
+
+	{ "number_of_tasks",
+	  (getter) pyfwevt_provider_get_number_of_tasks,
+	  (setter) 0,
+	  "The number of tasks.",
+	  NULL },
+
+	{ "tasks",
+	  (getter) pyfwevt_provider_get_tasks,
+	  (setter) 0,
+	  "The tasks.",
+	  NULL },
+
+	{ "number_of_templates",
+	  (getter) pyfwevt_provider_get_number_of_templates,
+	  (setter) 0,
+	  "The number of templates.",
+	  NULL },
+
+	{ "templates",
+	  (getter) pyfwevt_provider_get_templates,
+	  (setter) 0,
+	  "The templates.",
 	  NULL },
 
 	/* Sentinel */
@@ -333,7 +417,7 @@ on_error:
 	return( NULL );
 }
 
-/* Initializes an provider object
+/* Initializes a provider object
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_provider_init(
@@ -362,7 +446,7 @@ int pyfwevt_provider_init(
 	return( -1 );
 }
 
-/* Frees an provider object
+/* Frees a provider object
  */
 void pyfwevt_provider_free(
       pyfwevt_provider_t *pyfwevt_provider )
@@ -1514,6 +1598,670 @@ PyObject *pyfwevt_provider_get_maps(
 	                   (PyObject *) pyfwevt_provider,
 	                   &pyfwevt_provider_get_map_by_index,
 	                   number_of_maps );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
+}
+
+/* Retrieves the number of opcodes
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_number_of_opcodes(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_provider_get_number_of_opcodes";
+	int number_of_opcodes    = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_opcodes(
+	          pyfwevt_provider->provider,
+	          &number_of_opcodes,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result == -1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve template by offset.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	else if( result == 0 )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_opcodes );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_opcodes );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific opcode by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_opcode_by_index(
+           PyObject *pyfwevt_provider,
+           int opcode_index )
+{
+	PyObject *opcode_object   = NULL;
+	libcerror_error_t *error  = NULL;
+	libfwevt_opcode_t *opcode = NULL;
+	static char *function     = "pyfwevt_provider_get_opcode_by_index";
+	int result                = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_opcode_by_index(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          opcode_index,
+	          &opcode,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve : %d.",
+		 function,
+		 opcode_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	opcode_object = pyfwevt_opcode_new(
+	                 opcode,
+	                 pyfwevt_provider );
+
+	if( opcode_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create opcode object.",
+		 function );
+
+		goto on_error;
+	}
+	return( opcode_object );
+
+on_error:
+	if( opcode != NULL )
+	{
+		libfwevt_opcode_free(
+		 &opcode,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific opcode
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_opcode(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *opcode_object     = NULL;
+	static char *keyword_list[] = { "opcode_index", NULL };
+	int opcode_index            = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &opcode_index ) == 0 )
+	{
+		return( NULL );
+	}
+	opcode_object = pyfwevt_provider_get_opcode_by_index(
+	                 (PyObject *) pyfwevt_provider,
+	                 opcode_index );
+
+	return( opcode_object );
+}
+
+/* Retrieves a sequence and iterator object for the opcodes
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_opcodes(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_provider_get_opcodes";
+	int number_of_opcodes     = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_opcodes(
+	          pyfwevt_provider->provider,
+	          &number_of_opcodes,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of opcodes.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_opcodes_new(
+	                   (PyObject *) pyfwevt_provider,
+	                   &pyfwevt_provider_get_opcode_by_index,
+	                   number_of_opcodes );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
+}
+
+/* Retrieves the number of tasks
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_number_of_tasks(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_provider_get_number_of_tasks";
+	int number_of_tasks      = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_tasks(
+	          pyfwevt_provider->provider,
+	          &number_of_tasks,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve .",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_tasks );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_tasks );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific task by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_task_by_index(
+           PyObject *pyfwevt_provider,
+           int task_index )
+{
+	PyObject *task_object    = NULL;
+	libcerror_error_t *error = NULL;
+	libfwevt_task_t *task    = NULL;
+	static char *function    = "pyfwevt_provider_get_task_by_index";
+	int result               = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_task_by_index(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          task_index,
+	          &task,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve : %d.",
+		 function,
+		 task_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	task_object = pyfwevt_task_new(
+	               task,
+	               pyfwevt_provider );
+
+	if( task_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create task object.",
+		 function );
+
+		goto on_error;
+	}
+	return( task_object );
+
+on_error:
+	if( task != NULL )
+	{
+		libfwevt_task_free(
+		 &task,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific task
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_task(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *task_object       = NULL;
+	static char *keyword_list[] = { "task_index", NULL };
+	int task_index              = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &task_index ) == 0 )
+	{
+		return( NULL );
+	}
+	task_object = pyfwevt_provider_get_task_by_index(
+	               (PyObject *) pyfwevt_provider,
+	               task_index );
+
+	return( task_object );
+}
+
+/* Retrieves a sequence and iterator object for the tasks
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_tasks(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_provider_get_tasks";
+	int number_of_tasks       = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_tasks(
+	          pyfwevt_provider->provider,
+	          &number_of_tasks,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of tasks.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_tasks_new(
+	                   (PyObject *) pyfwevt_provider,
+	                   &pyfwevt_provider_get_task_by_index,
+	                   number_of_tasks );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
+}
+
+/* Retrieves the number of templates
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_number_of_templates(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_provider_get_number_of_templates";
+	int number_of_templates  = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_templates(
+	          pyfwevt_provider->provider,
+	          &number_of_templates,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve .",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_templates );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_templates );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific template by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_template_by_index(
+           PyObject *pyfwevt_provider,
+           int template_index )
+{
+	PyObject *template_object     = NULL;
+	libcerror_error_t *error      = NULL;
+	libfwevt_template_t *template = NULL;
+	static char *function         = "pyfwevt_provider_get_template_by_index";
+	int result                    = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_template_by_index(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          template_index,
+	          &template,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve : %d.",
+		 function,
+		 template_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	template_object = pyfwevt_template_new(
+	                   template,
+	                   pyfwevt_provider );
+
+	if( template_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create template object.",
+		 function );
+
+		goto on_error;
+	}
+	return( template_object );
+
+on_error:
+	if( template != NULL )
+	{
+		libfwevt_template_free(
+		 &template,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific template
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_template(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *template_object   = NULL;
+	static char *keyword_list[] = { "template_index", NULL };
+	int template_index          = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &template_index ) == 0 )
+	{
+		return( NULL );
+	}
+	template_object = pyfwevt_provider_get_template_by_index(
+	                   (PyObject *) pyfwevt_provider,
+	                   template_index );
+
+	return( template_object );
+}
+
+/* Retrieves a sequence and iterator object for the templates
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_templates(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_provider_get_templates";
+	int number_of_templates   = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_number_of_templates(
+	          pyfwevt_provider->provider,
+	          &number_of_templates,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of templates.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_templates_new(
+	                   (PyObject *) pyfwevt_provider,
+	                   &pyfwevt_provider_get_template_by_index,
+	                   number_of_templates );
 
 	if( sequence_object == NULL )
 	{

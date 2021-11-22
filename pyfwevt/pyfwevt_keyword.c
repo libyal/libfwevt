@@ -26,8 +26,8 @@
 #include <stdlib.h>
 #endif
 
-#include "pyfwevt_keyword.h"
 #include "pyfwevt_error.h"
+#include "pyfwevt_keyword.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_python.h"
@@ -193,7 +193,7 @@ on_error:
 	return( NULL );
 }
 
-/* Initializes an keyword object
+/* Initializes a keyword object
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_keyword_init(
@@ -222,7 +222,7 @@ int pyfwevt_keyword_init(
 	return( -1 );
 }
 
-/* Frees an keyword object
+/* Frees a keyword object
  */
 void pyfwevt_keyword_free(
       pyfwevt_keyword_t *pyfwevt_keyword )

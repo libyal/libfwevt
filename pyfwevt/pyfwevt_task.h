@@ -1,5 +1,5 @@
 /*
- * Python object wrapper of libfwevt_event_t
+ * Python object wrapper of libfwevt_task_t
  *
  * Copyright (C) 2011-2021, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _PYFWEVT_EVENT_H )
-#define _PYFWEVT_EVENT_H
+#if !defined( _PYFWEVT_TASK_H )
+#define _PYFWEVT_TASK_H
 
 #include <common.h>
 #include <types.h>
@@ -32,47 +32,39 @@
 extern "C" {
 #endif
 
-typedef struct pyfwevt_event pyfwevt_event_t;
+typedef struct pyfwevt_task pyfwevt_task_t;
 
-struct pyfwevt_event
+struct pyfwevt_task
 {
 	/* Python object initialization
 	 */
 	PyObject_HEAD
 
-	/* The libfwevt event
+	/* The libfwevt task
 	 */
-	libfwevt_event_t *event;
+	libfwevt_task_t *task;
 
 	/* The parent object
 	 */
 	PyObject *parent_object;
 };
 
-extern PyMethodDef pyfwevt_event_object_methods[];
-extern PyTypeObject pyfwevt_event_type_object;
+extern PyMethodDef pyfwevt_task_object_methods[];
+extern PyTypeObject pyfwevt_task_type_object;
 
-PyObject *pyfwevt_event_new(
-           libfwevt_event_t *event,
+PyObject *pyfwevt_task_new(
+           libfwevt_task_t *task,
            PyObject *parent_object );
 
-int pyfwevt_event_init(
-     pyfwevt_event_t *pyfwevt_event );
+int pyfwevt_task_init(
+     pyfwevt_task_t *pyfwevt_task );
 
-void pyfwevt_event_free(
-      pyfwevt_event_t *pyfwevt_event );
-
-PyObject *pyfwevt_event_get_identifier(
-           pyfwevt_event_t *pyfwevt_event,
-           PyObject *arguments );
-
-PyObject *pyfwevt_event_get_message_identifier(
-           pyfwevt_event_t *pyfwevt_event,
-           PyObject *arguments );
+void pyfwevt_task_free(
+      pyfwevt_task_t *pyfwevt_task );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _PYFWEVT_EVENT_H ) */
+#endif /* !defined( _PYFWEVT_TASK_H ) */
 

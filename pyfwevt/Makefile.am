@@ -25,9 +25,15 @@ pyfwevt_la_SOURCES = \
 	pyfwevt_manifest.c pyfwevt_manifest.h \
 	pyfwevt_map.c pyfwevt_map.h \
 	pyfwevt_maps.c pyfwevt_maps.h \
+	pyfwevt_opcode.c pyfwevt_opcode.h \
+	pyfwevt_opcodes.c pyfwevt_opcodes.h \
 	pyfwevt_provider.c pyfwevt_provider.h \
 	pyfwevt_providers.c pyfwevt_providers.h \
 	pyfwevt_python.h \
+	pyfwevt_task.c pyfwevt_task.h \
+	pyfwevt_tasks.c pyfwevt_tasks.h \
+	pyfwevt_template.c pyfwevt_template.h \
+	pyfwevt_templates.c pyfwevt_templates.h \
 	pyfwevt_unused.h
 
 pyfwevt_la_LIBADD = \

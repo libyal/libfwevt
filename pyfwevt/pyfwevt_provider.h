@@ -147,6 +147,57 @@ PyObject *pyfwevt_provider_get_maps(
            pyfwevt_provider_t *pyfwevt_provider,
            PyObject *arguments );
 
+PyObject *pyfwevt_provider_get_number_of_opcodes(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_opcode_by_index(
+           PyObject *pyfwevt_provider,
+           int opcode_index );
+
+PyObject *pyfwevt_provider_get_opcode(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_provider_get_opcodes(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_number_of_tasks(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_task_by_index(
+           PyObject *pyfwevt_provider,
+           int task_index );
+
+PyObject *pyfwevt_provider_get_task(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_provider_get_tasks(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_number_of_templates(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
+PyObject *pyfwevt_provider_get_template_by_index(
+           PyObject *pyfwevt_provider,
+           int template_index );
+
+PyObject *pyfwevt_provider_get_template(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyfwevt_provider_get_templates(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
 #if defined( __cplusplus )
 }
 #endif

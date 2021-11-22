@@ -194,6 +194,72 @@ class ProviderTypeTests(unittest.TestCase):
     with self.assertRaises(IOError):
       provider.get_map(0)
 
+  def test_get_number_of_opcodes(self):
+    """Tests the get_number_of_opcodes function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    number_of_opcodes = provider.get_number_of_opcodes()
+    self.assertEqual(number_of_opcodes, 0)
+
+  def test_get_opcode(self):
+    """Tests the get_opcode function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    with self.assertRaises(IOError):
+      provider.get_opcode(0)
+
+  def test_get_number_of_tasks(self):
+    """Tests the get_number_of_tasks function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    number_of_tasks = provider.get_number_of_tasks()
+    self.assertEqual(number_of_tasks, 0)
+
+  def test_get_task(self):
+    """Tests the get_task function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    with self.assertRaises(IOError):
+      provider.get_task(0)
+
+  def test_get_number_of_templates(self):
+    """Tests the get_number_of_templates function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    number_of_templates = provider.get_number_of_templates()
+    self.assertEqual(number_of_templates, 1)
+
+  def test_get_template(self):
+    """Tests the get_template function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    template = provider.get_template(0)
+    self.assertIsNotNone(template)
+
 
 if __name__ == "__main__":
   unittest.main(verbosity=2)

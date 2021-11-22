@@ -1,4 +1,4 @@
-.Dd November 21, 2021
+.Dd November 22, 2021
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -138,8 +138,6 @@ XML document functions
 .Fn libfwevt_xml_document_initialize "libfwevt_xml_document_t **xml_document" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_xml_document_free "libfwevt_xml_document_t **xml_document" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_xml_document_clone "libfwevt_xml_document_t **destination_xml_document" "libfwevt_xml_document_t *source_xml_document" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_xml_document_get_root_xml_tag "libfwevt_xml_document_t *xml_document" "libfwevt_xml_tag_t **root_xml_tag" "libfwevt_error_t **error"
 .Ft int

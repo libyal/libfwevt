@@ -276,16 +276,6 @@ int libfwevt_provider_free(
      libfwevt_provider_t **provider,
      libfwevt_error_t **error );
 
-/* Compares the provider with the identifier
- * Returns 1 if identifier matches, 0 if not or -1 on error
- */
-LIBFWEVT_EXTERN \
-int libfwevt_provider_compare_identifier(
-     libfwevt_provider_t *provider,
-     const uint8_t *identifier,
-     size_t identifier_size,
-     libfwevt_error_t **error );
-
 /* Retrieves the number of channels
  * Returns 1 if successful or -1 on error
  */

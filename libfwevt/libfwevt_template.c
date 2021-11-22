@@ -152,15 +152,58 @@ int libfwevt_template_free(
 	if( *wevt_template != NULL )
 	{
 		internal_template = (libfwevt_internal_template_t *) *wevt_template;
-		*wevt_template    = NULL;
 
-		if( internal_template->data != NULL )
+		if( internal_template->is_managed == 0 )
+		{
+			if( libfwevt_internal_template_free(
+			     (libfwevt_internal_template_t **) wevt_template,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+				 "%s: unable to free template.",
+				 function );
+
+				result = -1;
+			}
+		}
+		*wevt_template = NULL;
+	}
+	return( result );
+}
+
+/* Frees a template
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_internal_template_free(
+     libfwevt_internal_template_t **internal_template,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_internal_template_free";
+	int result            = 1;
+
+	if( internal_template == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template.",
+		 function );
+
+		return( -1 );
+	}
+	if( *internal_template != NULL )
+	{
+		if( ( *internal_template )->data != NULL )
 		{
 			memory_free(
-			 internal_template->data );
+			 ( *internal_template )->data );
 		}
 		if( libcdata_array_free(
-		     &( internal_template->values_array ),
+		     &( ( *internal_template )->values_array ),
 		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_xml_template_value_free,
 		     error ) != 1 )
 		{
@@ -174,7 +217,9 @@ int libfwevt_template_free(
 			result = -1;
 		}
 		memory_free(
-		 internal_template );
+		 *internal_template );
+
+		*internal_template = NULL;
 	}
 	return( result );
 }

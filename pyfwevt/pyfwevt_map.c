@@ -26,10 +26,10 @@
 #include <stdlib.h>
 #endif
 
-#include "pyfwevt_map.h"
 #include "pyfwevt_error.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
+#include "pyfwevt_map.h"
 #include "pyfwevt_python.h"
 #include "pyfwevt_unused.h"
 
@@ -148,7 +148,7 @@ PyObject *pyfwevt_map_new(
            PyObject *parent_object )
 {
 	pyfwevt_map_t *pyfwevt_map = NULL;
-	static char *function              = "pyfwevt_map_new";
+	static char *function      = "pyfwevt_map_new";
 
 	if( map == NULL )
 	{
@@ -162,8 +162,8 @@ PyObject *pyfwevt_map_new(
 	/* PyObject_New does not invoke tp_init
 	 */
 	pyfwevt_map = PyObject_New(
-	                   struct pyfwevt_map,
-	                   &pyfwevt_map_type_object );
+	               struct pyfwevt_map,
+	               &pyfwevt_map_type_object );
 
 	if( pyfwevt_map == NULL )
 	{
@@ -174,7 +174,7 @@ PyObject *pyfwevt_map_new(
 
 		goto on_error;
 	}
-	pyfwevt_map->map       = map;
+	pyfwevt_map->map           = map;
 	pyfwevt_map->parent_object = parent_object;
 
 	if( pyfwevt_map->parent_object != NULL )
@@ -193,7 +193,7 @@ on_error:
 	return( NULL );
 }
 
-/* Initializes an map object
+/* Initializes a map object
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_map_init(
@@ -222,7 +222,7 @@ int pyfwevt_map_init(
 	return( -1 );
 }
 
-/* Frees an map object
+/* Frees a map object
  */
 void pyfwevt_map_free(
       pyfwevt_map_t *pyfwevt_map )

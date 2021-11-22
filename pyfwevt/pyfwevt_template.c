@@ -1,5 +1,5 @@
 /*
- * Python object wrapper of libfwevt_level_t
+ * Python object wrapper of libfwevt_template_t
  *
  * Copyright (C) 2011-2021, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -27,35 +27,35 @@
 #endif
 
 #include "pyfwevt_error.h"
-#include "pyfwevt_level.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_python.h"
+#include "pyfwevt_template.h"
 #include "pyfwevt_unused.h"
 
-PyMethodDef pyfwevt_level_object_methods[] = {
+PyMethodDef pyfwevt_template_object_methods[] = {
 
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
 
-PyGetSetDef pyfwevt_level_object_get_set_definitions[] = {
+PyGetSetDef pyfwevt_template_object_get_set_definitions[] = {
 
 	/* Sentinel */
 	{ NULL, NULL, NULL, NULL, NULL }
 };
 
-PyTypeObject pyfwevt_level_type_object = {
+PyTypeObject pyfwevt_template_type_object = {
 	PyVarObject_HEAD_INIT( NULL, 0 )
 
 	/* tp_name */
-	"pyfwevt.level",
+	"pyfwevt.template",
 	/* tp_basicsize */
-	sizeof( pyfwevt_level_t ),
+	sizeof( pyfwevt_template_t ),
 	/* tp_itemsize */
 	0,
 	/* tp_dealloc */
-	(destructor) pyfwevt_level_free,
+	(destructor) pyfwevt_template_free,
 	/* tp_print */
 	0,
 	/* tp_getattr */
@@ -87,7 +87,7 @@ PyTypeObject pyfwevt_level_type_object = {
 	/* tp_flags */
 	Py_TPFLAGS_DEFAULT,
 	/* tp_doc */
-	"pyfwevt level object (wraps libfwevt_level_t)",
+	"pyfwevt template object (wraps libfwevt_template_t)",
 	/* tp_traverse */
 	0,
 	/* tp_clear */
@@ -101,11 +101,11 @@ PyTypeObject pyfwevt_level_type_object = {
 	/* tp_iternext */
 	0,
 	/* tp_methods */
-	pyfwevt_level_object_methods,
+	pyfwevt_template_object_methods,
 	/* tp_members */
 	0,
 	/* tp_getset */
-	pyfwevt_level_object_get_set_definitions,
+	pyfwevt_template_object_get_set_definitions,
 	/* tp_base */
 	0,
 	/* tp_dict */
@@ -117,7 +117,7 @@ PyTypeObject pyfwevt_level_type_object = {
 	/* tp_dictoffset */
 	0,
 	/* tp_init */
-	(initproc) pyfwevt_level_init,
+	(initproc) pyfwevt_template_init,
 	/* tp_alloc */
 	0,
 	/* tp_new */
@@ -140,109 +140,109 @@ PyTypeObject pyfwevt_level_type_object = {
 	0
 };
 
-/* Creates a new level object
+/* Creates a new template object
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyfwevt_level_new(
-           libfwevt_level_t *level,
+PyObject *pyfwevt_template_new(
+           libfwevt_template_t *template,
            PyObject *parent_object )
 {
-	pyfwevt_level_t *pyfwevt_level = NULL;
-	static char *function          = "pyfwevt_level_new";
+	pyfwevt_template_t *pyfwevt_template = NULL;
+	static char *function        = "pyfwevt_template_new";
 
-	if( level == NULL )
+	if( template == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid level.",
+		 "%s: invalid template.",
 		 function );
 
 		return( NULL );
 	}
 	/* PyObject_New does not invoke tp_init
 	 */
-	pyfwevt_level = PyObject_New(
-	                 struct pyfwevt_level,
-	                 &pyfwevt_level_type_object );
+	pyfwevt_template = PyObject_New(
+	                struct pyfwevt_template,
+	                &pyfwevt_template_type_object );
 
-	if( pyfwevt_level == NULL )
+	if( pyfwevt_template == NULL )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to initialize level.",
+		 "%s: unable to initialize template.",
 		 function );
 
 		goto on_error;
 	}
-	pyfwevt_level->level         = level;
-	pyfwevt_level->parent_object = parent_object;
+	pyfwevt_template->template          = template;
+	pyfwevt_template->parent_object = parent_object;
 
-	if( pyfwevt_level->parent_object != NULL )
+	if( pyfwevt_template->parent_object != NULL )
 	{
 		Py_IncRef(
-		 pyfwevt_level->parent_object );
+		 pyfwevt_template->parent_object );
 	}
-	return( (PyObject *) pyfwevt_level );
+	return( (PyObject *) pyfwevt_template );
 
 on_error:
-	if( pyfwevt_level != NULL )
+	if( pyfwevt_template != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pyfwevt_level );
+		 (PyObject *) pyfwevt_template );
 	}
 	return( NULL );
 }
 
-/* Initializes a level object
+/* Initializes a template object
  * Returns 0 if successful or -1 on error
  */
-int pyfwevt_level_init(
-     pyfwevt_level_t *pyfwevt_level )
+int pyfwevt_template_init(
+     pyfwevt_template_t *pyfwevt_template )
 {
-	static char *function = "pyfwevt_level_init";
+	static char *function = "pyfwevt_template_init";
 
-	if( pyfwevt_level == NULL )
+	if( pyfwevt_template == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid level.",
+		 "%s: invalid template.",
 		 function );
 
 		return( -1 );
 	}
-	/* Make sure libfwevt level is set to NULL
+	/* Make sure libfwevt template is set to NULL
 	 */
-	pyfwevt_level->level = NULL;
+	pyfwevt_template->template = NULL;
 
 	PyErr_Format(
 	 PyExc_NotImplementedError,
-	 "%s: initialize of level not supported.",
+	 "%s: initialize of template not supported.",
 	 function );
 
 	return( -1 );
 }
 
-/* Frees a level object
+/* Frees a template object
  */
-void pyfwevt_level_free(
-      pyfwevt_level_t *pyfwevt_level )
+void pyfwevt_template_free(
+      pyfwevt_template_t *pyfwevt_template )
 {
 	struct _typeobject *ob_type = NULL;
 	libcerror_error_t *error    = NULL;
-	static char *function       = "pyfwevt_level_free";
+	static char *function       = "pyfwevt_template_free";
 	int result                  = 0;
 
-	if( pyfwevt_level == NULL )
+	if( pyfwevt_template == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid level.",
+		 "%s: invalid template.",
 		 function );
 
 		return;
 	}
 	ob_type = Py_TYPE(
-	           pyfwevt_level );
+	           pyfwevt_template );
 
 	if( ob_type == NULL )
 	{
@@ -262,12 +262,12 @@ void pyfwevt_level_free(
 
 		return;
 	}
-	if( pyfwevt_level->level != NULL )
+	if( pyfwevt_template->template != NULL )
 	{
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libfwevt_level_free(
-		          &( pyfwevt_level->level ),
+		result = libfwevt_template_free(
+		          &( pyfwevt_template->template ),
 		          &error );
 
 		Py_END_ALLOW_THREADS
@@ -277,19 +277,19 @@ void pyfwevt_level_free(
 			pyfwevt_error_raise(
 			 error,
 			 PyExc_MemoryError,
-			 "%s: unable to free libfwevt level.",
+			 "%s: unable to free libfwevt template.",
 			 function );
 
 			libcerror_error_free(
 			 &error );
 		}
 	}
-	if( pyfwevt_level->parent_object != NULL )
+	if( pyfwevt_template->parent_object != NULL )
 	{
 		Py_DecRef(
-		 pyfwevt_level->parent_object );
+		 pyfwevt_template->parent_object );
 	}
 	ob_type->tp_free(
-	 (PyObject*) pyfwevt_level );
+	 (PyObject*) pyfwevt_template );
 }
 

@@ -475,7 +475,7 @@ int libfwevt_internal_provider_free(
 		}
 		if( libcdata_array_free(
 		     &( ( *internal_provider )->templates_array ),
-		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_template_free,
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_template_free,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -3167,6 +3167,8 @@ int libfwevt_provider_read_templates(
 
 			goto on_error;
 		}
+		( (libfwevt_internal_template_t *) wevt_template )->is_managed = 1;
+
 /* TODO handle ASCII codepage */
 		if( libfwevt_template_read(
 		     wevt_template,
@@ -3253,13 +3255,13 @@ int libfwevt_provider_read_templates(
 on_error:
 	if( wevt_template != NULL )
 	{
-		libfwevt_template_free(
-		 &wevt_template,
+		libfwevt_internal_template_free(
+		 (libfwevt_internal_template_t **) &wevt_template,
 		 NULL );
 	}
 	libcdata_array_empty(
 	 internal_provider->templates_array,
-	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_template_free,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_template_free,
 	 NULL );
 
 	return( -1 );
@@ -4065,6 +4067,135 @@ int libfwevt_provider_get_map_by_index(
 		 "%s: unable to retrieve entry: %d.",
 		 function,
 		 map_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the number of opcodes
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_number_of_opcodes(
+     libfwevt_provider_t *provider,
+     int *number_of_opcodes,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_number_of_opcodes";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_number_of_entries(
+	     internal_provider->opcodes_array,
+	     number_of_opcodes,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve number of entries.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves a specific opcode
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_opcode(
+     libfwevt_provider_t *provider,
+     int opcode_index,
+     libfwevt_opcode_t **opcode,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_opcode";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->opcodes_array,
+	     opcode_index,
+	     (intptr_t **) opcode,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 opcode_index );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves a specific opcode
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_provider_get_opcode_by_index(
+     libfwevt_provider_t *provider,
+     int opcode_index,
+     libfwevt_opcode_t **opcode,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_opcode_by_index";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_provider->opcodes_array,
+	     opcode_index,
+	     (intptr_t **) opcode,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 opcode_index );
 
 		return( -1 );
 	}

@@ -193,7 +193,7 @@ on_error:
 	return( NULL );
 }
 
-/* Initializes an channel object
+/* Initializes a channel object
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_channel_init(
@@ -222,7 +222,7 @@ int pyfwevt_channel_init(
 	return( -1 );
 }
 
-/* Frees an channel object
+/* Frees a channel object
  */
 void pyfwevt_channel_free(
       pyfwevt_channel_t *pyfwevt_channel )

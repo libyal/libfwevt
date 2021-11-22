@@ -73,6 +73,10 @@ struct libfwevt_internal_template
 	/* The ASCII codepage
 	 */
 	int ascii_codepage;
+
+	/* Value to indicate the template is managed
+	 */
+	uint8_t is_managed;
 };
 
 LIBFWEVT_EXTERN \
@@ -83,6 +87,10 @@ int libfwevt_template_initialize(
 LIBFWEVT_EXTERN \
 int libfwevt_template_free(
      libfwevt_template_t **wevt_template,
+     libcerror_error_t **error );
+
+int libfwevt_internal_template_free(
+     libfwevt_internal_template_t **internal_template,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \

@@ -26,8 +26,8 @@
 #include <stdlib.h>
 #endif
 
-#include "pyfwevt_event.h"
 #include "pyfwevt_error.h"
+#include "pyfwevt_event.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_python.h"
@@ -35,11 +35,37 @@
 
 PyMethodDef pyfwevt_event_object_methods[] = {
 
+	{ "get_identifier",
+	  (PyCFunction) pyfwevt_event_get_identifier,
+	  METH_NOARGS,
+	  "get_identifier() -> Integer\n"
+	  "\n"
+	  "Retrieves the identifier." },
+
+	{ "get_message_identifier",
+	  (PyCFunction) pyfwevt_event_get_message_identifier,
+	  METH_NOARGS,
+	  "get_message_identifier() -> Integer\n"
+	  "\n"
+	  "Retrieves the message identifier." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
 
 PyGetSetDef pyfwevt_event_object_get_set_definitions[] = {
+
+	{ "identifier",
+	  (getter) pyfwevt_event_get_identifier,
+	  (setter) 0,
+	  "The identifier.",
+	  NULL },
+
+	{ "message_identifier",
+	  (getter) pyfwevt_event_get_message_identifier,
+	  (setter) 0,
+	  "The message identifier.",
+	  NULL },
 
 	/* Sentinel */
 	{ NULL, NULL, NULL, NULL, NULL }
@@ -291,5 +317,109 @@ void pyfwevt_event_free(
 	}
 	ob_type->tp_free(
 	 (PyObject*) pyfwevt_event );
+}
+
+/* Retrieves the identifier
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_event_get_identifier(
+           pyfwevt_event_t *pyfwevt_event,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_event_get_identifier";
+	uint32_t value_32bit     = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_event == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid event.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_event_get_identifier(
+	          pyfwevt_event->event,
+	          &value_32bit,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve identifier.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_32bit );
+
+	return( integer_object );
+}
+
+/* Retrieves the message identifier
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_event_get_message_identifier(
+           pyfwevt_event_t *pyfwevt_event,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_event_get_message_identifier";
+	uint32_t value_32bit     = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_event == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid event.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_event_get_message_identifier(
+	          pyfwevt_event->event,
+	          &value_32bit,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve message identifier.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_32bit );
+
+	return( integer_object );
 }
 

@@ -29,10 +29,10 @@
 #include "pyfwevt_error.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
-#include "pyfwevt_python.h"
 #include "pyfwevt_manifest.h"
 #include "pyfwevt_provider.h"
 #include "pyfwevt_providers.h"
+#include "pyfwevt_python.h"
 #include "pyfwevt_unused.h"
 
 PyMethodDef pyfwevt_manifest_object_methods[] = {
@@ -519,11 +519,11 @@ PyObject *pyfwevt_manifest_get_provider_by_index(
            PyObject *pyfwevt_manifest,
            int provider_index )
 {
-	PyObject *provider_object    = NULL;
-	libcerror_error_t *error     = NULL;
+	PyObject *provider_object     = NULL;
+	libcerror_error_t *error      = NULL;
 	libfwevt_provider_t *provider = NULL;
-	static char *function        = "pyfwevt_manifest_get_provider_by_index";
-	int result                   = 0;
+	static char *function         = "pyfwevt_manifest_get_provider_by_index";
+	int result                    = 0;
 
 	if( pyfwevt_manifest == NULL )
 	{

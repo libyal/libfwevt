@@ -226,11 +226,35 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_opcode.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_opcodes.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_provider.c"
 				>
 			</File>
 			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_providers.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_task.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_tasks.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_template.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_templates.c"
 				>
 			</File>
 		</Filter>
@@ -304,6 +328,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_opcode.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_opcodes.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_provider.h"
 				>
 			</File>
@@ -313,6 +345,22 @@
 			</File>
 			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_python.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_task.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_tasks.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_template.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_templates.h"
 				>
 			</File>
 			<File

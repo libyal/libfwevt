@@ -1,7 +1,7 @@
 /*
  * Python object definition of the sequence and iterator object of channels
  *
- * Copyright (C) 2009-2021, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2011-2021, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -26,10 +26,10 @@
 #include <stdlib.h>
 #endif
 
+#include "pyfwevt_channel.h"
 #include "pyfwevt_channels.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
-#include "pyfwevt_channel.h"
 #include "pyfwevt_python.h"
 
 PySequenceMethods pyfwevt_channels_sequence_methods = {
@@ -196,18 +196,9 @@ PyObject *pyfwevt_channels_new(
 
 		goto on_error;
 	}
-	if( pyfwevt_channels_init(
-	     sequence_object ) != 0 )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to initialize sequence object.",
-		 function );
-
-		goto on_error;
-	}
 	sequence_object->parent_object     = parent_object;
 	sequence_object->get_item_by_index = get_item_by_index;
+	sequence_object->current_index     = 0;
 	sequence_object->number_of_items   = number_of_items;
 
 	Py_IncRef(
@@ -224,7 +215,7 @@ on_error:
 	return( NULL );
 }
 
-/* Initializes an channels sequence and iterator object
+/* Initializes a channels sequence and iterator object
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_channels_init(
@@ -253,10 +244,10 @@ int pyfwevt_channels_init(
 	 "%s: initialize of channels not supported.",
 	 function );
 
-	return( 0 );
+	return( -1 );
 }
 
-/* Frees an channels sequence object
+/* Frees a channels sequence object
  */
 void pyfwevt_channels_free(
       pyfwevt_channels_t *sequence_object )

@@ -42,9 +42,15 @@
 #include "pyfwevt_manifest.h"
 #include "pyfwevt_map.h"
 #include "pyfwevt_maps.h"
+#include "pyfwevt_opcode.h"
+#include "pyfwevt_opcodes.h"
 #include "pyfwevt_provider.h"
 #include "pyfwevt_providers.h"
 #include "pyfwevt_python.h"
+#include "pyfwevt_task.h"
+#include "pyfwevt_tasks.h"
+#include "pyfwevt_template.h"
+#include "pyfwevt_templates.h"
 #include "pyfwevt_unused.h"
 
 /* The pyfwevt module methods
@@ -355,6 +361,40 @@ PyMODINIT_FUNC initpyfwevt(
 	 "maps",
 	 (PyObject *) &pyfwevt_maps_type_object );
 
+	/* Setup the opcode type object
+	 */
+	pyfwevt_opcode_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_opcode_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_opcode_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "opcode",
+	 (PyObject *) &pyfwevt_opcode_type_object );
+
+	/* Setup the opcodes type object
+	 */
+	pyfwevt_opcodes_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_opcodes_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_opcodes_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "opcodes",
+	 (PyObject *) &pyfwevt_opcodes_type_object );
+
 	/* Setup the provider type object
 	 */
 	pyfwevt_provider_type_object.tp_new = PyType_GenericNew;
@@ -388,6 +428,74 @@ PyMODINIT_FUNC initpyfwevt(
 	 module,
 	 "providers",
 	 (PyObject *) &pyfwevt_providers_type_object );
+
+	/* Setup the task type object
+	 */
+	pyfwevt_task_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_task_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_task_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "task",
+	 (PyObject *) &pyfwevt_task_type_object );
+
+	/* Setup the tasks type object
+	 */
+	pyfwevt_tasks_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_tasks_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_tasks_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "tasks",
+	 (PyObject *) &pyfwevt_tasks_type_object );
+
+	/* Setup the template type object
+	 */
+	pyfwevt_template_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_template_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_template_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "template",
+	 (PyObject *) &pyfwevt_template_type_object );
+
+	/* Setup the templates type object
+	 */
+	pyfwevt_templates_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_templates_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_templates_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "templates",
+	 (PyObject *) &pyfwevt_templates_type_object );
 
 	PyGILState_Release(
 	 gil_state );

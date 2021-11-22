@@ -1,5 +1,5 @@
 /*
- * Python object definition of the sequence and iterator object of events
+ * Python object definition of the sequence and iterator object of tasks
  *
  * Copyright (C) 2011-2021, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -26,21 +26,21 @@
 #include <stdlib.h>
 #endif
 
-#include "pyfwevt_event.h"
-#include "pyfwevt_events.h"
 #include "pyfwevt_libcerror.h"
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_python.h"
+#include "pyfwevt_task.h"
+#include "pyfwevt_tasks.h"
 
-PySequenceMethods pyfwevt_events_sequence_methods = {
+PySequenceMethods pyfwevt_tasks_sequence_methods = {
 	/* sq_length */
-	(lenfunc) pyfwevt_events_len,
+	(lenfunc) pyfwevt_tasks_len,
 	/* sq_concat */
 	0,
 	/* sq_repeat */
 	0,
 	/* sq_item */
-	(ssizeargfunc) pyfwevt_events_getitem,
+	(ssizeargfunc) pyfwevt_tasks_getitem,
 	/* sq_slice */
 	0,
 	/* sq_ass_item */
@@ -55,17 +55,17 @@ PySequenceMethods pyfwevt_events_sequence_methods = {
 	0
 };
 
-PyTypeObject pyfwevt_events_type_object = {
+PyTypeObject pyfwevt_tasks_type_object = {
 	PyVarObject_HEAD_INIT( NULL, 0 )
 
 	/* tp_name */
-	"pyfwevt.events",
+	"pyfwevt.tasks",
 	/* tp_basicsize */
-	sizeof( pyfwevt_events_t ),
+	sizeof( pyfwevt_tasks_t ),
 	/* tp_itemsize */
 	0,
 	/* tp_dealloc */
-	(destructor) pyfwevt_events_free,
+	(destructor) pyfwevt_tasks_free,
 	/* tp_print */
 	0,
 	/* tp_getattr */
@@ -79,7 +79,7 @@ PyTypeObject pyfwevt_events_type_object = {
 	/* tp_as_number */
 	0,
 	/* tp_as_sequence */
-	&pyfwevt_events_sequence_methods,
+	&pyfwevt_tasks_sequence_methods,
 	/* tp_as_mapping */
 	0,
 	/* tp_hash */
@@ -97,7 +97,7 @@ PyTypeObject pyfwevt_events_type_object = {
 	/* tp_flags */
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_ITER,
 	/* tp_doc */
-	"pyfwevt sequence and iterator object of events",
+	"pyfwevt sequence and iterator object of tasks",
 	/* tp_traverse */
 	0,
 	/* tp_clear */
@@ -107,9 +107,9 @@ PyTypeObject pyfwevt_events_type_object = {
 	/* tp_weaklistoffset */
 	0,
 	/* tp_iter */
-	(getiterfunc) pyfwevt_events_iter,
+	(getiterfunc) pyfwevt_tasks_iter,
 	/* tp_iternext */
-	(iternextfunc) pyfwevt_events_iternext,
+	(iternextfunc) pyfwevt_tasks_iternext,
 	/* tp_methods */
 	0,
 	/* tp_members */
@@ -127,7 +127,7 @@ PyTypeObject pyfwevt_events_type_object = {
 	/* tp_dictoffset */
 	0,
 	/* tp_init */
-	(initproc) pyfwevt_events_init,
+	(initproc) pyfwevt_tasks_init,
 	/* tp_alloc */
 	0,
 	/* tp_new */
@@ -150,18 +150,18 @@ PyTypeObject pyfwevt_events_type_object = {
 	0
 };
 
-/* Creates a new events sequence and iterator object
+/* Creates a new tasks sequence and iterator object
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyfwevt_events_new(
+PyObject *pyfwevt_tasks_new(
            PyObject *parent_object,
            PyObject* (*get_item_by_index)(
                         PyObject *parent_object,
                         int index ),
            int number_of_items )
 {
-	pyfwevt_events_t *sequence_object = NULL;
-	static char *function             = "pyfwevt_events_new";
+	pyfwevt_tasks_t *sequence_object = NULL;
+	static char *function            = "pyfwevt_tasks_new";
 
 	if( parent_object == NULL )
 	{
@@ -181,11 +181,11 @@ PyObject *pyfwevt_events_new(
 
 		return( NULL );
 	}
-	/* Make sure the events values are initialized
+	/* Make sure the tasks values are initialized
 	 */
 	sequence_object = PyObject_New(
-	                   struct pyfwevt_events,
-	                   &pyfwevt_events_type_object );
+	                   struct pyfwevt_tasks,
+	                   &pyfwevt_tasks_type_object );
 
 	if( sequence_object == NULL )
 	{
@@ -215,13 +215,13 @@ on_error:
 	return( NULL );
 }
 
-/* Initializes an events sequence and iterator object
+/* Initializes a tasks sequence and iterator object
  * Returns 0 if successful or -1 on error
  */
-int pyfwevt_events_init(
-     pyfwevt_events_t *sequence_object )
+int pyfwevt_tasks_init(
+     pyfwevt_tasks_t *sequence_object )
 {
-	static char *function = "pyfwevt_events_init";
+	static char *function = "pyfwevt_tasks_init";
 
 	if( sequence_object == NULL )
 	{
@@ -232,7 +232,7 @@ int pyfwevt_events_init(
 
 		return( -1 );
 	}
-	/* Make sure the events values are initialized
+	/* Make sure the tasks values are initialized
 	 */
 	sequence_object->parent_object     = NULL;
 	sequence_object->get_item_by_index = NULL;
@@ -241,19 +241,19 @@ int pyfwevt_events_init(
 
 	PyErr_Format(
 	 PyExc_NotImplementedError,
-	 "%s: initialize of events not supported.",
+	 "%s: initialize of tasks not supported.",
 	 function );
 
 	return( -1 );
 }
 
-/* Frees an events sequence object
+/* Frees a tasks sequence object
  */
-void pyfwevt_events_free(
-      pyfwevt_events_t *sequence_object )
+void pyfwevt_tasks_free(
+      pyfwevt_tasks_t *sequence_object )
 {
 	struct _typeobject *ob_type = NULL;
-	static char *function       = "pyfwevt_events_free";
+	static char *function       = "pyfwevt_tasks_free";
 
 	if( sequence_object == NULL )
 	{
@@ -294,12 +294,12 @@ void pyfwevt_events_free(
 	 (PyObject*) sequence_object );
 }
 
-/* The events len() function
+/* The tasks len() function
  */
-Py_ssize_t pyfwevt_events_len(
-            pyfwevt_events_t *sequence_object )
+Py_ssize_t pyfwevt_tasks_len(
+            pyfwevt_tasks_t *sequence_object )
 {
-	static char *function = "pyfwevt_events_len";
+	static char *function = "pyfwevt_tasks_len";
 
 	if( sequence_object == NULL )
 	{
@@ -313,14 +313,14 @@ Py_ssize_t pyfwevt_events_len(
 	return( (Py_ssize_t) sequence_object->number_of_items );
 }
 
-/* The events getitem() function
+/* The tasks getitem() function
  */
-PyObject *pyfwevt_events_getitem(
-           pyfwevt_events_t *sequence_object,
+PyObject *pyfwevt_tasks_getitem(
+           pyfwevt_tasks_t *sequence_object,
            Py_ssize_t item_index )
 {
-	PyObject *event_object = NULL;
-	static char *function  = "pyfwevt_events_getitem";
+	PyObject *task_object = NULL;
+	static char *function = "pyfwevt_tasks_getitem";
 
 	if( sequence_object == NULL )
 	{
@@ -359,19 +359,19 @@ PyObject *pyfwevt_events_getitem(
 
 		return( NULL );
 	}
-	event_object = sequence_object->get_item_by_index(
-	                sequence_object->parent_object,
-	                (int) item_index );
+	task_object = sequence_object->get_item_by_index(
+	               sequence_object->parent_object,
+	               (int) item_index );
 
-	return( event_object );
+	return( task_object );
 }
 
-/* The events iter() function
+/* The tasks iter() function
  */
-PyObject *pyfwevt_events_iter(
-           pyfwevt_events_t *sequence_object )
+PyObject *pyfwevt_tasks_iter(
+           pyfwevt_tasks_t *sequence_object )
 {
-	static char *function = "pyfwevt_events_iter";
+	static char *function = "pyfwevt_tasks_iter";
 
 	if( sequence_object == NULL )
 	{
@@ -388,13 +388,13 @@ PyObject *pyfwevt_events_iter(
 	return( (PyObject *) sequence_object );
 }
 
-/* The events iternext() function
+/* The tasks iternext() function
  */
-PyObject *pyfwevt_events_iternext(
-           pyfwevt_events_t *sequence_object )
+PyObject *pyfwevt_tasks_iternext(
+           pyfwevt_tasks_t *sequence_object )
 {
-	PyObject *event_object = NULL;
-	static char *function  = "pyfwevt_events_iternext";
+	PyObject *task_object = NULL;
+	static char *function = "pyfwevt_tasks_iternext";
 
 	if( sequence_object == NULL )
 	{
@@ -439,14 +439,14 @@ PyObject *pyfwevt_events_iternext(
 
 		return( NULL );
 	}
-	event_object = sequence_object->get_item_by_index(
-	                sequence_object->parent_object,
-	                sequence_object->current_index );
+	task_object = sequence_object->get_item_by_index(
+	               sequence_object->parent_object,
+	               sequence_object->current_index );
 
-	if( event_object != NULL )
+	if( task_object != NULL )
 	{
 		sequence_object->current_index++;
 	}
-	return( event_object );
+	return( task_object );
 }
 
