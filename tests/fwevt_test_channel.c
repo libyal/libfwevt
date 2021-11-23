@@ -245,8 +245,30 @@ on_error:
 int fwevt_test_channel_free(
      void )
 {
-	libcerror_error_t *error = NULL;
-	int result               = 0;
+	libcerror_error_t *error    = NULL;
+	libfwevt_channel_t *channel = NULL;
+	int result                  = 0;
+
+	/* Test regular cases
+	 */
+	channel = (libfwevt_channel_t *) 0x12345678UL;
+
+	result = libfwevt_channel_free(
+	          &channel,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "channel",
+	 channel );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -278,6 +300,44 @@ on_error:
 }
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+/* Tests the libfwevt_internal_channel_free function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_internal_channel_free(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test error cases
+	 */
+	result = libfwevt_internal_channel_free(
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
 
 /* Tests the libfwevt_channel_read function
  * Returns 1 if successful or 0 if not
@@ -535,6 +595,10 @@ int main(
 	 fwevt_test_channel_free );
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_internal_channel_free",
+	 fwevt_test_internal_channel_free );
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_channel_read",

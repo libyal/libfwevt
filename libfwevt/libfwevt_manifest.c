@@ -94,6 +94,23 @@ int libfwevt_manifest_initialize(
 		 "%s: unable to clear manifest.",
 		 function );
 
+		memory_free(
+		 internal_manifest );
+
+		return( -1 );
+	}
+	if( libcdata_array_initialize(
+	     &( internal_manifest->providers_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create providers array.",
+		 function );
+
 		goto on_error;
 	}
 	*manifest = (libfwevt_manifest_t *) internal_manifest;
@@ -136,22 +153,19 @@ int libfwevt_manifest_free(
 		internal_manifest = (libfwevt_internal_manifest_t *) *manifest;
 		*manifest         = NULL;
 
-		if(internal_manifest ->providers_array != NULL )
+		if( libcdata_array_free(
+		     &( internal_manifest->providers_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_provider_free,
+		     error ) != 1 )
 		{
-			if( libcdata_array_free(
-			     &( internal_manifest->providers_array ),
-			     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_provider_free,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free providers array.",
-				 function );
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free providers array.",
+			 function );
 
-				result = -1;
-			}
+			result = -1;
 		}
 		memory_free(
 		 internal_manifest );
@@ -300,20 +314,6 @@ int libfwevt_manifest_read(
 	}
 	data_offset = sizeof( fwevt_template_manifest_t );
 
-	if( libcdata_array_initialize(
-	     &( internal_manifest->providers_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create providers array.",
-		 function );
-
-		goto on_error;
-	}
 	for( provider_index = 0;
 	     provider_index < number_of_providers;
 	     provider_index++ )
@@ -617,13 +617,11 @@ on_error:
 		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
-	if( internal_manifest->providers_array != NULL )
-	{
-		libcdata_array_free(
-		 &( internal_manifest->providers_array ),
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_provider_free,
-		 NULL );
-	}
+	libcdata_array_empty(
+	 internal_manifest->providers_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_provider_free,
+	 NULL );
+
 	return( -1 );
 }
 

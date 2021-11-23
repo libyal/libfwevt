@@ -246,7 +246,29 @@ int fwevt_test_event_free(
      void )
 {
 	libcerror_error_t *error = NULL;
+	libfwevt_event_t *event  = NULL;
 	int result               = 0;
+
+	/* Test regular cases
+	 */
+	event = (libfwevt_event_t *) 0x12345678UL;
+
+	result = libfwevt_event_free(
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "event",
+	 event );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -278,6 +300,44 @@ on_error:
 }
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+/* Tests the libfwevt_internal_event_free function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_internal_event_free(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test error cases
+	 */
+	result = libfwevt_internal_event_free(
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
 
 /* Tests the libfwevt_event_read function
  * Returns 1 if successful or 0 if not
@@ -718,6 +778,10 @@ int main(
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 	FWEVT_TEST_RUN(
+	 "libfwevt_internal_event_free",
+	 fwevt_test_internal_event_free );
+
+	FWEVT_TEST_RUN(
 	 "libfwevt_event_read",
 	 fwevt_test_event_read );
 
@@ -775,8 +839,8 @@ int main(
 
 	/* Clean up
 	 */
-	result = libfwevt_event_free(
-	          &event,
+	result = libfwevt_internal_event_free(
+	          (libfwevt_internal_event_t **) &event,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -806,8 +870,8 @@ on_error:
 	}
 	if( event != NULL )
 	{
-		libfwevt_event_free(
-		 &event,
+		libfwevt_internal_event_free(
+		 (libfwevt_internal_event_t **) &event,
 		 NULL );
 	}
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */

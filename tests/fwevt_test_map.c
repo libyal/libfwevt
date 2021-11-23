@@ -244,7 +244,29 @@ int fwevt_test_map_free(
      void )
 {
 	libcerror_error_t *error = NULL;
+	libfwevt_map_t *map      = NULL;
 	int result               = 0;
+
+	/* Test regular cases
+	 */
+	map = (libfwevt_map_t *) 0x12345678UL;
+
+	result = libfwevt_map_free(
+	          &map,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "map",
+	 map );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -276,6 +298,44 @@ on_error:
 }
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+/* Tests the libfwevt_internal_map_free function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_internal_map_free(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test error cases
+	 */
+	result = libfwevt_internal_map_free(
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
 
 /* Tests the libfwevt_map_read function
  * Returns 1 if successful or 0 if not
@@ -491,6 +551,10 @@ int main(
 	 fwevt_test_map_free );
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_internal_map_free",
+	 fwevt_test_internal_map_free );
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_map_read",

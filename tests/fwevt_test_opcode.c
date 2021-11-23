@@ -245,8 +245,30 @@ on_error:
 int fwevt_test_opcode_free(
      void )
 {
-	libcerror_error_t *error = NULL;
-	int result               = 0;
+	libcerror_error_t *error  = NULL;
+	libfwevt_opcode_t *opcode = NULL;
+	int result                = 0;
+
+	/* Test regular cases
+	 */
+	opcode = (libfwevt_opcode_t *) 0x12345678UL;
+
+	result = libfwevt_opcode_free(
+	          &opcode,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "opcode",
+	 opcode );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -278,6 +300,44 @@ on_error:
 }
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+/* Tests the libfwevt_internal_opcode_free function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_internal_opcode_free(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test error cases
+	 */
+	result = libfwevt_internal_opcode_free(
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
 
 /* Tests the libfwevt_opcode_read function
  * Returns 1 if successful or 0 if not
@@ -535,6 +595,10 @@ int main(
 	 fwevt_test_opcode_free );
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_internal_opcode_free",
+	 fwevt_test_internal_opcode_free );
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_opcode_read",

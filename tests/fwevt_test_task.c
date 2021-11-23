@@ -250,7 +250,29 @@ int fwevt_test_task_free(
      void )
 {
 	libcerror_error_t *error = NULL;
+	libfwevt_task_t *task    = NULL;
 	int result               = 0;
+
+	/* Test regular cases
+	 */
+	task = (libfwevt_task_t *) 0x12345678UL;
+
+	result = libfwevt_task_free(
+	          &task,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "task",
+	 task );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -282,6 +304,44 @@ on_error:
 }
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+/* Tests the libfwevt_internal_task_free function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_internal_task_free(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test error cases
+	 */
+	result = libfwevt_internal_task_free(
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
 
 /* Tests the libfwevt_task_read function
  * Returns 1 if successful or 0 if not
@@ -539,6 +599,10 @@ int main(
 	 fwevt_test_task_free );
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_internal_task_free",
+	 fwevt_test_internal_task_free );
 
 	FWEVT_TEST_RUN(
 	 "libfwevt_task_read",
