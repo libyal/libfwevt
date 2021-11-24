@@ -549,6 +549,144 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_manifest_get_provider function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_manifest_get_provider(
+     libfwevt_manifest_t *manifest )
+{
+	libcerror_error_t *error      = NULL;
+	libfwevt_provider_t *provider = NULL;
+	int number_of_providers       = 0;
+	int result                    = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_manifest_get_number_of_providers(
+	          manifest,
+	          &number_of_providers,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_providers > 0 )
+	{
+		result = libfwevt_manifest_get_provider(
+		          manifest,
+		          0,
+		          &provider,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		/* Clean up
+		 */
+		result = libfwevt_provider_free(
+		          &provider,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "provider",
+		 provider );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_manifest_get_provider(
+	          NULL,
+	          0,
+	          &provider,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_manifest_get_provider(
+	          manifest,
+	          -1,
+	          &provider,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_manifest_get_provider(
+	          manifest,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( provider != NULL )
+	{
+		libfwevt_provider_free(
+		 &provider,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* Tests the libfwevt_manifest_get_provider_by_index function
  * Returns 1 if successful or 0 if not
  */
@@ -637,7 +775,7 @@ int fwevt_test_manifest_get_provider_by_index(
 	result = libfwevt_manifest_get_provider_by_index(
 	          manifest,
 	          -1,
-	          NULL,
+	          &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -655,6 +793,132 @@ int fwevt_test_manifest_get_provider_by_index(
 	result = libfwevt_manifest_get_provider_by_index(
 	          manifest,
 	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( provider != NULL )
+	{
+		libfwevt_provider_free(
+		 &provider,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_manifest_get_provider_by_identifier function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_manifest_get_provider_by_identifier(
+     libfwevt_manifest_t *manifest )
+{
+	uint8_t provider_identifier[ 16 ] = {
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+	libcerror_error_t *error          = NULL;
+	libfwevt_provider_t *provider     = NULL;
+	int result                        = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_manifest_get_provider_by_identifier(
+	          manifest,
+	          provider_identifier,
+	          16,
+	          &provider,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Clean up
+	 */
+	result = libfwevt_provider_free(
+	          &provider,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "provider",
+	 provider );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_manifest_get_provider_by_identifier(
+	          NULL,
+	          provider_identifier,
+	          16,
+	          &provider,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_manifest_get_provider_by_identifier(
+	          manifest,
+	          NULL,
+	          16,
+	          &provider,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_manifest_get_provider_by_identifier(
+	          manifest,
+	          provider_identifier,
+	          16,
 	          NULL,
 	          &error );
 
@@ -760,11 +1024,19 @@ int main(
 	 manifest );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_manifest_get_provider",
+	 fwevt_test_manifest_get_provider,
+	 manifest );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_manifest_get_provider_by_index",
 	 fwevt_test_manifest_get_provider_by_index,
 	 manifest );
 
-	/* TODO: add tests for libfwevt_manifest_get_provider_by_identifier */
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_manifest_get_provider_by_identifier",
+	 fwevt_test_manifest_get_provider_by_identifier,
+	 manifest );
 
 	/* Clean up
 	 */

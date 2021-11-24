@@ -673,6 +673,152 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_provider_get_channel function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_provider_get_channel(
+     libfwevt_provider_t *provider )
+{
+	libcerror_error_t *error    = NULL;
+	libfwevt_channel_t *channel = NULL;
+	int number_of_channels      = 0;
+	int result                  = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_provider_get_number_of_channels(
+	          provider,
+	          &number_of_channels,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "number_of_channels",
+	 number_of_channels,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_channels > 0 )
+	{
+		result = libfwevt_provider_get_channel(
+		          provider,
+		          0,
+		          &channel,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "number_of_channels",
+		 number_of_channels,
+		 0 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libfwevt_channel_free(
+		          &channel,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "channel",
+		 channel );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_provider_get_channel(
+	          NULL,
+	          0,
+	          &channel,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_channel(
+	          provider,
+	          -1,
+	          &channel,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_channel(
+	          provider,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( channel != NULL )
+	{
+		libfwevt_channel_free(
+		 &channel,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* Tests the libfwevt_provider_get_channel_by_index function
  * Returns 1 if successful or 0 if not
  */
@@ -893,6 +1039,152 @@ on_error:
 	{
 		libcerror_error_free(
 		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_provider_get_event function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_provider_get_event(
+     libfwevt_provider_t *provider )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_event_t *event  = NULL;
+	int number_of_events     = 0;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_provider_get_number_of_events(
+	          provider,
+	          &number_of_events,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "number_of_events",
+	 number_of_events,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_events > 0 )
+	{
+		result = libfwevt_provider_get_event(
+		          provider,
+		          0,
+		          &event,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "number_of_events",
+		 number_of_events,
+		 0 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libfwevt_event_free(
+		          &event,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "event",
+		 event );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_provider_get_event(
+	          NULL,
+	          0,
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_event(
+	          provider,
+	          -1,
+	          &event,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_event(
+	          provider,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( event != NULL )
+	{
+		libfwevt_event_free(
+		 &event,
+		 NULL );
 	}
 	return( 0 );
 }
@@ -1121,6 +1413,152 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_provider_get_keyword function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_provider_get_keyword(
+     libfwevt_provider_t *provider )
+{
+	libcerror_error_t *error    = NULL;
+	libfwevt_keyword_t *keyword = NULL;
+	int number_of_keywords      = 0;
+	int result                  = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_provider_get_number_of_keywords(
+	          provider,
+	          &number_of_keywords,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "number_of_keywords",
+	 number_of_keywords,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_keywords > 0 )
+	{
+		result = libfwevt_provider_get_keyword(
+		          provider,
+		          0,
+		          &keyword,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "number_of_keywords",
+		 number_of_keywords,
+		 0 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libfwevt_keyword_free(
+		          &keyword,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "keyword",
+		 keyword );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_provider_get_keyword(
+	          NULL,
+	          0,
+	          &keyword,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_keyword(
+	          provider,
+	          -1,
+	          &keyword,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_keyword(
+	          provider,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( keyword != NULL )
+	{
+		libfwevt_keyword_free(
+		 &keyword,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* Tests the libfwevt_provider_get_keyword_by_index function
  * Returns 1 if successful or 0 if not
  */
@@ -1341,6 +1779,152 @@ on_error:
 	{
 		libcerror_error_free(
 		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_provider_get_level function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_provider_get_level(
+     libfwevt_provider_t *provider )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_level_t *level  = NULL;
+	int number_of_levels     = 0;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_provider_get_number_of_levels(
+	          provider,
+	          &number_of_levels,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "number_of_levels",
+	 number_of_levels,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_levels > 0 )
+	{
+		result = libfwevt_provider_get_level(
+		          provider,
+		          0,
+		          &level,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "number_of_levels",
+		 number_of_levels,
+		 0 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libfwevt_level_free(
+		          &level,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "level",
+		 level );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_provider_get_level(
+	          NULL,
+	          0,
+	          &level,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_level(
+	          provider,
+	          -1,
+	          &level,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_level(
+	          provider,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( level != NULL )
+	{
+		libfwevt_level_free(
+		 &level,
+		 NULL );
 	}
 	return( 0 );
 }
@@ -1569,6 +2153,152 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_provider_get_map function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_provider_get_map(
+     libfwevt_provider_t *provider )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_map_t *map      = NULL;
+	int number_of_maps       = 0;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_provider_get_number_of_maps(
+	          provider,
+	          &number_of_maps,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "number_of_maps",
+	 number_of_maps,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_maps > 0 )
+	{
+		result = libfwevt_provider_get_map(
+		          provider,
+		          0,
+		          &map,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "number_of_maps",
+		 number_of_maps,
+		 0 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libfwevt_map_free(
+		          &map,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "map",
+		 map );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_provider_get_map(
+	          NULL,
+	          0,
+	          &map,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_map(
+	          provider,
+	          -1,
+	          &map,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_map(
+	          provider,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( map != NULL )
+	{
+		libfwevt_map_free(
+		 &map,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* Tests the libfwevt_provider_get_map_by_index function
  * Returns 1 if successful or 0 if not
  */
@@ -1789,6 +2519,152 @@ on_error:
 	{
 		libcerror_error_free(
 		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_provider_get_opcode function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_provider_get_opcode(
+     libfwevt_provider_t *provider )
+{
+	libcerror_error_t *error  = NULL;
+	libfwevt_opcode_t *opcode = NULL;
+	int number_of_opcodes     = 0;
+	int result                = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_provider_get_number_of_opcodes(
+	          provider,
+	          &number_of_opcodes,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "number_of_opcodes",
+	 number_of_opcodes,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_opcodes > 0 )
+	{
+		result = libfwevt_provider_get_opcode(
+		          provider,
+		          0,
+		          &opcode,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "number_of_opcodes",
+		 number_of_opcodes,
+		 0 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libfwevt_opcode_free(
+		          &opcode,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "opcode",
+		 opcode );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_provider_get_opcode(
+	          NULL,
+	          0,
+	          &opcode,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_opcode(
+	          provider,
+	          -1,
+	          &opcode,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_opcode(
+	          provider,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( opcode != NULL )
+	{
+		libfwevt_opcode_free(
+		 &opcode,
+		 NULL );
 	}
 	return( 0 );
 }
@@ -2017,6 +2893,152 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_provider_get_task function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_provider_get_task(
+     libfwevt_provider_t *provider )
+{
+	libcerror_error_t *error = NULL;
+	libfwevt_task_t *task    = NULL;
+	int number_of_tasks      = 0;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_provider_get_number_of_tasks(
+	          provider,
+	          &number_of_tasks,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "number_of_tasks",
+	 number_of_tasks,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_tasks > 0 )
+	{
+		result = libfwevt_provider_get_task(
+		          provider,
+		          0,
+		          &task,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "number_of_tasks",
+		 number_of_tasks,
+		 0 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libfwevt_task_free(
+		          &task,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "task",
+		 task );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_provider_get_task(
+	          NULL,
+	          0,
+	          &task,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_task(
+	          provider,
+	          -1,
+	          &task,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_task(
+	          provider,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( task != NULL )
+	{
+		libfwevt_task_free(
+		 &task,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* Tests the libfwevt_provider_get_task_by_index function
  * Returns 1 if successful or 0 if not
  */
@@ -2237,6 +3259,152 @@ on_error:
 	{
 		libcerror_error_free(
 		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_provider_get_template function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_provider_get_template(
+     libfwevt_provider_t *provider )
+{
+	libcerror_error_t *error      = NULL;
+	libfwevt_template_t *template = NULL;
+	int number_of_templates       = 0;
+	int result                    = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_provider_get_number_of_templates(
+	          provider,
+	          &number_of_templates,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "number_of_templates",
+	 number_of_templates,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	if( number_of_templates > 0 )
+	{
+		result = libfwevt_provider_get_template(
+		          provider,
+		          0,
+		          &template,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "number_of_templates",
+		 number_of_templates,
+		 0 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libfwevt_template_free(
+		          &template,
+		          &error );
+
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "template",
+		 template );
+
+		FWEVT_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libfwevt_provider_get_template(
+	          NULL,
+	          0,
+	          &template,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_template(
+	          provider,
+	          -1,
+	          &template,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_provider_get_template(
+	          provider,
+	          0,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( template != NULL )
+	{
+		libfwevt_template_free(
+		 &template,
+		 NULL );
 	}
 	return( 0 );
 }
@@ -2493,6 +3661,11 @@ int main(
 	 provider );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_provider_get_channel",
+	 fwevt_test_provider_get_channel,
+	 provider );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_provider_get_channel_by_index",
 	 fwevt_test_provider_get_channel_by_index,
 	 provider );
@@ -2500,6 +3673,11 @@ int main(
 	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_provider_get_number_of_events",
 	 fwevt_test_provider_get_number_of_events,
+	 provider );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_provider_get_event",
+	 fwevt_test_provider_get_event,
 	 provider );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
@@ -2515,6 +3693,11 @@ int main(
 	 provider );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_provider_get_keyword",
+	 fwevt_test_provider_get_keyword,
+	 provider );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_provider_get_keyword_by_index",
 	 fwevt_test_provider_get_keyword_by_index,
 	 provider );
@@ -2522,6 +3705,11 @@ int main(
 	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_provider_get_number_of_levels",
 	 fwevt_test_provider_get_number_of_levels,
+	 provider );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_provider_get_level",
+	 fwevt_test_provider_get_level,
 	 provider );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
@@ -2535,6 +3723,11 @@ int main(
 	 provider );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_provider_get_map",
+	 fwevt_test_provider_get_map,
+	 provider );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_provider_get_map_by_index",
 	 fwevt_test_provider_get_map_by_index,
 	 provider );
@@ -2542,6 +3735,11 @@ int main(
 	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_provider_get_number_of_opcodes",
 	 fwevt_test_provider_get_number_of_opcodes,
+	 provider );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_provider_get_opcode",
+	 fwevt_test_provider_get_opcode,
 	 provider );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
@@ -2555,6 +3753,11 @@ int main(
 	 provider );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_provider_get_task",
+	 fwevt_test_provider_get_task,
+	 provider );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_provider_get_task_by_index",
 	 fwevt_test_provider_get_task_by_index,
 	 provider );
@@ -2562,6 +3765,11 @@ int main(
 	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_provider_get_number_of_templates",
 	 fwevt_test_provider_get_number_of_templates,
+	 provider );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_provider_get_template",
+	 fwevt_test_provider_get_template,
 	 provider );
 
 	FWEVT_TEST_RUN_WITH_ARGS(
