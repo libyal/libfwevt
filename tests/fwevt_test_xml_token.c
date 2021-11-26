@@ -35,6 +35,8 @@
 
 #include "../libfwevt/libfwevt_xml_token.h"
 
+uint8_t fwevt_test_xml_token_data1[ 1 ] = { 0x00 };
+
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_xml_token_initialize function
@@ -270,6 +272,169 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_xml_token_read_data function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_xml_token_read_data(
+     void )
+{
+	libcerror_error_t *error        = NULL;
+	libfwevt_xml_token_t *xml_token = NULL;
+	int result                      = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_xml_token_initialize(
+	          &xml_token,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "xml_token",
+	 xml_token );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_xml_token_read_data(
+	          xml_token,
+	          fwevt_test_xml_token_data1,
+	          1,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_xml_token_read_data(
+	          NULL,
+	          fwevt_test_xml_token_data1,
+	          1,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_xml_token_read_data(
+	          xml_token,
+	          NULL,
+	          40,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_xml_token_read_data(
+	          xml_token,
+	          fwevt_test_xml_token_data1,
+	          (size_t) SSIZE_MAX + 1,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test data offset value out of bounds
+	 */
+	result = libfwevt_xml_token_read_data(
+	          xml_token,
+	          fwevt_test_xml_token_data1,
+	          1,
+	          1,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libfwevt_xml_token_free(
+	          &xml_token,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "xml_token",
+	 xml_token );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( xml_token != NULL )
+	{
+		libfwevt_xml_token_free(
+		 &xml_token,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
@@ -297,13 +462,19 @@ int main(
 	 "libfwevt_xml_token_free",
 	 fwevt_test_xml_token_free );
 
-	/* TODO: add tests for libfwevt_xml_token_read */
+	FWEVT_TEST_RUN(
+	 "libfwevt_xml_token_read_data",
+	 fwevt_test_xml_token_read_data );
 
 #endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
 on_error:
 	return( EXIT_FAILURE );
+
+#endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 }
 

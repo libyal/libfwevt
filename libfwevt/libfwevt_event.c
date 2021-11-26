@@ -166,7 +166,7 @@ int libfwevt_internal_event_free(
 /* Reads the event
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_event_read(
+int libfwevt_event_read_data(
      libfwevt_event_t *event,
      const uint8_t *data,
      size_t data_size,
@@ -175,7 +175,7 @@ int libfwevt_event_read(
 {
 	libfwevt_internal_event_t *internal_event = NULL;
 	fwevt_template_event_t *wevt_event        = NULL;
-	static char *function                     = "libfwevt_event_read";
+	static char *function                     = "libfwevt_event_read_data";
 	uint32_t event_flags                      = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )

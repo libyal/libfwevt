@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_XML_TAG_H )
-#define _LIBFWEVT_INTERNAL_XML_TAG_H
+#if !defined( _LIBFWEVT_XML_TAG_H )
+#define _LIBFWEVT_XML_TAG_H
 
 #include <common.h>
 #include <types.h>
@@ -334,5 +334,5 @@ int libfwevt_xml_tag_value_debug_print(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_XML_TAG_H ) */
+#endif /* !defined( _LIBFWEVT_XML_TAG_H ) */
 

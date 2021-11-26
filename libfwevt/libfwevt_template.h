@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_TEMPLATE_H )
-#define _LIBFWEVT_INTERNAL_TEMPLATE_H
+#if !defined( _LIBFWEVT_TEMPLATE_H )
+#define _LIBFWEVT_TEMPLATE_H
 
 #include <common.h>
 #include <types.h>
@@ -159,5 +159,5 @@ int libfwevt_template_get_size(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_TEMPLATE_H ) */
+#endif /* !defined( _LIBFWEVT_TEMPLATE_H ) */
 

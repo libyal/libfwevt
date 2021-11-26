@@ -55,7 +55,7 @@ int libfwevt_internal_level_free(
      libfwevt_internal_level_t **internal_level,
      libcerror_error_t **error );
 
-int libfwevt_level_read(
+int libfwevt_level_read_data(
      libfwevt_level_t *level,
      const uint8_t *data,
      size_t data_size,

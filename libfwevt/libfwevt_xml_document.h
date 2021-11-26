@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_XML_DOCUMENT_H )
-#define _LIBFWEVT_INTERNAL_XML_DOCUMENT_H
+#if !defined( _LIBFWEVT_XML_DOCUMENT_H )
+#define _LIBFWEVT_XML_DOCUMENT_H
 
 #include <common.h>
 #include <types.h>
@@ -313,5 +313,5 @@ int libfwevt_xml_document_debug_print(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_XML_DOCUMENT_H ) */
+#endif /* !defined( _LIBFWEVT_XML_DOCUMENT_H ) */
 

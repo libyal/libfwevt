@@ -388,7 +388,7 @@ int libfwevt_xml_document_read_with_template_values(
 	}
 	while( binary_data_offset < binary_data_size )
 	{
-		if( libfwevt_xml_token_read(
+		if( libfwevt_xml_token_read_data(
 		     xml_token,
 		     binary_data,
 		     binary_data_size,
@@ -793,7 +793,7 @@ int libfwevt_xml_document_read_attribute(
 		{
 			xml_document_data_offset += attribute_name_size;
 		}
-		if( libfwevt_xml_token_read(
+		if( libfwevt_xml_token_read_data(
 		     xml_sub_token,
 		     binary_data,
 		     binary_data_size,
@@ -1974,7 +1974,7 @@ int libfwevt_xml_document_read_element(
 			}
 			while( attribute_list_size > 0 )
 			{
-				if( libfwevt_xml_token_read(
+				if( libfwevt_xml_token_read_data(
 				     xml_sub_token,
 				     binary_data,
 				     binary_data_size,
@@ -2030,7 +2030,7 @@ int libfwevt_xml_document_read_element(
 				attribute_list_size -= (uint32_t) xml_sub_token->size;
 			}
 		}
-		if( libfwevt_xml_token_read(
+		if( libfwevt_xml_token_read_data(
 		     xml_sub_token,
 		     binary_data,
 		     binary_data_size,
@@ -2108,7 +2108,7 @@ int libfwevt_xml_document_read_element(
 
 			while( element_size > 0 )
 			{
-				if( libfwevt_xml_token_read(
+				if( libfwevt_xml_token_read_data(
 				     xml_sub_token,
 				     binary_data,
 				     binary_data_size,
@@ -3122,7 +3122,7 @@ int libfwevt_xml_document_read_fragment(
 
 		goto on_error;
 	}
-	if( libfwevt_xml_token_read(
+	if( libfwevt_xml_token_read_data(
 	     xml_sub_token,
 	     binary_data,
 	     binary_data_size,
@@ -4531,7 +4531,7 @@ int libfwevt_xml_document_read_pi_target(
 
 		goto on_error;
 	}
-	if( libfwevt_xml_token_read(
+	if( libfwevt_xml_token_read_data(
 	     xml_sub_token,
 	     binary_data,
 	     binary_data_size,
@@ -4953,7 +4953,7 @@ int libfwevt_xml_document_read_template_instance(
 
 		goto on_error;
 	}
-	if( libfwevt_xml_token_read(
+	if( libfwevt_xml_token_read_data(
 	     xml_sub_token,
 	     binary_data,
 	     binary_data_size,
@@ -4988,7 +4988,7 @@ int libfwevt_xml_document_read_template_instance(
 	}
 	template_data_offset += xml_sub_token->size;
 
-	if( libfwevt_xml_token_read(
+	if( libfwevt_xml_token_read_data(
 	     xml_sub_token,
 	     binary_data,
 	     binary_data_size,
@@ -5029,7 +5029,7 @@ int libfwevt_xml_document_read_template_instance(
 	}
 	template_data_offset += xml_sub_token->size;
 
-	if( libfwevt_xml_token_read(
+	if( libfwevt_xml_token_read_data(
 	     xml_sub_token,
 	     binary_data,
 	     binary_data_size,
@@ -6045,7 +6045,7 @@ int libfwevt_xml_document_substitute_template_value(
 
 			goto on_error;
 		}
-		if( libfwevt_xml_token_read(
+		if( libfwevt_xml_token_read_data(
 		     xml_sub_token,
 		     binary_data,
 		     binary_data_size,

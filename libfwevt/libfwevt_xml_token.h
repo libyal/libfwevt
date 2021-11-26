@@ -52,7 +52,7 @@ int libfwevt_xml_token_free(
      libfwevt_xml_token_t **xml_token,
      libcerror_error_t **error );
 
-int libfwevt_xml_token_read(
+int libfwevt_xml_token_read_data(
      libfwevt_xml_token_t *xml_token,
      const uint8_t *chunk_data,
      size_t chunk_data_size,

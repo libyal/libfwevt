@@ -55,7 +55,7 @@ int libfwevt_internal_keyword_free(
      libfwevt_internal_keyword_t **internal_keyword,
      libcerror_error_t **error );
 
-int libfwevt_keyword_read(
+int libfwevt_keyword_read_data(
      libfwevt_keyword_t *keyword,
      const uint8_t *data,
      size_t data_size,

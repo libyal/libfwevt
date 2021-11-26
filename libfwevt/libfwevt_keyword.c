@@ -170,7 +170,7 @@ int libfwevt_internal_keyword_free(
 /* Reads the keyword
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_keyword_read(
+int libfwevt_keyword_read_data(
      libfwevt_keyword_t *keyword,
      const uint8_t *data,
      size_t data_size,
@@ -178,7 +178,7 @@ int libfwevt_keyword_read(
      libcerror_error_t **error )
 {
 	fwevt_template_keyword_t *wevt_keyword = NULL;
-	static char *function                  = "libfwevt_keyword_read";
+	static char *function                  = "libfwevt_keyword_read_data";
 	uint32_t keyword_data_offset           = 0;
 	uint32_t keyword_data_size             = 0;
 

@@ -170,7 +170,7 @@ int libfwevt_internal_level_free(
 /* Reads the level
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_level_read(
+int libfwevt_level_read_data(
      libfwevt_level_t *level,
      const uint8_t *data,
      size_t data_size,
@@ -178,7 +178,7 @@ int libfwevt_level_read(
      libcerror_error_t **error )
 {
 	fwevt_template_level_t *wevt_level = NULL;
-	static char *function              = "libfwevt_level_read";
+	static char *function              = "libfwevt_level_read_data";
 	uint32_t level_data_offset         = 0;
 	uint32_t level_data_size           = 0;
 

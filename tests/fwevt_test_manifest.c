@@ -20,6 +20,7 @@
  */
 
 #include <common.h>
+#include <byte_stream.h>
 #include <file_stream.h>
 #include <types.h>
 
@@ -86,7 +87,7 @@ int fwevt_test_manifest_initialize(
 	int result                      = 0;
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )
-	int number_of_malloc_fail_tests = 1;
+	int number_of_malloc_fail_tests = 2;
 	int number_of_memset_fail_tests = 1;
 	int test_number                 = 0;
 #endif
@@ -422,11 +423,63 @@ int fwevt_test_manifest_read(
 	 "error",
 	 error );
 
+	/* Test error case where data size is too small for header
+	 */
 	result = libfwevt_manifest_read(
 	          manifest,
 	          fwevt_test_manifest_data1,
 	          8,
 	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test error case where data size is too small for provider descriptor
+	 */
+	result = libfwevt_manifest_read(
+	          manifest,
+	          fwevt_test_manifest_data1,
+	          20,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* TODO add test where malloc fails in libfwevt_provider_initialize */
+
+	/* Test error case where signature is invalid
+	 */
+	byte_stream_copy_from_uint32_little_endian(
+	 fwevt_test_manifest_data1,
+	 0xffffffffUL );
+
+	result = libfwevt_manifest_read(
+	          manifest,
+	          fwevt_test_manifest_data1,
+	          634,
+	          &error );
+
+	byte_stream_copy_from_uint32_little_endian(
+	 fwevt_test_manifest_data1,
+	 0x4d495243UL );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -900,6 +953,25 @@ int fwevt_test_manifest_get_provider_by_identifier(
 	          manifest,
 	          NULL,
 	          16,
+	          &provider,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_manifest_get_provider_by_identifier(
+	          manifest,
+	          provider_identifier,
+	          0,
 	          &provider,
 	          &error );
 

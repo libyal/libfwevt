@@ -170,7 +170,7 @@ int libfwevt_internal_channel_free(
 /* Reads the channel
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_channel_read(
+int libfwevt_channel_read_data(
      libfwevt_channel_t *channel,
      const uint8_t *data,
      size_t data_size,
@@ -179,7 +179,7 @@ int libfwevt_channel_read(
 {
 	libfwevt_internal_channel_t *internal_channel = NULL;
 	fwevt_template_channel_t *wevt_channel        = NULL;
-	static char *function                         = "libfwevt_channel_read";
+	static char *function                         = "libfwevt_channel_read_data";
 	uint32_t channel_data_offset                  = 0;
 	uint32_t channel_data_size                    = 0;
 

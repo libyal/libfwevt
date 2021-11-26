@@ -340,10 +340,10 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libfwevt_level_read function
+/* Tests the libfwevt_level_read_data function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_level_read(
+int fwevt_test_level_read_data(
      void )
 {
 	libcerror_error_t *error = NULL;
@@ -371,7 +371,7 @@ int fwevt_test_level_read(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_level_read(
+	result = libfwevt_level_read_data(
 	          level,
 	          fwevt_test_level_data1,
 	          52,
@@ -389,7 +389,7 @@ int fwevt_test_level_read(
 
 	/* Test error cases
 	 */
-	result = libfwevt_level_read(
+	result = libfwevt_level_read_data(
 	          NULL,
 	          fwevt_test_level_data1,
 	          52,
@@ -408,7 +408,7 @@ int fwevt_test_level_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_level_read(
+	result = libfwevt_level_read_data(
 	          level,
 	          NULL,
 	          52,
@@ -427,7 +427,7 @@ int fwevt_test_level_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_level_read(
+	result = libfwevt_level_read_data(
 	          level,
 	          fwevt_test_level_data1,
 	          (size_t) SSIZE_MAX + 1,
@@ -448,7 +448,7 @@ int fwevt_test_level_read(
 
 	/* Test data offset value out of bounds
 	 */
-	result = libfwevt_level_read(
+	result = libfwevt_level_read_data(
 	          level,
 	          fwevt_test_level_data1,
 	          52,
@@ -469,7 +469,7 @@ int fwevt_test_level_read(
 
 	/* Test data value too small
 	 */
-	result = libfwevt_level_read(
+	result = libfwevt_level_read_data(
 	          level,
 	          fwevt_test_level_data1,
 	          11,
@@ -490,7 +490,7 @@ int fwevt_test_level_read(
 
 	/* Test level data offset value out of bounds
 	 */
-	result = libfwevt_level_read(
+	result = libfwevt_level_read_data(
 	          level,
 	          fwevt_test_level_data1,
 	          15,
@@ -511,7 +511,7 @@ int fwevt_test_level_read(
 
 	/* Test level data size value out of bounds
 	 */
-	result = libfwevt_level_read(
+	result = libfwevt_level_read_data(
 	          level,
 	          fwevt_test_level_data1,
 	          51,
@@ -602,8 +602,8 @@ int main(
 	 fwevt_test_internal_level_free );
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_level_read",
-	 fwevt_test_level_read );
+	 "libfwevt_level_read_data",
+	 fwevt_test_level_read_data );
 
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 

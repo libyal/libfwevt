@@ -55,7 +55,7 @@ int libfwevt_internal_map_free(
      libfwevt_internal_map_t **internal_map,
      libcerror_error_t **error );
 
-int libfwevt_map_read(
+int libfwevt_map_read_data(
      libfwevt_map_t *map,
      const uint8_t *data,
      size_t data_size,

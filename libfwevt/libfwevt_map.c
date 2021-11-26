@@ -166,7 +166,7 @@ int libfwevt_internal_map_free(
 /* Reads the map
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_map_read(
+int libfwevt_map_read_data(
      libfwevt_map_t *map,
      const uint8_t *data,
      size_t data_size,
@@ -174,7 +174,7 @@ int libfwevt_map_read(
      libcerror_error_t **error )
 {
 	fwevt_template_map_t *wevt_map = NULL;
-	static char *function          = "libfwevt_map_read";
+	static char *function          = "libfwevt_map_read_data";
 
 	if( map == NULL )
 	{

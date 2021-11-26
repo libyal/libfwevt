@@ -136,7 +136,7 @@ int libfwevt_xml_token_free(
 /* Reads the binary XML token
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_xml_token_read(
+int libfwevt_xml_token_read_data(
      libfwevt_xml_token_t *xml_token,
      const uint8_t *chunk_data,
      size_t chunk_data_size,
@@ -144,7 +144,7 @@ int libfwevt_xml_token_read(
      libcerror_error_t **error )
 {
 	const uint8_t *xml_token_data = NULL;
-	static char *function         = "libfwevt_xml_token_read";
+	static char *function         = "libfwevt_xml_token_read_data";
 	size_t xml_token_data_size    = 0;
 
 	if( xml_token == NULL )

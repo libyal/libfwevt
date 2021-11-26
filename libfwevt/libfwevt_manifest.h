@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_MANIFEST_H )
-#define _LIBFWEVT_INTERNAL_MANIFEST_H
+#if !defined( _LIBFWEVT_MANIFEST_H )
+#define _LIBFWEVT_MANIFEST_H
 
 #include <common.h>
 #include <types.h>
@@ -100,5 +100,5 @@ int libfwevt_manifest_get_provider_by_identifier(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_MANIFEST_H ) */
+#endif /* !defined( _LIBFWEVT_MANIFEST_H ) */
 

@@ -55,7 +55,7 @@ int libfwevt_internal_task_free(
      libfwevt_internal_task_t **internal_task,
      libcerror_error_t **error );
 
-int libfwevt_task_read(
+int libfwevt_task_read_data(
      libfwevt_task_t *task,
      const uint8_t *data,
      size_t data_size,

@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_CHANNEL_H )
-#define _LIBFWEVT_INTERNAL_CHANNEL_H
+#if !defined( _LIBFWEVT_CHANNEL_H )
+#define _LIBFWEVT_CHANNEL_H
 
 #include <common.h>
 #include <types.h>
@@ -55,7 +55,7 @@ int libfwevt_internal_channel_free(
      libfwevt_internal_channel_t **internal_channel,
      libcerror_error_t **error );
 
-int libfwevt_channel_read(
+int libfwevt_channel_read_data(
      libfwevt_channel_t *channel,
      const uint8_t *data,
      size_t data_size,
@@ -66,5 +66,5 @@ int libfwevt_channel_read(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_CHANNEL_H ) */
+#endif /* !defined( _LIBFWEVT_CHANNEL_H ) */
 

@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_OPCODE_H )
-#define _LIBFWEVT_INTERNAL_OPCODE_H
+#if !defined( _LIBFWEVT_OPCODE_H )
+#define _LIBFWEVT_OPCODE_H
 
 #include <common.h>
 #include <types.h>
@@ -55,7 +55,7 @@ int libfwevt_internal_opcode_free(
      libfwevt_internal_opcode_t **internal_opcode,
      libcerror_error_t **error );
 
-int libfwevt_opcode_read(
+int libfwevt_opcode_read_data(
      libfwevt_opcode_t *opcode,
      const uint8_t *data,
      size_t data_size,
@@ -66,5 +66,5 @@ int libfwevt_opcode_read(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_OPCODE_H ) */
+#endif /* !defined( _LIBFWEVT_OPCODE_H ) */
 

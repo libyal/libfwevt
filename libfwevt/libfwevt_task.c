@@ -171,7 +171,7 @@ int libfwevt_internal_task_free(
 /* Reads the task
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_task_read(
+int libfwevt_task_read_data(
      libfwevt_task_t *task,
      const uint8_t *data,
      size_t data_size,
@@ -180,7 +180,7 @@ int libfwevt_task_read(
 {
 	libfwevt_internal_task_t *internal_task = NULL;
 	fwevt_template_task_t *wevt_task        = NULL;
-	static char *function                   = "libfwevt_task_read";
+	static char *function                   = "libfwevt_task_read_data";
 	uint32_t task_data_offset               = 0;
 	uint32_t task_data_size                 = 0;
 

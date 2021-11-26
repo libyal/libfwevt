@@ -1050,7 +1050,7 @@ int libfwevt_provider_read_channels(
 
 			goto on_error;
 		}
-		if( libfwevt_channel_read(
+		if( libfwevt_channel_read_data(
 		     channel,
 		     data,
 		     data_size,
@@ -1353,7 +1353,7 @@ int libfwevt_provider_read_events(
 
 			goto on_error;
 		}
-		if( libfwevt_event_read(
+		if( libfwevt_event_read_data(
 		     event,
 		     data,
 		     data_size,
@@ -1640,7 +1640,7 @@ int libfwevt_provider_read_keywords(
 
 			goto on_error;
 		}
-		if( libfwevt_keyword_read(
+		if( libfwevt_keyword_read_data(
 		     keyword,
 		     data,
 		     data_size,
@@ -1929,7 +1929,7 @@ int libfwevt_provider_read_levels(
 
 			goto on_error;
 		}
-		if( libfwevt_level_read(
+		if( libfwevt_level_read_data(
 		     level,
 		     data,
 		     data_size,
@@ -2298,7 +2298,7 @@ int libfwevt_provider_read_maps(
 
 				goto on_error;
 			}
-			if( libfwevt_map_read(
+			if( libfwevt_map_read_data(
 			     map,
 			     data,
 			     data_size,
@@ -2514,7 +2514,8 @@ int libfwevt_provider_read_opcodes(
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	data_offset += sizeof( fwevt_template_opcodes_t );
 
 	if( memory_compare(
@@ -2587,7 +2588,7 @@ int libfwevt_provider_read_opcodes(
 
 			goto on_error;
 		}
-		if( libfwevt_opcode_read(
+		if( libfwevt_opcode_read_data(
 		     opcode,
 		     data,
 		     data_size,
@@ -2876,7 +2877,7 @@ int libfwevt_provider_read_tasks(
 
 			goto on_error;
 		}
-		if( libfwevt_task_read(
+		if( libfwevt_task_read_data(
 		     task,
 		     data,
 		     data_size,

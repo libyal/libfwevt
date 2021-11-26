@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_EVENT_H )
-#define _LIBFWEVT_INTERNAL_EVENT_H
+#if !defined( _LIBFWEVT_EVENT_H )
+#define _LIBFWEVT_EVENT_H
 
 #include <common.h>
 #include <types.h>
@@ -75,7 +75,7 @@ int libfwevt_internal_event_free(
      libfwevt_internal_event_t **internal_event,
      libcerror_error_t **error );
 
-int libfwevt_event_read(
+int libfwevt_event_read_data(
      libfwevt_event_t *event,
      const uint8_t *data,
      size_t data_size,
@@ -104,5 +104,5 @@ int libfwevt_event_get_template_offset(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_EVENT_H ) */
+#endif /* !defined( _LIBFWEVT_EVENT_H ) */
 

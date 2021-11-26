@@ -341,15 +341,15 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libfwevt_keyword_read function
+/* Tests the libfwevt_keyword_read_data function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_keyword_read(
+int fwevt_test_keyword_read_data(
      void )
 {
-	libcerror_error_t *error = NULL;
-	libfwevt_keyword_t *keyword  = NULL;
-	int result               = 0;
+	libcerror_error_t *error    = NULL;
+	libfwevt_keyword_t *keyword = NULL;
+	int result                  = 0;
 
 	/* Initialize test
 	 */
@@ -372,7 +372,7 @@ int fwevt_test_keyword_read(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_keyword_read(
+	result = libfwevt_keyword_read_data(
 	          keyword,
 	          fwevt_test_keyword_data1,
 	          40,
@@ -390,7 +390,7 @@ int fwevt_test_keyword_read(
 
 	/* Test error cases
 	 */
-	result = libfwevt_keyword_read(
+	result = libfwevt_keyword_read_data(
 	          NULL,
 	          fwevt_test_keyword_data1,
 	          40,
@@ -409,7 +409,7 @@ int fwevt_test_keyword_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_keyword_read(
+	result = libfwevt_keyword_read_data(
 	          keyword,
 	          NULL,
 	          40,
@@ -428,7 +428,7 @@ int fwevt_test_keyword_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_keyword_read(
+	result = libfwevt_keyword_read_data(
 	          keyword,
 	          fwevt_test_keyword_data1,
 	          (size_t) SSIZE_MAX + 1,
@@ -449,7 +449,7 @@ int fwevt_test_keyword_read(
 
 	/* Test data offset value out of bounds
 	 */
-	result = libfwevt_keyword_read(
+	result = libfwevt_keyword_read_data(
 	          keyword,
 	          fwevt_test_keyword_data1,
 	          40,
@@ -470,7 +470,7 @@ int fwevt_test_keyword_read(
 
 	/* Test data value too small
 	 */
-	result = libfwevt_keyword_read(
+	result = libfwevt_keyword_read_data(
 	          keyword,
 	          fwevt_test_keyword_data1,
 	          15,
@@ -491,7 +491,7 @@ int fwevt_test_keyword_read(
 
 	/* Test keyword data offset value out of bounds
 	 */
-	result = libfwevt_keyword_read(
+	result = libfwevt_keyword_read_data(
 	          keyword,
 	          fwevt_test_keyword_data1,
 	          19,
@@ -512,7 +512,7 @@ int fwevt_test_keyword_read(
 
 	/* Test keyword data size value out of bounds
 	 */
-	result = libfwevt_keyword_read(
+	result = libfwevt_keyword_read_data(
 	          keyword,
 	          fwevt_test_keyword_data1,
 	          39,
@@ -603,8 +603,8 @@ int main(
 	 fwevt_test_internal_keyword_free );
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_keyword_read",
-	 fwevt_test_keyword_read );
+	 "libfwevt_keyword_read_data",
+	 fwevt_test_keyword_read_data );
 
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 

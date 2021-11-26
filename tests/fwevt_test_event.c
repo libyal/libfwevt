@@ -339,10 +339,10 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libfwevt_event_read function
+/* Tests the libfwevt_event_read_data function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_event_read(
+int fwevt_test_event_read_data(
      void )
 {
 	libcerror_error_t *error = NULL;
@@ -370,7 +370,7 @@ int fwevt_test_event_read(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_event_read(
+	result = libfwevt_event_read_data(
 	          event,
 	          fwevt_test_event_data1,
 	          48,
@@ -388,7 +388,7 @@ int fwevt_test_event_read(
 
 	/* Test error cases
 	 */
-	result = libfwevt_event_read(
+	result = libfwevt_event_read_data(
 	          NULL,
 	          fwevt_test_event_data1,
 	          48,
@@ -407,7 +407,7 @@ int fwevt_test_event_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_event_read(
+	result = libfwevt_event_read_data(
 	          event,
 	          NULL,
 	          48,
@@ -426,7 +426,7 @@ int fwevt_test_event_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_event_read(
+	result = libfwevt_event_read_data(
 	          event,
 	          fwevt_test_event_data1,
 	          (size_t) SSIZE_MAX + 1,
@@ -447,7 +447,7 @@ int fwevt_test_event_read(
 
 	/* Test data offset value out of bounds
 	 */
-	result = libfwevt_event_read(
+	result = libfwevt_event_read_data(
 	          event,
 	          fwevt_test_event_data1,
 	          48,
@@ -468,7 +468,7 @@ int fwevt_test_event_read(
 
 	/* Test data value too small
 	 */
-	result = libfwevt_event_read(
+	result = libfwevt_event_read_data(
 	          event,
 	          fwevt_test_event_data1,
 	          47,
@@ -782,8 +782,8 @@ int main(
 	 fwevt_test_internal_event_free );
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_event_read",
-	 fwevt_test_event_read );
+	 "libfwevt_event_read_data",
+	 fwevt_test_event_read_data );
 
 #if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
 
@@ -806,7 +806,7 @@ int main(
 	 "error",
 	 error );
 
-	result = libfwevt_event_read(
+	result = libfwevt_event_read_data(
 	          event,
 	          fwevt_test_event_data1,
 	          48,

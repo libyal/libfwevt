@@ -795,8 +795,7 @@ int libfwevt_manifest_get_provider_by_identifier(
 
 		return( -1 );
 	}
-	if( ( provider_identifier_size < 16 )
-	 || ( provider_identifier_size > (size_t) SSIZE_MAX ) )
+	if( provider_identifier_size != 16 )
 	{
 		libcerror_error_set(
 		 error,

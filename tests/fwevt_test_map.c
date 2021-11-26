@@ -337,14 +337,14 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libfwevt_map_read function
+/* Tests the libfwevt_map_read_data function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_map_read(
+int fwevt_test_map_read_data(
      void )
 {
 	libcerror_error_t *error = NULL;
-	libfwevt_map_t *map  = NULL;
+	libfwevt_map_t *map      = NULL;
 	int result               = 0;
 
 	/* Initialize test
@@ -368,7 +368,7 @@ int fwevt_test_map_read(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_map_read(
+	result = libfwevt_map_read_data(
 	          map,
 	          fwevt_test_map_data1,
 	          4,
@@ -386,7 +386,7 @@ int fwevt_test_map_read(
 
 	/* Test error cases
 	 */
-	result = libfwevt_map_read(
+	result = libfwevt_map_read_data(
 	          NULL,
 	          fwevt_test_map_data1,
 	          4,
@@ -405,7 +405,7 @@ int fwevt_test_map_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_map_read(
+	result = libfwevt_map_read_data(
 	          map,
 	          NULL,
 	          4,
@@ -424,7 +424,7 @@ int fwevt_test_map_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_map_read(
+	result = libfwevt_map_read_data(
 	          map,
 	          fwevt_test_map_data1,
 	          (size_t) SSIZE_MAX + 1,
@@ -445,7 +445,7 @@ int fwevt_test_map_read(
 
 	/* Test data offset value out of bounds
 	 */
-	result = libfwevt_map_read(
+	result = libfwevt_map_read_data(
 	          map,
 	          fwevt_test_map_data1,
 	          4,
@@ -466,7 +466,7 @@ int fwevt_test_map_read(
 
 	/* Test data value too small
 	 */
-	result = libfwevt_map_read(
+	result = libfwevt_map_read_data(
 	          map,
 	          fwevt_test_map_data1,
 	          3,
@@ -557,8 +557,8 @@ int main(
 	 fwevt_test_internal_map_free );
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_map_read",
-	 fwevt_test_map_read );
+	 "libfwevt_map_read_data",
+	 fwevt_test_map_read_data );
 
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 

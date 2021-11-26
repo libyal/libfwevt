@@ -343,10 +343,10 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libfwevt_task_read function
+/* Tests the libfwevt_task_read_data function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_task_read(
+int fwevt_test_task_read_data(
      void )
 {
 	libcerror_error_t *error = NULL;
@@ -374,7 +374,7 @@ int fwevt_test_task_read(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_task_read(
+	result = libfwevt_task_read_data(
 	          task,
 	          fwevt_test_task_data1,
 	          100,
@@ -392,7 +392,7 @@ int fwevt_test_task_read(
 
 	/* Test error cases
 	 */
-	result = libfwevt_task_read(
+	result = libfwevt_task_read_data(
 	          NULL,
 	          fwevt_test_task_data1,
 	          100,
@@ -411,7 +411,7 @@ int fwevt_test_task_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_task_read(
+	result = libfwevt_task_read_data(
 	          task,
 	          NULL,
 	          100,
@@ -430,7 +430,7 @@ int fwevt_test_task_read(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_task_read(
+	result = libfwevt_task_read_data(
 	          task,
 	          fwevt_test_task_data1,
 	          (size_t) SSIZE_MAX + 1,
@@ -451,7 +451,7 @@ int fwevt_test_task_read(
 
 	/* Test data offset value out of bounds
 	 */
-	result = libfwevt_task_read(
+	result = libfwevt_task_read_data(
 	          task,
 	          fwevt_test_task_data1,
 	          100,
@@ -472,7 +472,7 @@ int fwevt_test_task_read(
 
 	/* Test data value too small
 	 */
-	result = libfwevt_task_read(
+	result = libfwevt_task_read_data(
 	          task,
 	          fwevt_test_task_data1,
 	          27,
@@ -493,7 +493,7 @@ int fwevt_test_task_read(
 
 	/* Test task data offset value out of bounds
 	 */
-	result = libfwevt_task_read(
+	result = libfwevt_task_read_data(
 	          task,
 	          fwevt_test_task_data1,
 	          31,
@@ -514,7 +514,7 @@ int fwevt_test_task_read(
 
 	/* Test task data size value out of bounds
 	 */
-	result = libfwevt_task_read(
+	result = libfwevt_task_read_data(
 	          task,
 	          fwevt_test_task_data1,
 	          99,
@@ -605,8 +605,8 @@ int main(
 	 fwevt_test_internal_task_free );
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_task_read",
-	 fwevt_test_task_read );
+	 "libfwevt_task_read_data",
+	 fwevt_test_task_read_data );
 
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 

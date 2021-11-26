@@ -170,7 +170,7 @@ int libfwevt_internal_opcode_free(
 /* Reads the opcode
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_opcode_read(
+int libfwevt_opcode_read_data(
      libfwevt_opcode_t *opcode,
      const uint8_t *data,
      size_t data_size,
@@ -178,7 +178,7 @@ int libfwevt_opcode_read(
      libcerror_error_t **error )
 {
 	fwevt_template_opcode_t *wevt_opcode = NULL;
-	static char *function                = "libfwevt_opcode_read";
+	static char *function                = "libfwevt_opcode_read_data";
 	uint32_t opcode_data_offset          = 0;
 	uint32_t opcode_data_size            = 0;
 

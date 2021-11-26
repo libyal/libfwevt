@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_INTERNAL_XML_TEMPLATE_VALUE_H )
-#define _LIBFWEVT_INTERNAL_XML_TEMPLATE_VALUE_H
+#if !defined( _LIBFWEVT_XML_TEMPLATE_VALUE_H )
+#define _LIBFWEVT_XML_TEMPLATE_VALUE_H
 
 #include <common.h>
 #include <types.h>
@@ -105,5 +105,5 @@ int libfwevt_xml_template_value_set_flags(
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_INTERNAL_XML_TEMPLATE_VALUE_H ) */
+#endif /* !defined( _LIBFWEVT_XML_TEMPLATE_VALUE_H ) */
 
