@@ -1,7 +1,6 @@
 TODO
 * Rename _read() functions to _read_data()
 ** libfwevt_manifest_read
-** libfwevt_provider_read
 ** libfwevt_template_read
 ** libfwevt_xml_document_read
 * Remove deprecated libfwevt_xml_document_clone, previously used by libevtx

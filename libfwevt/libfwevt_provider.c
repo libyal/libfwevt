@@ -498,7 +498,7 @@ int libfwevt_internal_provider_free(
 /* Reads the provider
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_provider_read(
+int libfwevt_provider_read_data(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
@@ -507,7 +507,7 @@ int libfwevt_provider_read(
 {
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	fwevt_template_provider_t *wevt_provider        = NULL;
-	static char *function                           = "libfwevt_provider_read";
+	static char *function                           = "libfwevt_provider_read_data";
 	uint32_t descriptor_index                       = 0;
 	uint32_t descriptor_offset                      = 0;
 	uint32_t descriptor_type                        = 0;

@@ -402,7 +402,7 @@ int libfwevt_manifest_read(
 
 			goto on_error;
 		}
-		if( libfwevt_provider_read(
+		if( libfwevt_provider_read_data(
 		     provider,
 		     data,
 		     data_size,

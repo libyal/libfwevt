@@ -131,7 +131,7 @@ int libfwevt_internal_provider_free(
      libfwevt_internal_provider_t **internal_provider,
      libcerror_error_t **error );
 
-int libfwevt_provider_read(
+int libfwevt_provider_read_data(
      libfwevt_provider_t *provider,
      const uint8_t *data,
      size_t data_size,
