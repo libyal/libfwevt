@@ -263,13 +263,6 @@ int libfwevt_provider_initialize(
 on_error:
 	if( internal_provider != NULL )
 	{
-		if( internal_provider->templates_array != NULL )
-		{
-			libcdata_array_free(
-			 &( internal_provider->templates_array ),
-			 NULL,
-			 NULL );
-		}
 		if( internal_provider->tasks_array != NULL )
 		{
 			libcdata_array_free(
@@ -595,7 +588,8 @@ int libfwevt_provider_read_data(
 		 sizeof( fwevt_template_provider_t ),
 		 0 );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	byte_stream_copy_to_uint32_little_endian(
 	 wevt_provider->number_of_descriptors,
 	 number_of_descriptors );
@@ -3592,6 +3586,7 @@ int libfwevt_provider_get_event_by_identifier(
      libfwevt_event_t **event,
      libcerror_error_t **error )
 {
+	libfwevt_event_t *safe_event                    = NULL;
 	libfwevt_internal_provider_t *internal_provider = NULL;
 	static char *function                           = "libfwevt_provider_get_event_by_identifier";
 	uint32_t identifier                             = 0;
@@ -3622,6 +3617,8 @@ int libfwevt_provider_get_event_by_identifier(
 
 		return( -1 );
 	}
+	*event = NULL;
+
 	if( libcdata_array_get_number_of_entries(
 	     internal_provider->events_array,
 	     &number_of_events,
@@ -3643,7 +3640,7 @@ int libfwevt_provider_get_event_by_identifier(
 		if( libcdata_array_get_entry_by_index(
 		     internal_provider->events_array,
 		     event_index,
-		     (intptr_t **) event,
+		     (intptr_t **) &safe_event,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -3654,11 +3651,11 @@ int libfwevt_provider_get_event_by_identifier(
 			 function,
 			 event_index );
 
-			goto on_error;
+			return( -1 );
 		}
 /* TODO refactor to compare function */
 		if( libfwevt_event_get_identifier(
-		     *event,
+		     safe_event,
 		     &identifier,
 		     error ) != 1 )
 		{
@@ -3670,21 +3667,16 @@ int libfwevt_provider_get_event_by_identifier(
 			 function,
 			 event_index );
 
-			goto on_error;
+			return( -1 );
 		}
 		if( event_identifier == identifier )
 		{
+			*event = safe_event;
+
 			return( 1 );
 		}
 	}
-	*event = NULL;
-
 	return( 0 );
-
-on_error:
-	*event = NULL;
-
-	return( 1 );
 }
 
 /* Retrieves the number of keywords
@@ -4501,6 +4493,8 @@ int libfwevt_provider_get_template_by_offset(
 
 		return( -1 );
 	}
+	*wevt_template = NULL;
+
 	if( libcdata_array_get_number_of_entries(
 	     internal_provider->templates_array,
 	     &number_of_templates,
@@ -4557,8 +4551,6 @@ int libfwevt_provider_get_template_by_offset(
 			return( 1 );
 		}
 	}
-	*wevt_template = NULL;
-
 	return( 0 );
 }
 
