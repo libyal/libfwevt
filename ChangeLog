@@ -5,6 +5,7 @@ TODO
 ** libfwevt_xml_document_read
 * Remove deprecated libfwevt_xml_document_clone, previously used by libevtx
 * Remove deprecated libfwevt_manifest_get_provider, previously used by libwrc
+* Expose libfwevt_xml_tag_free
 
 20140928
 * see `git log' for more recent change log
