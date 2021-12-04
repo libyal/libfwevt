@@ -1144,7 +1144,8 @@ int libfwevt_template_read_xml_document(
 		 binary_xml_data_size,
 		 0 );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( libfwevt_xml_document_read_with_template_values(
 	     xml_document,
 	     internal_template->data,

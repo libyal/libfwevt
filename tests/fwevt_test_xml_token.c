@@ -399,6 +399,31 @@ int fwevt_test_xml_token_read_data(
 	libcerror_error_free(
 	 &error );
 
+	/* Test unsupported token type
+	 */
+	fwevt_test_xml_token_data1[ 0 ] = 0xff;
+
+	result = libfwevt_xml_token_read_data(
+	          xml_token,
+	          fwevt_test_xml_token_data1,
+	          1,
+	          0,
+	          &error );
+
+	fwevt_test_xml_token_data1[ 0 ] = 0x00;
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
 	/* Clean up
 	 */
 	result = libfwevt_xml_token_free(

@@ -274,13 +274,84 @@ on_error:
  * Returns 1 if successful or 0 if not
  */
 int fwevt_test_xml_template_value_get_type(
+     libfwevt_xml_template_value_t *xml_template_value )
+{
+	libcerror_error_t *error = NULL;
+	uint8_t type             = 0;
+	int result               = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_xml_template_value_get_type(
+	          xml_template_value,
+	          &type,
+	          &error );
+
+	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_xml_template_value_get_type(
+	          NULL,
+	          &type,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_xml_template_value_get_type(
+	          xml_template_value,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_xml_template_value_set_type function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_xml_template_value_set_type(
      void )
 {
 	libcerror_error_t *error                          = NULL;
 	libfwevt_xml_template_value_t *xml_template_value = NULL;
-	uint8_t type                                      = 0;
 	int result                                        = 0;
-	int type_is_set                                   = 0;
 
 	/* Initialize test
 	 */
@@ -303,9 +374,9 @@ int fwevt_test_xml_template_value_get_type(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_xml_template_value_get_type(
+	result = libfwevt_xml_template_value_set_type(
 	          xml_template_value,
-	          &type,
+	          0x01,
 	          &error );
 
 	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
@@ -317,13 +388,11 @@ int fwevt_test_xml_template_value_get_type(
 	 "error",
 	 error );
 
-	type_is_set = result;
-
 	/* Test error cases
 	 */
-	result = libfwevt_xml_template_value_get_type(
+	result = libfwevt_xml_template_value_set_type(
 	          NULL,
-	          &type,
+	          0x01,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -338,25 +407,6 @@ int fwevt_test_xml_template_value_get_type(
 	libcerror_error_free(
 	 &error );
 
-	if( type_is_set != 0 )
-	{
-		result = libfwevt_xml_template_value_get_type(
-		          xml_template_value,
-		          NULL,
-		          &error );
-
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
-
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
 	/* Clean up
 	 */
 	result = libfwevt_xml_template_value_free(
@@ -397,12 +447,83 @@ on_error:
  * Returns 1 if successful or 0 if not
  */
 int fwevt_test_xml_template_value_get_offset(
+     libfwevt_xml_template_value_t *xml_template_value )
+{
+	libcerror_error_t *error = NULL;
+	size_t offset            = 0;
+	int result               = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_xml_template_value_get_offset(
+	          xml_template_value,
+	          &offset,
+	          &error );
+
+	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_xml_template_value_get_offset(
+	          NULL,
+	          &offset,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_xml_template_value_get_offset(
+	          xml_template_value,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_xml_template_value_set_offset function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_xml_template_value_set_offset(
      void )
 {
 	libcerror_error_t *error                          = NULL;
 	libfwevt_xml_template_value_t *xml_template_value = NULL;
-	size_t offset                                     = 0;
-	int offset_is_set                                 = 0;
 	int result                                        = 0;
 
 	/* Initialize test
@@ -426,9 +547,9 @@ int fwevt_test_xml_template_value_get_offset(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_xml_template_value_get_offset(
+	result = libfwevt_xml_template_value_set_offset(
 	          xml_template_value,
-	          &offset,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
@@ -440,13 +561,11 @@ int fwevt_test_xml_template_value_get_offset(
 	 "error",
 	 error );
 
-	offset_is_set = result;
-
 	/* Test error cases
 	 */
-	result = libfwevt_xml_template_value_get_offset(
+	result = libfwevt_xml_template_value_set_offset(
 	          NULL,
-	          &offset,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -461,25 +580,6 @@ int fwevt_test_xml_template_value_get_offset(
 	libcerror_error_free(
 	 &error );
 
-	if( offset_is_set != 0 )
-	{
-		result = libfwevt_xml_template_value_get_offset(
-		          xml_template_value,
-		          NULL,
-		          &error );
-
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
-
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
 	/* Clean up
 	 */
 	result = libfwevt_xml_template_value_free(
@@ -520,13 +620,84 @@ on_error:
  * Returns 1 if successful or 0 if not
  */
 int fwevt_test_xml_template_value_get_size(
+     libfwevt_xml_template_value_t *xml_template_value )
+{
+	libcerror_error_t *error = NULL;
+	uint16_t size            = 0;
+	int result               = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_xml_template_value_get_size(
+	          xml_template_value,
+	          &size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_xml_template_value_get_size(
+	          NULL,
+	          &size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_xml_template_value_get_size(
+	          xml_template_value,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_xml_template_value_set_size function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_xml_template_value_set_size(
      void )
 {
 	libcerror_error_t *error                          = NULL;
 	libfwevt_xml_template_value_t *xml_template_value = NULL;
-	uint16_t size                                     = 0;
 	int result                                        = 0;
-	int size_is_set                                   = 0;
 
 	/* Initialize test
 	 */
@@ -549,9 +720,9 @@ int fwevt_test_xml_template_value_get_size(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_xml_template_value_get_size(
+	result = libfwevt_xml_template_value_set_size(
 	          xml_template_value,
-	          &size,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
@@ -563,13 +734,11 @@ int fwevt_test_xml_template_value_get_size(
 	 "error",
 	 error );
 
-	size_is_set = result;
-
 	/* Test error cases
 	 */
-	result = libfwevt_xml_template_value_get_size(
+	result = libfwevt_xml_template_value_set_size(
 	          NULL,
-	          &size,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -584,25 +753,6 @@ int fwevt_test_xml_template_value_get_size(
 	libcerror_error_free(
 	 &error );
 
-	if( size_is_set != 0 )
-	{
-		result = libfwevt_xml_template_value_get_size(
-		          xml_template_value,
-		          NULL,
-		          &error );
-
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
-
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
 	/* Clean up
 	 */
 	result = libfwevt_xml_template_value_free(
@@ -643,12 +793,83 @@ on_error:
  * Returns 1 if successful or 0 if not
  */
 int fwevt_test_xml_template_value_get_flags(
+     libfwevt_xml_template_value_t *xml_template_value )
+{
+	libcerror_error_t *error = NULL;
+	uint8_t flags            = 0;
+	int result               = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_xml_template_value_get_flags(
+	          xml_template_value,
+	          &flags,
+	          &error );
+
+	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_xml_template_value_get_flags(
+	          NULL,
+	          &flags,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_xml_template_value_get_flags(
+	          xml_template_value,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_xml_template_value_set_flags function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_xml_template_value_set_flags(
      void )
 {
 	libcerror_error_t *error                          = NULL;
 	libfwevt_xml_template_value_t *xml_template_value = NULL;
-	uint8_t flags                                     = 0;
-	int flags_is_set                                  = 0;
 	int result                                        = 0;
 
 	/* Initialize test
@@ -672,9 +893,9 @@ int fwevt_test_xml_template_value_get_flags(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_xml_template_value_get_flags(
+	result = libfwevt_xml_template_value_set_flags(
 	          xml_template_value,
-	          &flags,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_NOT_EQUAL_INT(
@@ -686,13 +907,11 @@ int fwevt_test_xml_template_value_get_flags(
 	 "error",
 	 error );
 
-	flags_is_set = result;
-
 	/* Test error cases
 	 */
-	result = libfwevt_xml_template_value_get_flags(
+	result = libfwevt_xml_template_value_set_flags(
 	          NULL,
-	          &flags,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -707,25 +926,6 @@ int fwevt_test_xml_template_value_get_flags(
 	libcerror_error_free(
 	 &error );
 
-	if( flags_is_set != 0 )
-	{
-		result = libfwevt_xml_template_value_get_flags(
-		          xml_template_value,
-		          NULL,
-		          &error );
-
-		FWEVT_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
-
-		FWEVT_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
 	/* Clean up
 	 */
 	result = libfwevt_xml_template_value_free(
@@ -776,6 +976,14 @@ int main(
      char * const argv[] FWEVT_TEST_ATTRIBUTE_UNUSED )
 #endif
 {
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+	libcerror_error_t *error                          = NULL;
+	libfwevt_xml_template_value_t *xml_template_value = NULL;
+	int result                                        = 0;
+
+#endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
+
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
@@ -789,29 +997,83 @@ int main(
 	 "libfwevt_xml_template_value_free",
 	 fwevt_test_xml_template_value_free );
 
-	FWEVT_TEST_RUN(
+#if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
+
+	/* Initialize test
+	 */
+	result = libfwevt_xml_template_value_initialize(
+	          &xml_template_value,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "xml_template_value",
+	 xml_template_value );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_xml_template_value_get_type",
-	 fwevt_test_xml_template_value_get_type );
-
-	/* TODO: add tests for libfwevt_xml_template_value_set_type */
+	 fwevt_test_xml_template_value_get_type,
+	 xml_template_value );
 
 	FWEVT_TEST_RUN(
+	 "libfwevt_xml_template_value_set_type",
+	 fwevt_test_xml_template_value_set_type );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_xml_template_value_get_offset",
-	 fwevt_test_xml_template_value_get_offset );
-
-	/* TODO: add tests for libfwevt_xml_template_value_set_offset */
+	 fwevt_test_xml_template_value_get_offset,
+	 xml_template_value );
 
 	FWEVT_TEST_RUN(
+	 "libfwevt_xml_template_value_set_offset",
+	 fwevt_test_xml_template_value_set_offset );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
 	 "libfwevt_xml_template_value_get_size",
-	 fwevt_test_xml_template_value_get_size );
-
-	/* TODO: add tests for libfwevt_xml_template_value_set_size */
+	 fwevt_test_xml_template_value_get_size,
+	 xml_template_value );
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_xml_template_value_get_flags",
-	 fwevt_test_xml_template_value_get_flags );
+	 "libfwevt_xml_template_value_set_size",
+	 fwevt_test_xml_template_value_set_size );
 
-	/* TODO: add tests for libfwevt_xml_template_value_set_flags */
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_xml_template_value_get_flags",
+	 fwevt_test_xml_template_value_get_flags,
+	 xml_template_value );
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_xml_template_value_set_flags",
+	 fwevt_test_xml_template_value_set_flags );
+
+	/* Clean up
+	 */
+	result = libfwevt_xml_template_value_free(
+	          &xml_template_value,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "xml_template_value",
+	 xml_template_value );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+#endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
 
 #endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
@@ -820,6 +1082,17 @@ int main(
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( xml_template_value != NULL )
+	{
+		libfwevt_xml_template_value_free(
+		 &xml_template_value,
+		 NULL );
+	}
 	return( EXIT_FAILURE );
 
 #endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */

@@ -191,6 +191,7 @@ fwevt_test_template_LDADD = \
 
 fwevt_test_xml_document_SOURCES = \
 	fwevt_test_libcerror.h \
+	fwevt_test_libcnotify.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_macros.h \
 	fwevt_test_memory.c fwevt_test_memory.h \

@@ -625,6 +625,19 @@ int libfwevt_xml_document_read_attribute(
 	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
 	{
 		additional_value_size = 4;
+
+		if( ( binary_data_size < 4 )
+		 || ( binary_data_offset > ( binary_data_size - 4 ) ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+			 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid binary data offset value out of bounds.",
+			 function );
+
+			return( -1 );
+		}
 	}
 	xml_document_data      = &( binary_data[ binary_data_offset ] );
 	xml_document_data_size = binary_data_size - binary_data_offset;
@@ -644,20 +657,8 @@ int libfwevt_xml_document_read_attribute(
 	}
 	do
 	{
-		if( libfwevt_xml_tag_initialize(
-		     &attribute_xml_tag,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create attribute XML tag.",
-			 function );
-
-			goto on_error;
-		}
-		if( ( xml_document_data_offset + 1 + additional_value_size ) > xml_document_data_size )
+		if( ( xml_document_data_size < ( additional_value_size + 1 ) )
+		 || ( xml_document_data_offset > ( xml_document_data_size - ( additional_value_size + 1 ) ) ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -681,7 +682,7 @@ int libfwevt_xml_document_read_attribute(
 			 function );
 			libcnotify_print_data(
 			 &( xml_document_data[ xml_document_data_offset ] ),
-			 1 + additional_value_size,
+			 additional_value_size + 1,
 			 0 );
 		}
 #endif
@@ -769,6 +770,19 @@ int libfwevt_xml_document_read_attribute(
 			}
 #endif
 			xml_document_data_offset += trailing_data_size;
+		}
+		if( libfwevt_xml_tag_initialize(
+		     &attribute_xml_tag,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+			 "%s: unable to create attribute XML tag.",
+			 function );
+
+			goto on_error;
 		}
 		if( libfwevt_xml_document_read_name(
 		     internal_xml_document,

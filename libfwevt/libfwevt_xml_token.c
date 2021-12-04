@@ -143,9 +143,8 @@ int libfwevt_xml_token_read_data(
      size_t chunk_data_offset,
      libcerror_error_t **error )
 {
-	const uint8_t *xml_token_data = NULL;
-	static char *function         = "libfwevt_xml_token_read_data";
-	size_t xml_token_data_size    = 0;
+	static char *function  = "libfwevt_xml_token_read_data";
+	uint8_t xml_token_type = 0;
 
 	if( xml_token == NULL )
 	{
@@ -191,21 +190,9 @@ int libfwevt_xml_token_read_data(
 
 		return( -1 );
 	}
-	xml_token_data      = &( chunk_data[ chunk_data_offset ] );
-	xml_token_data_size = chunk_data_size - chunk_data_offset;
+	xml_token_type = chunk_data[ chunk_data_offset ];
 
-	if( xml_token_data_size < 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid binary XML token data size value too small.",
-		 function );
-
-		return( -1 );
-	}
-	switch( xml_token_data[ 0 ] )
+	switch( xml_token_type )
 	{
 		case LIBFWEVT_XML_TOKEN_END_OF_FILE:
 		case LIBFWEVT_XML_TOKEN_CLOSE_START_ELEMENT_TAG:
@@ -238,11 +225,11 @@ int libfwevt_xml_token_read_data(
 			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
 			 "%s: unsupported binary XML token type: 0x%02" PRIx8 ".",
 			 function,
-			 xml_token_data[ 0 ] );
+			 xml_token_type );
 
 			return( -1 );
 	}
-	xml_token->type = xml_token_data[ 0 ];
+	xml_token->type = xml_token_type;
 
 	return( 1 );
 }
