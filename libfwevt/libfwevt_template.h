@@ -109,6 +109,8 @@ int libfwevt_template_read_header(
 
 int libfwevt_template_read_instance_values(
      libfwevt_internal_template_t *internal_template,
+     const uint8_t *data,
+     size_t data_size,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \

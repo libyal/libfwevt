@@ -254,6 +254,17 @@ int libfwevt_template_read(
 	}
 	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
+	if( internal_template->data != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: invalid template - data value already set.",
+		 function );
+
+		return( -1 );
+	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -314,14 +325,6 @@ int libfwevt_template_read(
 		 function );
 
 		goto on_error;
-	}
-	if( internal_template->data != NULL )
-	{
-		memory_free(
-		 internal_template->data );
-
-		internal_template->data      = NULL;
-		internal_template->data_size = 0;
 	}
 	internal_template->data = (uint8_t *) memory_allocate(
 	                                       sizeof( uint8_t ) * internal_template->size );
@@ -602,6 +605,8 @@ int libfwevt_template_read_header(
  */
 int libfwevt_template_read_instance_values(
      libfwevt_internal_template_t *internal_template,
+     const uint8_t *data,
+     size_t data_size,
      libcerror_error_t **error )
 {
 	libfwevt_xml_template_value_t *template_value = NULL;
@@ -630,18 +635,30 @@ int libfwevt_template_read_instance_values(
 
 		return( -1 );
 	}
-	if( internal_template->data == NULL )
+	if( data == NULL )
 	{
 		libcerror_error_set(
 		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-		 "%s: invalid template - missing data.",
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid data.",
 		 function );
 
 		return( -1 );
 	}
-	if( (size_t) internal_template->size > internal_template->data_size )
+	if( ( data_size < 20 )
+	 || ( data_size > (size_t) SSIZE_MAX ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data size value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
+	if( (size_t) internal_template->size > data_size )
 	{
 		libcerror_error_set(
 		 error,
@@ -708,14 +725,14 @@ int libfwevt_template_read_instance_values(
 		 "%s: template instance values data:\n",
 		 function );
 		libcnotify_print_data(
-		 &( internal_template->data[ instance_values_data_offset ] ),
+		 &( data[ instance_values_data_offset ] ),
 		 internal_template->size - instance_values_data_offset,
 		 0 );
 	}
 #endif
 	do
 	{
-		if( ( instance_values_data_offset + 20 ) > internal_template->data_size )
+		if( instance_values_data_offset > ( data_size - 20 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -734,23 +751,23 @@ int libfwevt_template_read_instance_values(
 			 function,
 			 template_value_index );
 			libcnotify_print_data(
-			 &( internal_template->data[ instance_values_data_offset ] ),
+			 &( data[ instance_values_data_offset ] ),
 			 20,
 			 0 );
 		}
 #endif
 /* TODO change xml template value to handle this type */
-		template_value_type = internal_template->data[ instance_values_data_offset + 4 ];
+		template_value_type = data[ instance_values_data_offset + 4 ];
 
 		byte_stream_copy_to_uint32_little_endian(
-		 &( internal_template->data[ instance_values_data_offset + 16 ] ),
+		 &( data[ instance_values_data_offset + 16 ] ),
 		 template_value_data_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
 			byte_stream_copy_to_uint32_little_endian(
-			 &( internal_template->data[ instance_values_data_offset ] ),
+			 &( data[ instance_values_data_offset ] ),
 			 value_32bit );
 			libcnotify_printf(
 			 "%s: value: %02d unknown1\t\t: 0x%08" PRIx32 "\n",
@@ -772,10 +789,10 @@ int libfwevt_template_read_instance_values(
 			 "%s: value: %02d unknown2\t\t: 0x%02" PRIx8 "\n",
 			 function,
 			 template_value_index,
-			 internal_template->data[ instance_values_data_offset + 5 ] );
+			 data[ instance_values_data_offset + 5 ] );
 
 			byte_stream_copy_to_uint16_little_endian(
-			 &( internal_template->data[ instance_values_data_offset + 6 ] ),
+			 &( data[ instance_values_data_offset + 6 ] ),
 			 value_16bit );
 			libcnotify_printf(
 			 "%s: value: %02d unknown3\t\t: 0x%04" PRIx16 "\n",
@@ -784,7 +801,7 @@ int libfwevt_template_read_instance_values(
 			 value_16bit );
 
 			byte_stream_copy_to_uint32_little_endian(
-			 &( internal_template->data[ instance_values_data_offset + 8 ] ),
+			 &( data[ instance_values_data_offset + 8 ] ),
 			 value_32bit );
 			libcnotify_printf(
 			 "%s: value: %02d unknown4\t\t: 0x%08" PRIx32 "\n",
@@ -793,7 +810,7 @@ int libfwevt_template_read_instance_values(
 			 value_32bit );
 
 			byte_stream_copy_to_uint32_little_endian(
-			 &( internal_template->data[ instance_values_data_offset + 12 ] ),
+			 &( data[ instance_values_data_offset + 12 ] ),
 			 value_32bit );
 			libcnotify_printf(
 			 "%s: value: %02d unknown5\t\t: 0x%08" PRIx32 "\n",
@@ -824,7 +841,7 @@ int libfwevt_template_read_instance_values(
 		}
 		template_value_data_offset -= internal_template->offset;
 
-		if( template_value_data_offset >= internal_template->data_size )
+		if( template_value_data_offset >= data_size )
 		{
 			libcerror_error_set(
 			 error,
@@ -835,7 +852,7 @@ int libfwevt_template_read_instance_values(
 
 			goto on_error;
 		}
-		if( ( template_value_data_offset + 4 ) > internal_template->data_size )
+		if( template_value_data_offset > ( data_size - 4 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -851,10 +868,10 @@ int libfwevt_template_read_instance_values(
 			first_template_value_data_offset = template_value_data_offset;
 		}
 		byte_stream_copy_to_uint32_little_endian(
-		 &( internal_template->data[ template_value_data_offset ] ),
+		 &( data[ template_value_data_offset ] ),
 		 template_value_data_size );
 
-		if( ( template_value_data_offset + template_value_data_size ) > internal_template->data_size )
+		if( template_value_data_size > ( data_size - template_value_data_offset ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -873,7 +890,7 @@ int libfwevt_template_read_instance_values(
 			 function,
 			 template_value_index );
 			libcnotify_print_data(
-			 &( internal_template->data[ template_value_data_offset ] ),
+			 &( data[ template_value_data_offset ] ),
 			 template_value_data_size,
 			 0 );
 		}
@@ -909,7 +926,7 @@ int libfwevt_template_read_instance_values(
 			 function,
 			 template_value_index );
 			libcnotify_print_data(
-			 &( internal_template->data[ template_value_data_offset ] ),
+			 &( data[ template_value_data_offset ] ),
 			 template_value_data_size,
 			 0 );
 		}
@@ -1116,6 +1133,8 @@ int libfwevt_template_read_xml_document(
 	}
 	if( libfwevt_template_read_instance_values(
 	     internal_template,
+	     internal_template->data,
+	     internal_template->data_size,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
