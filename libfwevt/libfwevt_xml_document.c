@@ -542,18 +542,19 @@ int libfwevt_xml_document_read_attribute(
      int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
-	libfwevt_xml_token_t *xml_sub_token   = NULL;
-	libfwevt_xml_tag_t *attribute_xml_tag = NULL;
-	const uint8_t *xml_document_data      = NULL;
-	static char *function                 = "libfwevt_xml_document_read_attribute";
-	size_t additional_value_size          = 0;
-	size_t template_value_offset          = 0;
-	size_t trailing_data_size             = 0;
-	size_t xml_document_data_offset       = 0;
-	size_t xml_document_data_size         = 0;
-	uint32_t attribute_name_offset        = 0;
-	uint32_t attribute_name_size          = 0;
-	int result                            = 0;
+	libfwevt_xml_tag_t *attribute_xml_tag    = NULL;
+	libfwevt_xml_token_t *xml_sub_token      = NULL;
+	const uint8_t *xml_document_data         = NULL;
+	static char *function                    = "libfwevt_xml_document_read_attribute";
+	size_t additional_value_size             = 0;
+	size_t template_value_offset             = 0;
+	size_t trailing_data_size                = 0;
+	size_t xml_document_data_offset          = 0;
+	size_t xml_document_data_size            = 0;
+	uint32_t attribute_name_offset           = 0;
+	uint32_t attribute_name_size             = 0;
+	int result                               = 0;
+	int template_value_array_recursion_depth = 0;
 
 	if( internal_xml_document == NULL )
 	{
@@ -657,6 +658,18 @@ int libfwevt_xml_document_read_attribute(
 	}
 	do
 	{
+		if( ( template_value_array_recursion_depth < 0 )
+		 || ( template_value_array_recursion_depth > LIBFWEVT_XML_DOCUMENT_TEMPLATE_VALUE_ARRAY_RECURSION_DEPTH ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid template value array recursion depth value out of bounds.",
+			 function );
+
+			goto on_error;
+		}
 		if( ( xml_document_data_size < ( additional_value_size + 1 ) )
 		 || ( xml_document_data_offset > ( xml_document_data_size - ( additional_value_size + 1 ) ) ) )
 		{
@@ -947,6 +960,8 @@ int libfwevt_xml_document_read_attribute(
 			attribute_xml_tag = NULL;
 		}
 		xml_document_data_offset += xml_sub_token->size;
+
+		template_value_array_recursion_depth++;
 	}
 	while( template_value_offset > 0 );
 
@@ -1622,24 +1637,25 @@ int libfwevt_xml_document_read_element(
      int template_instance_recursion_depth,
      libcerror_error_t **error )
 {
-	libfwevt_xml_token_t *xml_sub_token = NULL;
-	libfwevt_xml_tag_t *element_xml_tag = NULL;
-	const uint8_t *xml_document_data    = NULL;
-	static char *function               = "libfwevt_xml_document_read_element";
-	size_t additional_value_size        = 0;
-	size_t element_size_offset          = 0;
-	size_t template_value_offset        = 0;
-	size_t trailing_data_size           = 0;
-	size_t xml_document_data_offset     = 0;
-	size_t xml_document_data_size       = 0;
-	uint32_t attribute_list_size        = 0;
-	uint32_t element_name_offset        = 0;
-	uint32_t element_name_size          = 0;
-	uint32_t element_size               = 0;
-	int result                          = 0;
+	libfwevt_xml_tag_t *element_xml_tag      = NULL;
+	libfwevt_xml_token_t *xml_sub_token      = NULL;
+	const uint8_t *xml_document_data         = NULL;
+	static char *function                    = "libfwevt_xml_document_read_element";
+	size_t additional_value_size             = 0;
+	size_t element_size_offset               = 0;
+	size_t template_value_offset             = 0;
+	size_t trailing_data_size                = 0;
+	size_t xml_document_data_offset          = 0;
+	size_t xml_document_data_size            = 0;
+	uint32_t attribute_list_size             = 0;
+	uint32_t element_name_offset             = 0;
+	uint32_t element_name_size               = 0;
+	uint32_t element_size                    = 0;
+	int result                               = 0;
+	int template_value_array_recursion_depth = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	uint16_t value_16bit                = 0;
+	uint16_t value_16bit                     = 0;
 #endif
 
 	if( internal_xml_document == NULL )
@@ -1762,6 +1778,18 @@ int libfwevt_xml_document_read_element(
 	}
 	do
 	{
+		if( ( template_value_array_recursion_depth < 0 )
+		 || ( template_value_array_recursion_depth > LIBFWEVT_XML_DOCUMENT_TEMPLATE_VALUE_ARRAY_RECURSION_DEPTH ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid template value array recursion depth value out of bounds.",
+			 function );
+
+			goto on_error;
+		}
 		if( libfwevt_xml_tag_initialize(
 		     &element_xml_tag,
 		     error ) != 1 )
@@ -2507,6 +2535,7 @@ int libfwevt_xml_document_read_element(
 				element_xml_tag = NULL;
 			}
 		}
+		template_value_array_recursion_depth++;
 	}
 	while( template_value_offset > 0 );
 
