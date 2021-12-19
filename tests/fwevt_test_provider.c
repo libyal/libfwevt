@@ -118,8 +118,8 @@ int fwevt_test_provider_initialize(
 	 "error",
 	 error );
 
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -235,8 +235,8 @@ int fwevt_test_provider_initialize(
 
 			if( provider != NULL )
 			{
-				libfwevt_provider_free(
-				 &provider,
+				libfwevt_internal_provider_free(
+				 (libfwevt_internal_provider_t **) &provider,
 				 NULL );
 			}
 		}
@@ -279,8 +279,8 @@ int fwevt_test_provider_initialize(
 
 			if( provider != NULL )
 			{
-				libfwevt_provider_free(
-				 &provider,
+				libfwevt_internal_provider_free(
+				 (libfwevt_internal_provider_t **) &provider,
 				 NULL );
 			}
 		}
@@ -321,8 +321,8 @@ int fwevt_test_provider_initialize(
 
 		if( provider != NULL )
 		{
-			libfwevt_provider_free(
-			 &provider,
+			libfwevt_internal_provider_free(
+			 (libfwevt_internal_provider_t **) &provider,
 			 NULL );
 		}
 	}
@@ -357,8 +357,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -696,8 +696,8 @@ int fwevt_test_provider_read_data(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -723,8 +723,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -797,8 +797,8 @@ int fwevt_test_provider_read_channels(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -933,8 +933,8 @@ int fwevt_test_provider_read_channels(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -960,8 +960,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -1034,8 +1034,8 @@ int fwevt_test_provider_read_events(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1170,8 +1170,8 @@ int fwevt_test_provider_read_events(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1197,8 +1197,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -1271,8 +1271,8 @@ int fwevt_test_provider_read_keywords(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1407,8 +1407,8 @@ int fwevt_test_provider_read_keywords(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1434,8 +1434,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -1508,8 +1508,8 @@ int fwevt_test_provider_read_levels(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1644,8 +1644,8 @@ int fwevt_test_provider_read_levels(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1671,8 +1671,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -1745,8 +1745,8 @@ int fwevt_test_provider_read_maps(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1881,8 +1881,8 @@ int fwevt_test_provider_read_maps(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1908,8 +1908,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -1982,8 +1982,8 @@ int fwevt_test_provider_read_opcodes(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2118,8 +2118,8 @@ int fwevt_test_provider_read_opcodes(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2145,8 +2145,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -2219,8 +2219,8 @@ int fwevt_test_provider_read_tasks(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2355,8 +2355,8 @@ int fwevt_test_provider_read_tasks(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2382,8 +2382,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -2456,8 +2456,8 @@ int fwevt_test_provider_read_templates(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2592,8 +2592,8 @@ int fwevt_test_provider_read_templates(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2619,8 +2619,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -2750,8 +2750,8 @@ int fwevt_test_provider_compare_identifier(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2777,8 +2777,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 	return( 0 );
@@ -6188,8 +6188,8 @@ int main(
 
 	/* Clean up
 	 */
-	result = libfwevt_provider_free(
-	          &provider,
+	result = libfwevt_internal_provider_free(
+	          (libfwevt_internal_provider_t **) &provider,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -6219,8 +6219,8 @@ on_error:
 	}
 	if( provider != NULL )
 	{
-		libfwevt_provider_free(
-		 &provider,
+		libfwevt_internal_provider_free(
+		 (libfwevt_internal_provider_t **) &provider,
 		 NULL );
 	}
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
