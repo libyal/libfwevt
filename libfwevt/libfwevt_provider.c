@@ -613,7 +613,7 @@ int libfwevt_provider_read_data(
 		 wevt_provider->size,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: size\t\t\t\t\t\t: %" PRIu32 "\n",
+		 "%s: size\t\t\t\t\t: %" PRIu32 "\n",
 		 function,
 		 value_32bit );
 
@@ -626,12 +626,12 @@ int libfwevt_provider_read_data(
 		 value_32bit );
 
 		libcnotify_printf(
-		 "%s: number of descriptors\t\t\t\t: %" PRIu32 "\n",
+		 "%s: number of descriptors\t\t\t: %" PRIu32 "\n",
 		 function,
 		 number_of_descriptors );
 
 		libcnotify_printf(
-		 "%s: number of unknown2\t\t\t\t: %" PRIu32 "\n",
+		 "%s: number of unknown2\t\t\t: %" PRIu32 "\n",
 		 function,
 		 number_of_unknown2 );
 
@@ -695,7 +695,7 @@ int libfwevt_provider_read_data(
 			if( libcnotify_verbose != 0 )
 			{
 				libcnotify_printf(
-				 "%s: descriptor: %02" PRIu32 " offset\t\t\t\t: 0x%08" PRIx32 "\n",
+				 "%s: descriptor: %02" PRIu32 " offset\t\t\t: 0x%08" PRIx32 "\n",
 				 function,
 				 descriptor_index,
 				 descriptor_offset );
@@ -704,7 +704,7 @@ int libfwevt_provider_read_data(
 				 &( data[ data_offset + 4 ] ),
 				 value_32bit );
 				libcnotify_printf(
-				 "%s: descriptor: %02" PRIu32 " unknown1\t\t\t\t: %" PRIu32 "\n",
+				 "%s: descriptor: %02" PRIu32 " unknown1\t\t\t: %" PRIu32 "\n",
 				 function,
 				 descriptor_index,
 				 value_32bit );
@@ -728,7 +728,7 @@ int libfwevt_provider_read_data(
 			if( libcnotify_verbose != 0 )
 			{
 				libcnotify_printf(
-				 "%s: descriptor: %02" PRIu32 " type\t\t\t\t: %c%c%c%c\n",
+				 "%s: descriptor: %02" PRIu32 " type\t\t\t: %c%c%c%c\n",
 				 function,
 				 descriptor_index,
 				 data[ descriptor_offset ],

@@ -288,7 +288,7 @@ int libfwevt_event_read_data(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: identifier\t\t\t\t\t\t: 0x%04" PRIx16 "\n",
+		 "%s: identifier\t\t\t\t\t: 0x%04" PRIx16 "\n",
 		 function,
 		 internal_event->identifier );
 
@@ -298,7 +298,7 @@ int libfwevt_event_read_data(
 			 wevt_event->unknown1,
 			 value_16bit );
 			libcnotify_printf(
-			 "%s: unknown1\t\t\t\t\t\t: 0x%04" PRIx16 "\n",
+			 "%s: unknown1\t\t\t\t\t: 0x%04" PRIx16 "\n",
 			 function,
 			 value_16bit );
 
@@ -306,7 +306,7 @@ int libfwevt_event_read_data(
 			 wevt_event->qualifiers,
 			 value_16bit );
 			libcnotify_printf(
-			 "%s: qualifiers\t\t\t\t\t\t: %" PRIu16 " (0x%04" PRIx16 ")\n",
+			 "%s: qualifiers\t\t\t\t\t: %" PRIu16 " (0x%04" PRIx16 ")\n",
 			 function,
 			 value_16bit,
 			 value_16bit );
@@ -315,29 +315,29 @@ int libfwevt_event_read_data(
 			 wevt_event->unknown2,
 			 value_16bit );
 			libcnotify_printf(
-			 "%s: unknown2\t\t\t\t\t\t: 0x%04" PRIx16 "\n",
+			 "%s: unknown2\t\t\t\t\t: 0x%04" PRIx16 "\n",
 			 function,
 			 value_16bit );
 		}
 		else
 		{
 			libcnotify_printf(
-			 "%s: version\t\t\t\t\t\t: %" PRIu8 "\n",
+			 "%s: version\t\t\t\t\t: %" PRIu8 "\n",
 			 function,
 			 wevt_event->version );
 
 			libcnotify_printf(
-			 "%s: channel\t\t\t\t\t\t: %" PRIu8 "\n",
+			 "%s: channel\t\t\t\t\t: %" PRIu8 "\n",
 			 function,
 			 wevt_event->channel );
 
 			libcnotify_printf(
-			 "%s: level\t\t\t\t\t\t: %" PRIu8 "\n",
+			 "%s: level\t\t\t\t\t: %" PRIu8 "\n",
 			 function,
 			 wevt_event->level );
 
 			libcnotify_printf(
-			 "%s: opcode\t\t\t\t\t\t: %" PRIu8 "\n",
+			 "%s: opcode\t\t\t\t\t: %" PRIu8 "\n",
 			 function,
 			 wevt_event->opcode );
 
@@ -345,7 +345,7 @@ int libfwevt_event_read_data(
 			 wevt_event->task,
 			 value_16bit );
 			libcnotify_printf(
-			 "%s: task\t\t\t\t\t\t: %" PRIu16 "\n",
+			 "%s: task\t\t\t\t\t: %" PRIu16 "\n",
 			 function,
 			 value_16bit );
 		}
@@ -353,17 +353,17 @@ int libfwevt_event_read_data(
 		 wevt_event->keywords,
 		 value_64bit );
 		libcnotify_printf(
-		 "%s: keywords\t\t\t\t\t\t: 0x%08" PRIx64 "\n",
+		 "%s: keywords\t\t\t\t\t: 0x%08" PRIx64 "\n",
 		 function,
 		 value_64bit );
 
 		libcnotify_printf(
-		 "%s: message identifier\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: message identifier\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 internal_event->message_identifier );
 
 		libcnotify_printf(
-		 "%s: template offset\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: template offset\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 internal_event->template_offset );
 
@@ -386,7 +386,7 @@ int libfwevt_event_read_data(
 		 wevt_event->unknown3,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown3\t\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown3\t\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 
@@ -394,7 +394,7 @@ int libfwevt_event_read_data(
 		 wevt_event->unknown4,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown4\t\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown4\t\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 
