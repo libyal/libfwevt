@@ -2,7 +2,7 @@
 #
 # Python-bindings manifest type test script
 #
-# Copyright (C) 2011-2021, Joachim Metz <joachim.metz@gmail.com>
+# Copyright (C) 2011-2022, Joachim Metz <joachim.metz@gmail.com>
 #
 # Refer to AUTHORS for acknowledgements.
 #
@@ -93,7 +93,7 @@ class ManifestTypeTests(unittest.TestCase):
       manifest.copy_from_byte_stream(None)
 
     with self.assertRaises(IOError):
-      manifest.copy_from_byte_stream(self._TEST_DATA[:4])
+      manifest.copy_from_byte_stream(b'')
 
   def test_get_number_of_providers(self):
     """Tests the get_number_of_providers function."""
