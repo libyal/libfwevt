@@ -30,7 +30,6 @@ DPKG_FILES = \
 	dpkg/rules \
 	dpkg/libfwevt-dev.install \
 	dpkg/libfwevt.install \
-	dpkg/libfwevt-python.install \
 	dpkg/libfwevt-python3.install \
 	dpkg/source/format
 
