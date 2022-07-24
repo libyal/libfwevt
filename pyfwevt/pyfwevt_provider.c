@@ -31,6 +31,7 @@
 #include "pyfwevt_error.h"
 #include "pyfwevt_event.h"
 #include "pyfwevt_events.h"
+#include "pyfwevt_guid.h"
 #include "pyfwevt_keyword.h"
 #include "pyfwevt_keywords.h"
 #include "pyfwevt_level.h"
@@ -50,6 +51,13 @@
 #include "pyfwevt_unused.h"
 
 PyMethodDef pyfwevt_provider_object_methods[] = {
+
+	{ "get_identifier",
+	  (PyCFunction) pyfwevt_provider_get_identifier,
+	  METH_NOARGS,
+	  "get_identifier() -> Unicode string\n"
+	  "\n"
+	  "Retrieves the identifier." },
 
 	{ "get_number_of_channels",
 	  (PyCFunction) pyfwevt_provider_get_number_of_channels,
@@ -168,6 +176,12 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 };
 
 PyGetSetDef pyfwevt_provider_object_get_set_definitions[] = {
+
+	{ "identifier",
+	  (getter) pyfwevt_provider_get_identifier,
+	  (setter) 0,
+	  "The identifier.",
+	  NULL },
 
 	{ "number_of_channels",
 	  (getter) pyfwevt_provider_get_number_of_channels,
@@ -515,6 +529,70 @@ void pyfwevt_provider_free(
 	}
 	ob_type->tp_free(
 	 (PyObject*) pyfwevt_provider );
+}
+
+/* Retrieves the identifier
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_identifier(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	uint8_t uuid_data[ 16 ];
+
+	PyObject *string_object  = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_provider_get_identifier";
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_identifier(
+	          pyfwevt_provider->provider,
+	          uuid_data,
+	          16,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve identifier.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	string_object = pyfwevt_string_new_from_guid(
+	                 uuid_data,
+	                 16 );
+
+	if( string_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_IOError,
+		 "%s: unable to convert UUID into Unicode object.",
+		 function );
+
+		return( NULL );
+	}
+	return( string_object );
 }
 
 /* Retrieves the number of channels

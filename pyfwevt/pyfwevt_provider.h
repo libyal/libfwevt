@@ -62,6 +62,10 @@ int pyfwevt_provider_init(
 void pyfwevt_provider_free(
       pyfwevt_provider_t *pyfwevt_provider );
 
+PyObject *pyfwevt_provider_get_identifier(
+           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *arguments );
+
 PyObject *pyfwevt_provider_get_number_of_channels(
            pyfwevt_provider_t *pyfwevt_provider,
            PyObject *arguments );

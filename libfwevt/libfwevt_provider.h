@@ -186,6 +186,13 @@ int libfwevt_provider_read_templates(
      size_t data_size,
      libcerror_error_t **error );
 
+LIBFWEVT_EXTERN \
+int libfwevt_provider_get_identifier(
+     libfwevt_provider_t *provider,
+     uint8_t *guid_data,
+     size_t guid_data_size,
+     libcerror_error_t **error );
+
 int libfwevt_provider_compare_identifier(
      libfwevt_provider_t *provider,
      const uint8_t *identifier,

@@ -3262,6 +3262,72 @@ on_error:
 	return( -1 );
 }
 
+/* Retrieves the identifier
+ * The identifier is a GUID stored in little-endian and is 16 bytes of size
+ * Returns 1 if successful, 0 if value is not available or -1 on error
+ */
+int libfwevt_provider_get_identifier(
+     libfwevt_provider_t *provider,
+     uint8_t *guid_data,
+     size_t guid_data_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_provider_t *internal_provider = NULL;
+	static char *function                           = "libfwevt_provider_get_identifier";
+
+	if( provider == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid provider.",
+		 function );
+
+		return( -1 );
+	}
+	internal_provider = (libfwevt_internal_provider_t *) provider;
+
+	if( guid_data == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid GUID data.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( guid_data_size < 16 )
+	 || ( guid_data_size > (size_t) SSIZE_MAX ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: GUID data size value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
+	if( memory_copy(
+	     guid_data,
+	     internal_provider->identifier,
+	     16 ) == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_MEMORY,
+		 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
+		 "%s: unable to copy identifier.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
 /* Compares the provider with the identifier
  * Returns 1 if identifier matches, 0 if not or -1 on error
  */

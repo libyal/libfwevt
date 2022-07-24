@@ -84,6 +84,17 @@ class ProviderTypeTests(unittest.TestCase):
       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
       0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
+  def test_get_identifier(self):
+    """Tests the get_identifier function."""
+    manifest = pyfwevt.manifest()
+    manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    provider = manifest.get_provider(0)
+    self.assertIsNotNone(provider)
+
+    identifier = provider.get_identifier()
+    self.assertEqual(identifier, '06a2ea53-fc6c-42e5-9176-18749ab2ca13')
+
   def test_get_number_of_channels(self):
     """Tests the get_number_of_channels function."""
     manifest = pyfwevt.manifest()

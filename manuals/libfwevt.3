@@ -1,4 +1,4 @@
-.Dd November 22, 2021
+.Dd July 24, 2022
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -70,6 +70,8 @@ Opcode functions
 Provider functions
 .Ft int
 .Fn libfwevt_provider_free "libfwevt_provider_t **provider" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_provider_get_identifier "libfwevt_provider_t *provider" "uint8_t *guid_data" "size_t guid_data_size" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_provider_get_number_of_channels "libfwevt_provider_t *provider" "int *number_of_channels" "libfwevt_error_t **error"
 .Ft int
