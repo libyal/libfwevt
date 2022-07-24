@@ -199,13 +199,6 @@ int libfwevt_provider_get_number_of_channels(
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_channel(
-     libfwevt_provider_t *provider,
-     int channel_index,
-     libfwevt_channel_t **channel,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
 int libfwevt_provider_get_channel_by_index(
      libfwevt_provider_t *provider,
      int channel_index,
@@ -216,13 +209,6 @@ LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_events(
      libfwevt_provider_t *provider,
      int *number_of_events,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
-int libfwevt_provider_get_event(
-     libfwevt_provider_t *provider,
-     int event_index,
-     libfwevt_event_t **event,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
@@ -246,13 +232,6 @@ int libfwevt_provider_get_number_of_keywords(
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_keyword(
-     libfwevt_provider_t *provider,
-     int keyword_index,
-     libfwevt_keyword_t **keyword,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
 int libfwevt_provider_get_keyword_by_index(
      libfwevt_provider_t *provider,
      int keyword_index,
@@ -263,13 +242,6 @@ LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_levels(
      libfwevt_provider_t *provider,
      int *number_of_levels,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
-int libfwevt_provider_get_level(
-     libfwevt_provider_t *provider,
-     int level_index,
-     libfwevt_level_t **level,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
@@ -286,13 +258,6 @@ int libfwevt_provider_get_number_of_maps(
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_map(
-     libfwevt_provider_t *provider,
-     int map_index,
-     libfwevt_map_t **map,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
 int libfwevt_provider_get_map_by_index(
      libfwevt_provider_t *provider,
      int map_index,
@@ -303,13 +268,6 @@ LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_opcodes(
      libfwevt_provider_t *provider,
      int *number_of_opcodes,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
-int libfwevt_provider_get_opcode(
-     libfwevt_provider_t *provider,
-     int opcode_index,
-     libfwevt_opcode_t **opcode,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
@@ -326,13 +284,6 @@ int libfwevt_provider_get_number_of_tasks(
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
-int libfwevt_provider_get_task(
-     libfwevt_provider_t *provider,
-     int task_index,
-     libfwevt_task_t **task,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
 int libfwevt_provider_get_task_by_index(
      libfwevt_provider_t *provider,
      int task_index,
@@ -343,13 +294,6 @@ LIBFWEVT_EXTERN \
 int libfwevt_provider_get_number_of_templates(
      libfwevt_provider_t *provider,
      int *number_of_templates,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
-int libfwevt_provider_get_template(
-     libfwevt_provider_t *provider,
-     int template_index,
-     libfwevt_template_t **wevt_template,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \

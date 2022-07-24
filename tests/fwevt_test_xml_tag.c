@@ -3071,7 +3071,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
 	/* Test regular cases
 	 */
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf8_string,
 	          32,
 	          &utf8_string_index,
@@ -3108,7 +3108,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
 	 &error );
 
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          NULL,
 	          32,
 	          &utf8_string_index,
@@ -3127,7 +3127,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
 	 &error );
 
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf8_string,
 	          (size_t) SSIZE_MAX + 1,
 	          &utf8_string_index,
@@ -3146,7 +3146,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
 	 &error );
 
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf8_string,
 	          32,
 	          NULL,
@@ -3188,7 +3188,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_size(
 	/* Test regular cases
 	 */
 	result = libfwevt_xml_tag_get_utf8_xml_string_size(
-	          (libfwevt_internal_xml_tag_t *) xml_tag,
+	          xml_tag,
 	          0,
 	          &utf8_xml_string_size,
 	          &error );
@@ -3223,7 +3223,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_size(
 	 &error );
 
 	result = libfwevt_xml_tag_get_utf8_xml_string_size(
-	          (libfwevt_internal_xml_tag_t *) xml_tag,
+	          xml_tag,
 	          0,
 	          NULL,
 	          &error );
@@ -3463,7 +3463,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
 	/* Test regular cases
 	 */
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf16_string,
 	          32,
 	          &utf16_string_index,
@@ -3500,7 +3500,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
 	 &error );
 
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          NULL,
 	          32,
 	          &utf16_string_index,
@@ -3519,7 +3519,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
 	 &error );
 
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf16_string,
 	          (size_t) SSIZE_MAX + 1,
 	          &utf16_string_index,
@@ -3538,7 +3538,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
 	 &error );
 
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
-	          xml_tag,
+	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf16_string,
 	          32,
 	          NULL,
@@ -3580,7 +3580,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_size(
 	/* Test regular cases
 	 */
 	result = libfwevt_xml_tag_get_utf16_xml_string_size(
-	          (libfwevt_internal_xml_tag_t *) xml_tag,
+	          xml_tag,
 	          0,
 	          &utf16_xml_string_size,
 	          &error );
@@ -3615,7 +3615,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_size(
 	 &error );
 
 	result = libfwevt_xml_tag_get_utf16_xml_string_size(
-	          (libfwevt_internal_xml_tag_t *) xml_tag,
+	          xml_tag,
 	          0,
 	          NULL,
 	          &error );

@@ -669,50 +669,6 @@ int libfwevt_manifest_get_number_of_providers(
 /* Retrieves a specific provider
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_manifest_get_provider(
-     libfwevt_manifest_t *manifest,
-     int provider_index,
-     libfwevt_provider_t **provider,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_manifest_t *internal_manifest = NULL;
-	static char *function                           = "libfwevt_manifest_get_provider";
-
-	if( manifest == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid manifest.",
-		 function );
-
-		return( -1 );
-	}
-	internal_manifest = (libfwevt_internal_manifest_t *) manifest;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_manifest->providers_array,
-	     provider_index,
-	     (intptr_t **) provider,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 provider_index );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific provider
- * Returns 1 if successful or -1 on error
- */
 int libfwevt_manifest_get_provider_by_index(
      libfwevt_manifest_t *manifest,
      int provider_index,

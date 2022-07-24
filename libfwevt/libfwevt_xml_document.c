@@ -161,52 +161,6 @@ int libfwevt_xml_document_free(
 	return( result );
 }
 
-/* Clones the binary XML document
- *
- * This function is deprecated and threre is no replacement.
- *
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_document_clone(
-     libfwevt_xml_document_t **destination_xml_document,
-     libfwevt_xml_document_t *source_xml_document,
-     libcerror_error_t **error )
-{
-	static char *function = "libfwevt_xml_document_free";
-
-	if( destination_xml_document == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid destination binary XML document.",
-		 function );
-
-		return( -1 );
-	}
-	if( *destination_xml_document != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid destination binary XML document value already set.",
-		 function );
-
-		return( -1 );
-	}
-	if( source_xml_document == NULL )
-	{
-		*destination_xml_document = NULL;
-
-		return( 1 );
-	}
-	/* TODO clone tags */
-
-	return( 1 );
-}
-
 /* Retrieves the root XML tag
  * Returns 1 if successful or -1 on error
  */

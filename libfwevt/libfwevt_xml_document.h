@@ -60,12 +60,6 @@ int libfwevt_xml_document_free(
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
-int libfwevt_xml_document_clone(
-     libfwevt_xml_document_t **destination_xml_document,
-     libfwevt_xml_document_t *source_xml_document,
-     libcerror_error_t **error );
-
-LIBFWEVT_EXTERN \
 int libfwevt_xml_document_get_root_xml_tag(
      libfwevt_xml_document_t *xml_document,
      libfwevt_xml_tag_t **root_xml_tag,

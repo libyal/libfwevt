@@ -148,7 +148,7 @@ PyObject *pyfwevt_template_new(
            PyObject *parent_object )
 {
 	pyfwevt_template_t *pyfwevt_template = NULL;
-	static char *function        = "pyfwevt_template_new";
+	static char *function                = "pyfwevt_template_new";
 
 	if( template == NULL )
 	{
@@ -174,7 +174,7 @@ PyObject *pyfwevt_template_new(
 
 		goto on_error;
 	}
-	pyfwevt_template->template          = template;
+	pyfwevt_template->template      = template;
 	pyfwevt_template->parent_object = parent_object;
 
 	if( pyfwevt_template->parent_object != NULL )

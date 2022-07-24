@@ -3363,50 +3363,6 @@ int libfwevt_provider_get_number_of_channels(
 /* Retrieves a specific channel
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_provider_get_channel(
-     libfwevt_provider_t *provider,
-     int channel_index,
-     libfwevt_channel_t **channel,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_get_channel";
-
-	if( provider == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	internal_provider = (libfwevt_internal_provider_t *) provider;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_provider->channels_array,
-	     channel_index,
-	     (intptr_t **) channel,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 channel_index );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific channel
- * Returns 1 if successful or -1 on error
- */
 int libfwevt_provider_get_channel_by_index(
      libfwevt_provider_t *provider,
      int channel_index,
@@ -3483,50 +3439,6 @@ int libfwevt_provider_get_number_of_events(
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
 		 "%s: unable to retrieve number of entries.",
 		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific event
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_provider_get_event(
-     libfwevt_provider_t *provider,
-     int event_index,
-     libfwevt_event_t **event,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_get_event";
-
-	if( provider == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	internal_provider = (libfwevt_internal_provider_t *) provider;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_provider->events_array,
-	     event_index,
-	     (intptr_t **) event,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 event_index );
 
 		return( -1 );
 	}
@@ -3723,50 +3635,6 @@ int libfwevt_provider_get_number_of_keywords(
 /* Retrieves a specific keyword
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_provider_get_keyword(
-     libfwevt_provider_t *provider,
-     int keyword_index,
-     libfwevt_keyword_t **keyword,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_get_keyword";
-
-	if( provider == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	internal_provider = (libfwevt_internal_provider_t *) provider;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_provider->keywords_array,
-	     keyword_index,
-	     (intptr_t **) keyword,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 keyword_index );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific keyword
- * Returns 1 if successful or -1 on error
- */
 int libfwevt_provider_get_keyword_by_index(
      libfwevt_provider_t *provider,
      int keyword_index,
@@ -3843,50 +3711,6 @@ int libfwevt_provider_get_number_of_levels(
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
 		 "%s: unable to retrieve number of entries.",
 		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific level
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_provider_get_level(
-     libfwevt_provider_t *provider,
-     int level_index,
-     libfwevt_level_t **level,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_get_level";
-
-	if( provider == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	internal_provider = (libfwevt_internal_provider_t *) provider;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_provider->levels_array,
-	     level_index,
-	     (intptr_t **) level,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 level_index );
 
 		return( -1 );
 	}
@@ -3981,50 +3805,6 @@ int libfwevt_provider_get_number_of_maps(
 /* Retrieves a specific map
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_provider_get_map(
-     libfwevt_provider_t *provider,
-     int map_index,
-     libfwevt_map_t **map,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_get_map";
-
-	if( provider == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	internal_provider = (libfwevt_internal_provider_t *) provider;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_provider->maps_array,
-	     map_index,
-	     (intptr_t **) map,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 map_index );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific map
- * Returns 1 if successful or -1 on error
- */
 int libfwevt_provider_get_map_by_index(
      libfwevt_provider_t *provider,
      int map_index,
@@ -4101,50 +3881,6 @@ int libfwevt_provider_get_number_of_opcodes(
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
 		 "%s: unable to retrieve number of entries.",
 		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific opcode
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_provider_get_opcode(
-     libfwevt_provider_t *provider,
-     int opcode_index,
-     libfwevt_opcode_t **opcode,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_get_opcode";
-
-	if( provider == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	internal_provider = (libfwevt_internal_provider_t *) provider;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_provider->opcodes_array,
-	     opcode_index,
-	     (intptr_t **) opcode,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 opcode_index );
 
 		return( -1 );
 	}
@@ -4239,50 +3975,6 @@ int libfwevt_provider_get_number_of_tasks(
 /* Retrieves a specific task
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_provider_get_task(
-     libfwevt_provider_t *provider,
-     int task_index,
-     libfwevt_task_t **task,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_get_task";
-
-	if( provider == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	internal_provider = (libfwevt_internal_provider_t *) provider;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_provider->tasks_array,
-	     task_index,
-	     (intptr_t **) task,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 task_index );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific task
- * Returns 1 if successful or -1 on error
- */
 int libfwevt_provider_get_task_by_index(
      libfwevt_provider_t *provider,
      int task_index,
@@ -4359,50 +4051,6 @@ int libfwevt_provider_get_number_of_templates(
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
 		 "%s: unable to retrieve number of entries.",
 		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves a specific template
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_provider_get_template(
-     libfwevt_provider_t *provider,
-     int template_index,
-     libfwevt_template_t **wevt_template,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_provider_t *internal_provider = NULL;
-	static char *function                           = "libfwevt_provider_get_template";
-
-	if( provider == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid provider.",
-		 function );
-
-		return( -1 );
-	}
-	internal_provider = (libfwevt_internal_provider_t *) provider;
-
-	if( libcdata_array_get_entry_by_index(
-	     internal_provider->templates_array,
-	     template_index,
-	     (intptr_t **) wevt_template,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve entry: %d.",
-		 function,
-		 template_index );
 
 		return( -1 );
 	}
