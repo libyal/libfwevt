@@ -66,6 +66,10 @@ PyObject *pyfwevt_event_get_identifier(
            pyfwevt_event_t *pyfwevt_event,
            PyObject *arguments );
 
+PyObject *pyfwevt_event_get_version(
+           pyfwevt_event_t *pyfwevt_event,
+           PyObject *arguments );
+
 PyObject *pyfwevt_event_get_message_identifier(
            pyfwevt_event_t *pyfwevt_event,
            PyObject *arguments );

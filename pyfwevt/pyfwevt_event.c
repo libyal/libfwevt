@@ -42,6 +42,13 @@ PyMethodDef pyfwevt_event_object_methods[] = {
 	  "\n"
 	  "Retrieves the identifier." },
 
+	{ "get_version",
+	  (PyCFunction) pyfwevt_event_get_version,
+	  METH_NOARGS,
+	  "get_version() -> Integer or None\n"
+	  "\n"
+	  "Retrieves the version." },
+
 	{ "get_message_identifier",
 	  (PyCFunction) pyfwevt_event_get_message_identifier,
 	  METH_NOARGS,
@@ -59,6 +66,12 @@ PyGetSetDef pyfwevt_event_object_get_set_definitions[] = {
 	  (getter) pyfwevt_event_get_identifier,
 	  (setter) 0,
 	  "The identifier.",
+	  NULL },
+
+	{ "version",
+	  (getter) pyfwevt_event_get_version,
+	  (setter) 0,
+	  "The version.",
 	  NULL },
 
 	{ "message_identifier",
@@ -368,6 +381,69 @@ PyObject *pyfwevt_event_get_identifier(
 	integer_object = PyLong_FromUnsignedLong(
 	                  (unsigned long) value_32bit );
 
+	return( integer_object );
+}
+
+/* Retrieves the version
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_event_get_version(
+           pyfwevt_event_t *pyfwevt_event,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_event_get_version";
+	uint8_t version          = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_event == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid event.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_event_get_version(
+	          pyfwevt_event->event,
+	          &version,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result == -1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve version.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	else if( result == 0 )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) version );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) version );
+#endif
 	return( integer_object );
 }
 

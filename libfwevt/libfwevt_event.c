@@ -176,7 +176,6 @@ int libfwevt_event_read_data(
 	libfwevt_internal_event_t *internal_event = NULL;
 	fwevt_template_event_t *wevt_event        = NULL;
 	static char *function                     = "libfwevt_event_read_data";
-	uint32_t event_flags                      = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint64_t value_64bit                      = 0;
@@ -282,8 +281,12 @@ int libfwevt_event_read_data(
 
 	byte_stream_copy_to_uint32_little_endian(
 	 wevt_event->flags,
-	 event_flags );
+	 internal_event->flags );
 
+	if( ( internal_event->flags & 0x00000080UL ) != 0 )
+	{
+		internal_event->version = wevt_event->version;
+	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
@@ -292,7 +295,7 @@ int libfwevt_event_read_data(
 		 function,
 		 internal_event->identifier );
 
-		if( ( event_flags & 0x00000080UL ) == 0 )
+		if( ( internal_event->flags & 0x00000080UL ) == 0 )
 		{
 			byte_stream_copy_to_uint16_little_endian(
 			 wevt_event->unknown1,
@@ -332,7 +335,7 @@ int libfwevt_event_read_data(
 			 wevt_event->channel );
 
 			libcnotify_printf(
-			 "%s: level\t\t\t\t\t: %" PRIu8 "\n",
+			 "%s: level\t\t\t\t\t\t: %" PRIu8 "\n",
 			 function,
 			 wevt_event->level );
 
@@ -345,7 +348,7 @@ int libfwevt_event_read_data(
 			 wevt_event->task,
 			 value_16bit );
 			libcnotify_printf(
-			 "%s: task\t\t\t\t\t: %" PRIu16 "\n",
+			 "%s: task\t\t\t\t\t\t: %" PRIu16 "\n",
 			 function,
 			 value_16bit );
 		}
@@ -401,7 +404,7 @@ int libfwevt_event_read_data(
 		libcnotify_printf(
 		 "%s: flags\t\t\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
-		 event_flags );
+		 internal_event->flags );
 
 		libcnotify_printf(
 		 "\n" );
@@ -449,6 +452,50 @@ int libfwevt_event_get_identifier(
 	*identifier = (uint32_t) internal_event->identifier;
 
 	return( 1 );
+}
+
+/* Retrieves the version
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_event_get_version(
+     libfwevt_event_t *event,
+     uint8_t *version,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_event_t *internal_event = NULL;
+	static char *function                     = "libfwevt_event_get_version";
+
+	if( event == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid event.",
+		 function );
+
+		return( -1 );
+	}
+	internal_event = (libfwevt_internal_event_t *) event;
+
+	if( version == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid version.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( internal_event->flags & 0x00000080UL ) != 0 )
+	{
+		*version = internal_event->version;
+
+		return( 1 );
+	}
+	return( 0 );
 }
 
 /* Retrieves the message identifier

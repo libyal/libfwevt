@@ -41,6 +41,10 @@ struct libfwevt_internal_event
 	 */
 	uint16_t identifier;
 
+	/* The version
+	 */
+	uint8_t version;
+
 	/* The message identifier
 	 */
 	uint32_t message_identifier;
@@ -60,6 +64,10 @@ struct libfwevt_internal_event
 	/* The template offset
 	 */
 	uint32_t template_offset;
+
+	/* The flags
+	 */
+	uint32_t flags;
 };
 
 int libfwevt_event_initialize(
@@ -86,6 +94,12 @@ LIBFWEVT_EXTERN \
 int libfwevt_event_get_identifier(
      libfwevt_event_t *event,
      uint32_t *identifier,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_event_get_version(
+     libfwevt_event_t *event,
+     uint8_t *version,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \

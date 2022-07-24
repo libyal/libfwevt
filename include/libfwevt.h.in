@@ -45,6 +45,40 @@ const char *libfwevt_get_version(
              void );
 
 /* -------------------------------------------------------------------------
+ * Notify functions
+ * ------------------------------------------------------------------------- */
+
+/* Sets the verbose notification
+ */
+LIBFWEVT_EXTERN \
+void libfwevt_notify_set_verbose(
+      int verbose );
+
+/* Sets the notification stream
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_notify_set_stream(
+     FILE *stream,
+     libfwevt_error_t **error );
+
+/* Opens the notification stream using a filename
+ * The stream is opened in append mode
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_notify_stream_open(
+     const char *filename,
+     libfwevt_error_t **error );
+
+/* Closes the notification stream if opened using a filename
+ * Returns 0 if successful or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_notify_stream_close(
+     libfwevt_error_t **error );
+
+/* -------------------------------------------------------------------------
  * Error functions
  * ------------------------------------------------------------------------- */
 
@@ -121,6 +155,15 @@ LIBFWEVT_EXTERN \
 int libfwevt_event_get_identifier(
      libfwevt_event_t *event,
      uint32_t *identifier,
+     libfwevt_error_t **error );
+
+/* Retrieves the version
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_event_get_version(
+     libfwevt_event_t *event,
+     uint8_t *version,
      libfwevt_error_t **error );
 
 /* Retrieves the message identifier

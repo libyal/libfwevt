@@ -33,6 +33,8 @@ Event functions
 .Ft int
 .Fn libfwevt_event_get_identifier "libfwevt_event_t *event" "uint32_t *identifier" "libfwevt_error_t **error"
 .Ft int
+.Fn libfwevt_event_get_version "libfwevt_event_t *event" "uint8_t *version" "libfwevt_error_t **error"
+.Ft int
 .Fn libfwevt_event_get_message_identifier "libfwevt_event_t *event" "uint32_t *message_identifier" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_event_get_template_offset "libfwevt_event_t *event" "uint32_t *template_offset" "libfwevt_error_t **error"

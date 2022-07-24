@@ -33,6 +33,7 @@ libfwevt_la_SOURCES = \
 	libfwevt_level.c libfwevt_level.h \
 	libfwevt_manifest.c libfwevt_manifest.h \
 	libfwevt_map.c libfwevt_map.h \
+	libfwevt_notify.c libfwevt_notify.h \
 	libfwevt_opcode.c libfwevt_opcode.h \
 	libfwevt_provider.c libfwevt_provider.h \
 	libfwevt_support.c libfwevt_support.h \
