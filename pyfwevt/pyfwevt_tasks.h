@@ -69,7 +69,9 @@ PyObject *pyfwevt_tasks_new(
            int number_of_items );
 
 int pyfwevt_tasks_init(
-     pyfwevt_tasks_t *sequence_object );
+     pyfwevt_tasks_t *sequence_object,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_tasks_free(
       pyfwevt_tasks_t *sequence_object );

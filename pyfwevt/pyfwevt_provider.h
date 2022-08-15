@@ -57,7 +57,9 @@ PyObject *pyfwevt_provider_new(
            PyObject *parent_object );
 
 int pyfwevt_provider_init(
-     pyfwevt_provider_t *pyfwevt_provider );
+     pyfwevt_provider_t *pyfwevt_provider,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_provider_free(
       pyfwevt_provider_t *pyfwevt_provider );
@@ -75,7 +77,7 @@ PyObject *pyfwevt_provider_get_channel_by_index(
            int channel_index );
 
 PyObject *pyfwevt_provider_get_channel(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords );
 
@@ -92,7 +94,7 @@ PyObject *pyfwevt_provider_get_event_by_index(
            int event_index );
 
 PyObject *pyfwevt_provider_get_event(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords );
 
@@ -109,7 +111,7 @@ PyObject *pyfwevt_provider_get_keyword_by_index(
            int keyword_index );
 
 PyObject *pyfwevt_provider_get_keyword(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords );
 
@@ -126,7 +128,7 @@ PyObject *pyfwevt_provider_get_level_by_index(
            int level_index );
 
 PyObject *pyfwevt_provider_get_level(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords );
 
@@ -143,7 +145,7 @@ PyObject *pyfwevt_provider_get_map_by_index(
            int map_index );
 
 PyObject *pyfwevt_provider_get_map(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords );
 
@@ -160,7 +162,7 @@ PyObject *pyfwevt_provider_get_opcode_by_index(
            int opcode_index );
 
 PyObject *pyfwevt_provider_get_opcode(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords );
 
@@ -177,7 +179,7 @@ PyObject *pyfwevt_provider_get_task_by_index(
            int task_index );
 
 PyObject *pyfwevt_provider_get_task(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords );
 
@@ -194,7 +196,7 @@ PyObject *pyfwevt_provider_get_template_by_index(
            int template_index );
 
 PyObject *pyfwevt_provider_get_template(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords );
 

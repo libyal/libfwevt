@@ -375,6 +375,8 @@ PyTypeObject pyfwevt_provider_type_object = {
 	/* tp_weaklist */
 	NULL,
 	/* tp_del */
+	0,
+	/* tp_version_tag */
 	0
 };
 
@@ -435,9 +437,14 @@ on_error:
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_provider_init(
-     pyfwevt_provider_t *pyfwevt_provider )
+     pyfwevt_provider_t *pyfwevt_provider,
+     PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED,
+     PyObject *keywords PYFWEVT_ATTRIBUTE_UNUSED )
 {
 	static char *function = "pyfwevt_provider_init";
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+	PYFWEVT_UNREFERENCED_PARAMETER( keywords )
 
 	if( pyfwevt_provider == NULL )
 	{
@@ -726,7 +733,7 @@ on_error:
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyfwevt_provider_get_channel(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -744,7 +751,7 @@ PyObject *pyfwevt_provider_get_channel(
 		return( NULL );
 	}
 	channel_object = pyfwevt_provider_get_channel_by_index(
-	                  (PyObject *) pyfwevt_provider,
+	                  pyfwevt_provider,
 	                  channel_index );
 
 	return( channel_object );
@@ -945,7 +952,7 @@ on_error:
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyfwevt_provider_get_event(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -963,7 +970,7 @@ PyObject *pyfwevt_provider_get_event(
 		return( NULL );
 	}
 	event_object = pyfwevt_provider_get_event_by_index(
-	                (PyObject *) pyfwevt_provider,
+	                pyfwevt_provider,
 	                event_index );
 
 	return( event_object );
@@ -1164,7 +1171,7 @@ on_error:
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyfwevt_provider_get_keyword(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -1182,7 +1189,7 @@ PyObject *pyfwevt_provider_get_keyword(
 		return( NULL );
 	}
 	keyword_object = pyfwevt_provider_get_keyword_by_index(
-	                  (PyObject *) pyfwevt_provider,
+	                  pyfwevt_provider,
 	                  keyword_index );
 
 	return( keyword_object );
@@ -1383,7 +1390,7 @@ on_error:
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyfwevt_provider_get_level(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -1401,7 +1408,7 @@ PyObject *pyfwevt_provider_get_level(
 		return( NULL );
 	}
 	level_object = pyfwevt_provider_get_level_by_index(
-	                (PyObject *) pyfwevt_provider,
+	                pyfwevt_provider,
 	                level_index );
 
 	return( level_object );
@@ -1602,7 +1609,7 @@ on_error:
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyfwevt_provider_get_map(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -1620,7 +1627,7 @@ PyObject *pyfwevt_provider_get_map(
 		return( NULL );
 	}
 	map_object = pyfwevt_provider_get_map_by_index(
-	              (PyObject *) pyfwevt_provider,
+	              pyfwevt_provider,
 	              map_index );
 
 	return( map_object );
@@ -1828,7 +1835,7 @@ on_error:
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyfwevt_provider_get_opcode(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -1846,7 +1853,7 @@ PyObject *pyfwevt_provider_get_opcode(
 		return( NULL );
 	}
 	opcode_object = pyfwevt_provider_get_opcode_by_index(
-	                 (PyObject *) pyfwevt_provider,
+	                 pyfwevt_provider,
 	                 opcode_index );
 
 	return( opcode_object );
@@ -2047,7 +2054,7 @@ on_error:
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyfwevt_provider_get_task(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -2065,7 +2072,7 @@ PyObject *pyfwevt_provider_get_task(
 		return( NULL );
 	}
 	task_object = pyfwevt_provider_get_task_by_index(
-	               (PyObject *) pyfwevt_provider,
+	               pyfwevt_provider,
 	               task_index );
 
 	return( task_object );
@@ -2266,7 +2273,7 @@ on_error:
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyfwevt_provider_get_template(
-           pyfwevt_provider_t *pyfwevt_provider,
+           PyObject *pyfwevt_provider,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -2284,7 +2291,7 @@ PyObject *pyfwevt_provider_get_template(
 		return( NULL );
 	}
 	template_object = pyfwevt_provider_get_template_by_index(
-	                   (PyObject *) pyfwevt_provider,
+	                   pyfwevt_provider,
 	                   template_index );
 
 	return( template_object );

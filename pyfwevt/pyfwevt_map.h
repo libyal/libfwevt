@@ -57,7 +57,9 @@ PyObject *pyfwevt_map_new(
            PyObject *parent_object );
 
 int pyfwevt_map_init(
-     pyfwevt_map_t *pyfwevt_map );
+     pyfwevt_map_t *pyfwevt_map,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_map_free(
       pyfwevt_map_t *pyfwevt_map );

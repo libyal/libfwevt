@@ -57,7 +57,9 @@ PyObject *pyfwevt_event_new(
            PyObject *parent_object );
 
 int pyfwevt_event_init(
-     pyfwevt_event_t *pyfwevt_event );
+     pyfwevt_event_t *pyfwevt_event,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_event_free(
       pyfwevt_event_t *pyfwevt_event );

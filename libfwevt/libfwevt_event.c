@@ -283,10 +283,8 @@ int libfwevt_event_read_data(
 	 wevt_event->flags,
 	 internal_event->flags );
 
-	if( ( internal_event->flags & 0x00000080UL ) != 0 )
-	{
-		internal_event->version = wevt_event->version;
-	}
+	internal_event->version = wevt_event->version;
+
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
@@ -295,63 +293,34 @@ int libfwevt_event_read_data(
 		 function,
 		 internal_event->identifier );
 
-		if( ( internal_event->flags & 0x00000080UL ) == 0 )
-		{
-			byte_stream_copy_to_uint16_little_endian(
-			 wevt_event->unknown1,
-			 value_16bit );
-			libcnotify_printf(
-			 "%s: unknown1\t\t\t\t\t: 0x%04" PRIx16 "\n",
-			 function,
-			 value_16bit );
+		libcnotify_printf(
+		 "%s: version\t\t\t\t\t: %" PRIu8 "\n",
+		 function,
+		 wevt_event->version );
 
-			byte_stream_copy_to_uint16_little_endian(
-			 wevt_event->qualifiers,
-			 value_16bit );
-			libcnotify_printf(
-			 "%s: qualifiers\t\t\t\t\t: %" PRIu16 " (0x%04" PRIx16 ")\n",
-			 function,
-			 value_16bit,
-			 value_16bit );
+		libcnotify_printf(
+		 "%s: channel\t\t\t\t\t: %" PRIu8 "\n",
+		 function,
+		 wevt_event->channel );
 
-			byte_stream_copy_to_uint16_little_endian(
-			 wevt_event->unknown2,
-			 value_16bit );
-			libcnotify_printf(
-			 "%s: unknown2\t\t\t\t\t: 0x%04" PRIx16 "\n",
-			 function,
-			 value_16bit );
-		}
-		else
-		{
-			libcnotify_printf(
-			 "%s: version\t\t\t\t\t: %" PRIu8 "\n",
-			 function,
-			 wevt_event->version );
+		libcnotify_printf(
+		 "%s: level\t\t\t\t\t\t: %" PRIu8 "\n",
+		 function,
+		 wevt_event->level );
 
-			libcnotify_printf(
-			 "%s: channel\t\t\t\t\t: %" PRIu8 "\n",
-			 function,
-			 wevt_event->channel );
+		libcnotify_printf(
+		 "%s: opcode\t\t\t\t\t: %" PRIu8 "\n",
+		 function,
+		 wevt_event->opcode );
 
-			libcnotify_printf(
-			 "%s: level\t\t\t\t\t\t: %" PRIu8 "\n",
-			 function,
-			 wevt_event->level );
+		byte_stream_copy_to_uint16_little_endian(
+		 wevt_event->task,
+		 value_16bit );
+		libcnotify_printf(
+		 "%s: task\t\t\t\t\t\t: %" PRIu16 "\n",
+		 function,
+		 value_16bit );
 
-			libcnotify_printf(
-			 "%s: opcode\t\t\t\t\t: %" PRIu8 "\n",
-			 function,
-			 wevt_event->opcode );
-
-			byte_stream_copy_to_uint16_little_endian(
-			 wevt_event->task,
-			 value_16bit );
-			libcnotify_printf(
-			 "%s: task\t\t\t\t\t\t: %" PRIu16 "\n",
-			 function,
-			 value_16bit );
-		}
 		byte_stream_copy_to_uint64_little_endian(
 		 wevt_event->keywords,
 		 value_64bit );
@@ -489,13 +458,9 @@ int libfwevt_event_get_version(
 
 		return( -1 );
 	}
-	if( ( internal_event->flags & 0x00000080UL ) != 0 )
-	{
-		*version = internal_event->version;
+	*version = internal_event->version;
 
-		return( 1 );
-	}
-	return( 0 );
+	return( 1 );
 }
 
 /* Retrieves the message identifier

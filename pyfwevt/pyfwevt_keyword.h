@@ -57,7 +57,9 @@ PyObject *pyfwevt_keyword_new(
            PyObject *parent_object );
 
 int pyfwevt_keyword_init(
-     pyfwevt_keyword_t *pyfwevt_keyword );
+     pyfwevt_keyword_t *pyfwevt_keyword,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_keyword_free(
       pyfwevt_keyword_t *pyfwevt_keyword );

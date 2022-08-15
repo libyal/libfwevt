@@ -631,7 +631,7 @@ int libfwevt_provider_read_data(
 		 number_of_descriptors );
 
 		libcnotify_printf(
-		 "%s: number of unknown2\t\t\t: %" PRIu32 "\n",
+		 "%s: number of unknown2\t\t\t\t: %" PRIu32 "\n",
 		 function,
 		 number_of_unknown2 );
 

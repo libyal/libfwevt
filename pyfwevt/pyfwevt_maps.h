@@ -69,7 +69,9 @@ PyObject *pyfwevt_maps_new(
            int number_of_items );
 
 int pyfwevt_maps_init(
-     pyfwevt_maps_t *sequence_object );
+     pyfwevt_maps_t *sequence_object,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_maps_free(
       pyfwevt_maps_t *sequence_object );

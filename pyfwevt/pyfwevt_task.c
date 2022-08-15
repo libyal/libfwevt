@@ -137,6 +137,8 @@ PyTypeObject pyfwevt_task_type_object = {
 	/* tp_weaklist */
 	NULL,
 	/* tp_del */
+	0,
+	/* tp_version_tag */
 	0
 };
 
@@ -197,9 +199,14 @@ on_error:
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_task_init(
-     pyfwevt_task_t *pyfwevt_task )
+     pyfwevt_task_t *pyfwevt_task,
+     PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED,
+     PyObject *keywords PYFWEVT_ATTRIBUTE_UNUSED )
 {
 	static char *function = "pyfwevt_task_init";
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+	PYFWEVT_UNREFERENCED_PARAMETER( keywords )
 
 	if( pyfwevt_task == NULL )
 	{

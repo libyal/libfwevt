@@ -57,7 +57,9 @@ PyObject *pyfwevt_opcode_new(
            PyObject *parent_object );
 
 int pyfwevt_opcode_init(
-     pyfwevt_opcode_t *pyfwevt_opcode );
+     pyfwevt_opcode_t *pyfwevt_opcode,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_opcode_free(
       pyfwevt_opcode_t *pyfwevt_opcode );

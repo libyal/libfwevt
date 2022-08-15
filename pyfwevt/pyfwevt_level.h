@@ -57,7 +57,9 @@ PyObject *pyfwevt_level_new(
            PyObject *parent_object );
 
 int pyfwevt_level_init(
-     pyfwevt_level_t *pyfwevt_level );
+     pyfwevt_level_t *pyfwevt_level,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_level_free(
       pyfwevt_level_t *pyfwevt_level );

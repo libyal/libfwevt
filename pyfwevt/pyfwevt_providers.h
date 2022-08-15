@@ -69,7 +69,9 @@ PyObject *pyfwevt_providers_new(
            int number_of_items );
 
 int pyfwevt_providers_init(
-     pyfwevt_providers_t *sequence_object );
+     pyfwevt_providers_t *sequence_object,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_providers_free(
       pyfwevt_providers_t *sequence_object );

@@ -57,7 +57,9 @@ PyObject *pyfwevt_template_new(
            PyObject *parent_object );
 
 int pyfwevt_template_init(
-     pyfwevt_template_t *pyfwevt_template );
+     pyfwevt_template_t *pyfwevt_template,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_template_free(
       pyfwevt_template_t *pyfwevt_template );

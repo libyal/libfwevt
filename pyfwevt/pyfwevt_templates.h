@@ -69,7 +69,9 @@ PyObject *pyfwevt_templates_new(
            int number_of_items );
 
 int pyfwevt_templates_init(
-     pyfwevt_templates_t *sequence_object );
+     pyfwevt_templates_t *sequence_object,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_templates_free(
       pyfwevt_templates_t *sequence_object );

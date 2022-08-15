@@ -31,6 +31,7 @@
 #include "pyfwevt_map.h"
 #include "pyfwevt_maps.h"
 #include "pyfwevt_python.h"
+#include "pyfwevt_unused.h"
 
 PySequenceMethods pyfwevt_maps_sequence_methods = {
 	/* sq_length */
@@ -147,6 +148,8 @@ PyTypeObject pyfwevt_maps_type_object = {
 	/* tp_weaklist */
 	NULL,
 	/* tp_del */
+	0,
+	/* tp_version_tag */
 	0
 };
 
@@ -219,9 +222,14 @@ on_error:
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_maps_init(
-     pyfwevt_maps_t *sequence_object )
+     pyfwevt_maps_t *sequence_object,
+     PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED,
+     PyObject *keywords PYFWEVT_ATTRIBUTE_UNUSED )
 {
 	static char *function = "pyfwevt_maps_init";
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+	PYFWEVT_UNREFERENCED_PARAMETER( keywords )
 
 	if( sequence_object == NULL )
 	{

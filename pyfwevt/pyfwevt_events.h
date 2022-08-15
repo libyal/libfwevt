@@ -69,7 +69,9 @@ PyObject *pyfwevt_events_new(
            int number_of_items );
 
 int pyfwevt_events_init(
-     pyfwevt_events_t *sequence_object );
+     pyfwevt_events_t *sequence_object,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_events_free(
       pyfwevt_events_t *sequence_object );

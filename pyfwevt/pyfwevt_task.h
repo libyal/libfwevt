@@ -57,7 +57,9 @@ PyObject *pyfwevt_task_new(
            PyObject *parent_object );
 
 int pyfwevt_task_init(
-     pyfwevt_task_t *pyfwevt_task );
+     pyfwevt_task_t *pyfwevt_task,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_task_free(
       pyfwevt_task_t *pyfwevt_task );

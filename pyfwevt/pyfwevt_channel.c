@@ -137,6 +137,8 @@ PyTypeObject pyfwevt_channel_type_object = {
 	/* tp_weaklist */
 	NULL,
 	/* tp_del */
+	0,
+	/* tp_version_tag */
 	0
 };
 
@@ -197,9 +199,14 @@ on_error:
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_channel_init(
-     pyfwevt_channel_t *pyfwevt_channel )
+     pyfwevt_channel_t *pyfwevt_channel,
+     PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED,
+     PyObject *keywords PYFWEVT_ATTRIBUTE_UNUSED )
 {
 	static char *function = "pyfwevt_channel_init";
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+	PYFWEVT_UNREFERENCED_PARAMETER( keywords )
 
 	if( pyfwevt_channel == NULL )
 	{

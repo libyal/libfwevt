@@ -69,7 +69,9 @@ PyObject *pyfwevt_opcodes_new(
            int number_of_items );
 
 int pyfwevt_opcodes_init(
-     pyfwevt_opcodes_t *sequence_object );
+     pyfwevt_opcodes_t *sequence_object,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_opcodes_free(
       pyfwevt_opcodes_t *sequence_object );

@@ -69,7 +69,9 @@ PyObject *pyfwevt_channels_new(
            int number_of_items );
 
 int pyfwevt_channels_init(
-     pyfwevt_channels_t *sequence_object );
+     pyfwevt_channels_t *sequence_object,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_channels_free(
       pyfwevt_channels_t *sequence_object );

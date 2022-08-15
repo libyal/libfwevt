@@ -57,7 +57,9 @@ PyObject *pyfwevt_channel_new(
            PyObject *parent_object );
 
 int pyfwevt_channel_init(
-     pyfwevt_channel_t *pyfwevt_channel );
+     pyfwevt_channel_t *pyfwevt_channel,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_channel_free(
       pyfwevt_channel_t *pyfwevt_channel );

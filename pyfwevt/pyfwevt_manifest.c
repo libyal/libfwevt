@@ -38,7 +38,7 @@
 PyMethodDef pyfwevt_manifest_object_methods[] = {
 
 	{ "copy_from_byte_stream",
-	  (PyCFunction) pyfwevt_manifest_copy_from_byte_stream,
+	  (PyCFunctionWithKeywords) pyfwevt_manifest_copy_from_byte_stream,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "copy_from_byte_stream(byte_stream)\n"
 	  "\n"
@@ -52,7 +52,7 @@ PyMethodDef pyfwevt_manifest_object_methods[] = {
 	  "Retrieves the number of providers." },
 
 	{ "get_provider",
-	  (PyCFunction) pyfwevt_manifest_get_provider,
+	  (PyCFunctionWithKeywords) pyfwevt_manifest_get_provider,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_provider(provider_index) -> Object\n"
 	  "\n"
@@ -172,6 +172,8 @@ PyTypeObject pyfwevt_manifest_type_object = {
 	/* tp_weaklist */
 	NULL,
 	/* tp_del */
+	0,
+	/* tp_version_tag */
 	0
 };
 
@@ -232,10 +234,15 @@ on_error:
  * Returns 0 if successful or -1 on error
  */
 int pyfwevt_manifest_init(
-     pyfwevt_manifest_t *pyfwevt_manifest )
+     pyfwevt_manifest_t *pyfwevt_manifest,
+     PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED,
+     PyObject *keywords PYFWEVT_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
 	static char *function    = "pyfwevt_manifest_init";
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+	PYFWEVT_UNREFERENCED_PARAMETER( keywords )
 
 	if( pyfwevt_manifest == NULL )
 	{

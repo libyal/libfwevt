@@ -57,7 +57,9 @@ PyObject *pyfwevt_manifest_new(
            PyObject *parent_object );
 
 int pyfwevt_manifest_init(
-     pyfwevt_manifest_t *pyfwevt_manifest );
+     pyfwevt_manifest_t *pyfwevt_manifest,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_manifest_free(
       pyfwevt_manifest_t *pyfwevt_manifest );

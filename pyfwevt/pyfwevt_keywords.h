@@ -69,7 +69,9 @@ PyObject *pyfwevt_keywords_new(
            int number_of_items );
 
 int pyfwevt_keywords_init(
-     pyfwevt_keywords_t *sequence_object );
+     pyfwevt_keywords_t *sequence_object,
+     PyObject *arguments,
+     PyObject *keywords );
 
 void pyfwevt_keywords_free(
       pyfwevt_keywords_t *sequence_object );
