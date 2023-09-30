@@ -1,0 +1,15 @@
+[metadata]
+name = libfwevt-python
+version = @VERSION@
+description = Python bindings module for libfwevt
+long_description = Python bindings module for libfwevt
+author = Joachim Metz
+author_email = joachim.metz@gmail.com
+license = GNU Lesser General Public License v3 or later (LGPLv3+)
+license_files = COPYING COPYING.LESSER
+classifiers =
+  Development Status :: 2 - Pre-Alpha
+  Programming Language :: Python
+
+[options]
+python_requires = >=3.7

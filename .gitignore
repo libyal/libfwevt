@@ -1,6 +1,6 @@
 # Files to ignore by git
 #
-# Version: 20230405
+# Version: 20230926
 
 # Generic auto-generated build files
 *~
@@ -25,10 +25,13 @@
 *.swp
 *.Tpo
 *.trs
+*.whl
 /*.egg-info/
+__pycache__
 .deps
 .dirstamp
 .libs
+.tox
 INSTALL
 Makefile
 Makefile.bcc
@@ -125,6 +128,7 @@ stamp-h[1-9]
 /libfwevt/libfwevt.rc
 /libfwevt/libfwevt_definitions.h
 /pyfwevt-python[23]/*.[ch]
+/setup.cfg
 /tests/*.exe
 /tests/fwevt_test_channel
 /tests/fwevt_test_error
