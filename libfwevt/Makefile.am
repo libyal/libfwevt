@@ -68,11 +68,13 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 distclean: clean
-	/bin/rm -f libfwevt_definitions.h
-	/bin/rm -f libfwevt.rc
-	/bin/rm -f Makefile
+	-rm -f libfwevt_definitions.h
+	-rm -f libfwevt.rc
+	-rm -f Makefile
 
-splint:
+sources-local: $(BUILT_SOURCES)
+
+splint-local:
 	@echo "Running splint on libfwevt ..."
 	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(libfwevt_la_SOURCES)
 

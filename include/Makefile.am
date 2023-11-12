@@ -18,9 +18,9 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 distclean: clean
-	/bin/rm -f libfwevt.h
-	/bin/rm -f libfwevt/definitions.h
-	/bin/rm -f libfwevt/features.h
-	/bin/rm -f libfwevt/types.h
-	/bin/rm -f Makefile
+	-rm -f libfwevt.h
+	-rm -f libfwevt/definitions.h
+	-rm -f libfwevt/features.h
+	-rm -f libfwevt/types.h
+	-rm -f Makefile
 
