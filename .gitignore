@@ -1,6 +1,6 @@
 # Files to ignore by git
 #
-# Version: 20230926
+# Version: 20231119
 
 # Generic auto-generated build files
 *~
@@ -127,7 +127,6 @@ stamp-h[1-9]
 /libfwevt.spec
 /libfwevt/libfwevt.rc
 /libfwevt/libfwevt_definitions.h
-/pyfwevt-python[23]/*.[ch]
 /setup.cfg
 /tests/*.exe
 /tests/fwevt_test_channel

@@ -13,8 +13,6 @@ SUBDIRS = \
 	libfvalue \
 	libfwevt \
 	pyfwevt \
-	pyfwevt-python2 \
-	pyfwevt-python3 \
 	po \
 	manuals \
 	tests \
