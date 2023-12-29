@@ -533,10 +533,10 @@ struct fwevt_template_header
 	 */
 	uint8_t number_of_names[ 4 ];
 
-	/* The instance values offset
+	/* The template items offset
 	 * Consists of 4 bytes
 	 */
-	uint8_t instance_values_offset[ 4 ];
+	uint8_t template_items_offset[ 4 ];
 
 	/* Unknown
 	 * Consists of 4 bytes

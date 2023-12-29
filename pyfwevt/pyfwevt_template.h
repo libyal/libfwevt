@@ -64,6 +64,10 @@ int pyfwevt_template_init(
 void pyfwevt_template_free(
       pyfwevt_template_t *pyfwevt_template );
 
+PyObject *pyfwevt_template_get_identifier(
+           pyfwevt_template_t *pyfwevt_template,
+           PyObject *arguments );
+
 #if defined( __cplusplus )
 }
 #endif

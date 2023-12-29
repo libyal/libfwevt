@@ -1,4 +1,4 @@
-.Dd April 17, 2023
+.Dd December 29, 2023
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -36,6 +36,16 @@ Error functions
 Channel functions
 .Ft int
 .Fn libfwevt_channel_free "libfwevt_channel_t **channel" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_channel_get_identifier "libfwevt_channel_t *channel" "uint32_t *identifier" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_channel_get_utf8_name_size "libfwevt_channel_t *channel" "size_t *utf8_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_channel_get_utf8_name "libfwevt_channel_t *channel" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_channel_get_utf16_name_size "libfwevt_channel_t *channel" "size_t *utf16_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_channel_get_utf16_name "libfwevt_channel_t *channel" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
 .Pp
 Event functions
 .Ft int
@@ -146,6 +156,8 @@ Template functions
 .Fn libfwevt_template_set_offset "libfwevt_template_t *wevt_template" "uint32_t offset" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_template_get_size "libfwevt_template_t *wevt_template" "uint32_t *size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_get_identifier "libfwevt_template_t *template" "uint8_t *guid_data" "size_t guid_data_size" "libfwevt_error_t **error"
 .Pp
 XML document functions
 .Ft int

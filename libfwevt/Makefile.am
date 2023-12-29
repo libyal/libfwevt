@@ -39,6 +39,7 @@ libfwevt_la_SOURCES = \
 	libfwevt_support.c libfwevt_support.h \
 	libfwevt_task.c libfwevt_task.h \
 	libfwevt_template.c libfwevt_template.h \
+	libfwevt_template_item.c libfwevt_template_item.h \
 	libfwevt_types.h \
 	libfwevt_unused.h \
 	libfwevt_xml_document.c libfwevt_xml_document.h \

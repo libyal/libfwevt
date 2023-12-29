@@ -40,6 +40,14 @@ struct libfwevt_internal_channel
 	/* The identifier
 	 */
 	uint32_t identifier;
+
+	/* The name
+	 */
+	uint8_t *name;
+
+	/* The name size
+	 */
+	size_t name_size;
 };
 
 int libfwevt_channel_initialize(
@@ -60,6 +68,38 @@ int libfwevt_channel_read_data(
      const uint8_t *data,
      size_t data_size,
      size_t data_offset,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_channel_get_identifier(
+     libfwevt_channel_t *channel,
+     uint32_t *identifier,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_channel_get_utf8_name_size(
+     libfwevt_channel_t *channel,
+     size_t *utf8_string_size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_channel_get_utf8_name(
+     libfwevt_channel_t *channel,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_channel_get_utf16_name_size(
+     libfwevt_channel_t *channel,
+     size_t *utf16_string_size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_channel_get_utf16_name(
+     libfwevt_channel_t *channel,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

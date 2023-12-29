@@ -211,6 +211,7 @@ typedef intptr_t libfwevt_opcode_t;
 typedef intptr_t libfwevt_provider_t;
 typedef intptr_t libfwevt_task_t;
 typedef intptr_t libfwevt_template_t;
+typedef intptr_t libfwevt_template_item_t;
 typedef intptr_t libfwevt_xml_document_t;
 typedef intptr_t libfwevt_xml_tag_t;
 typedef intptr_t libfwevt_xml_template_value_t;

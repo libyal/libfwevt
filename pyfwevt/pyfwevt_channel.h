@@ -64,6 +64,14 @@ int pyfwevt_channel_init(
 void pyfwevt_channel_free(
       pyfwevt_channel_t *pyfwevt_channel );
 
+PyObject *pyfwevt_channel_get_identifier(
+           pyfwevt_channel_t *pyfwevt_channel,
+           PyObject *arguments );
+
+PyObject *pyfwevt_channel_get_name(
+           pyfwevt_channel_t *pyfwevt_channel,
+           PyObject *arguments );
+
 #if defined( __cplusplus )
 }
 #endif

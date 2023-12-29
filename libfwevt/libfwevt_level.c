@@ -267,7 +267,7 @@ int libfwevt_level_read_data(
 		 wevt_level->identifier,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: identifier\t\t\t\t\t\t: %" PRIu32 "\n",
+		 "%s: identifier\t\t\t\t\t: %" PRIu32 "\n",
 		 function,
 		 value_32bit );
 
@@ -275,7 +275,7 @@ int libfwevt_level_read_data(
 		 wevt_level->message_identifier,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: message identifier\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: message identifier\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 
@@ -331,7 +331,7 @@ int libfwevt_level_read_data(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: data size\t\t\t\t\t\t: %" PRIu32 "\n",
+			 "%s: data size\t\t\t\t\t: %" PRIu32 "\n",
 			 function,
 			 level_data_size );
 		}

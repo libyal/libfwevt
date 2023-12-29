@@ -141,6 +141,7 @@ stamp-h[1-9]
 /tests/fwevt_test_support
 /tests/fwevt_test_task
 /tests/fwevt_test_template
+/tests/fwevt_test_template_item
 /tests/fwevt_test_xml_document
 /tests/fwevt_test_xml_tag
 /tests/fwevt_test_xml_template_value

@@ -11,6 +11,7 @@ MSVSCPP_FILES = \
 	fwevt_test_support/fwevt_test_support.vcproj \
 	fwevt_test_task/fwevt_test_task.vcproj \
 	fwevt_test_template/fwevt_test_template.vcproj \
+	fwevt_test_template_item/fwevt_test_template_item.vcproj \
 	fwevt_test_xml_document/fwevt_test_xml_document.vcproj \
 	fwevt_test_xml_tag/fwevt_test_xml_tag.vcproj \
 	fwevt_test_xml_template_value/fwevt_test_xml_template_value.vcproj \

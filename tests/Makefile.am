@@ -46,6 +46,7 @@ check_PROGRAMS = \
 	fwevt_test_support \
 	fwevt_test_task \
 	fwevt_test_template \
+	fwevt_test_template_item \
 	fwevt_test_xml_document \
 	fwevt_test_xml_tag \
 	fwevt_test_xml_template_value \
@@ -186,6 +187,18 @@ fwevt_test_template_SOURCES = \
 	fwevt_test_unused.h
 
 fwevt_test_template_LDADD = \
+	../libfwevt/libfwevt.la \
+	@LIBCERROR_LIBADD@
+
+fwevt_test_template_item_SOURCES = \
+	fwevt_test_libcerror.h \
+	fwevt_test_libfwevt.h \
+	fwevt_test_macros.h \
+	fwevt_test_memory.c fwevt_test_memory.h \
+	fwevt_test_template_item.c \
+	fwevt_test_unused.h
+
+fwevt_test_template_item_LDADD = \
 	../libfwevt/libfwevt.la \
 	@LIBCERROR_LIBADD@
 

@@ -272,7 +272,7 @@ int libfwevt_task_read_data(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: identifier\t\t\t\t\t\t: %" PRIu32 "\n",
+		 "%s: identifier\t\t\t\t\t: %" PRIu32 "\n",
 		 function,
 		 internal_task->identifier );
 
@@ -280,13 +280,13 @@ int libfwevt_task_read_data(
 		 wevt_task->message_identifier,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: message identifier\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: message identifier\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 
 		if( libfwevt_debug_print_guid_value(
 		     function,
-		     "unknown1\t\t\t\t\t\t",
+		     "unknown1\t\t\t\t\t",
 		     wevt_task->unknown1,
 		     16,
 		     LIBFGUID_ENDIAN_LITTLE,
@@ -303,7 +303,7 @@ int libfwevt_task_read_data(
 			return( -1 );
 		}
 		libcnotify_printf(
-		 "%s: data offset\t\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: data offset\t\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 task_data_offset );
 	}
@@ -355,7 +355,7 @@ int libfwevt_task_read_data(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: data size\t\t\t\t\t\t: %" PRIu32 "\n",
+			 "%s: data size\t\t\t\t\t: %" PRIu32 "\n",
 			 function,
 			 task_data_size );
 		}

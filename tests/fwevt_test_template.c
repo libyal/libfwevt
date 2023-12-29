@@ -890,10 +890,10 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libfwevt_template_read_instance_values function
+/* Tests the libfwevt_template_read_template_items function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_template_read_instance_values(
+int fwevt_test_template_read_template_items(
      void )
 {
 	libcerror_error_t *error      = NULL;
@@ -921,7 +921,7 @@ int fwevt_test_template_read_instance_values(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_template_read_instance_values(
+	result = libfwevt_template_read_template_items(
 	          (libfwevt_internal_template_t *) template,
 	          &( fwevt_test_template_data1[ 0x38c ] ),
 	          1616 - 0x38c,
@@ -938,7 +938,7 @@ int fwevt_test_template_read_instance_values(
 
 	/* Test error cases
 	 */
-	result = libfwevt_template_read_instance_values(
+	result = libfwevt_template_read_template_items(
 	          NULL,
 	          &( fwevt_test_template_data1[ 0x38c ] ),
 	          1616 - 0x38c,
@@ -956,7 +956,7 @@ int fwevt_test_template_read_instance_values(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_template_read_instance_values(
+	result = libfwevt_template_read_template_items(
 	          (libfwevt_internal_template_t *) template,
 	          NULL,
 	          1616 - 0x38c,
@@ -974,7 +974,7 @@ int fwevt_test_template_read_instance_values(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_template_read_instance_values(
+	result = libfwevt_template_read_template_items(
 	          (libfwevt_internal_template_t *) template,
 	          &( fwevt_test_template_data1[ 0x38c ] ),
 	          (size_t) SSIZE_MAX + 1,
@@ -1318,8 +1318,8 @@ int main(
 	 fwevt_test_template_read_header );
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_template_read_instance_values",
-	 fwevt_test_template_read_instance_values );
+	 "libfwevt_template_read_template_items",
+	 fwevt_test_template_read_template_items );
 
 #endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 

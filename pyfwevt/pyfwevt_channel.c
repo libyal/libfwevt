@@ -35,11 +35,37 @@
 
 PyMethodDef pyfwevt_channel_object_methods[] = {
 
+	{ "get_identifier",
+	  (PyCFunction) pyfwevt_channel_get_identifier,
+	  METH_NOARGS,
+	  "get_identifier() -> Integer\n"
+	  "\n"
+	  "Retrieves the identifier." },
+
+	{ "get_name",
+	  (PyCFunction) pyfwevt_channel_get_name,
+	  METH_NOARGS,
+	  "get_name() -> Unicode string or None\n"
+	  "\n"
+	  "Retrieves the name." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
 
 PyGetSetDef pyfwevt_channel_object_get_set_definitions[] = {
+
+	{ "identifier",
+	  (getter) pyfwevt_channel_get_identifier,
+	  (setter) 0,
+	  "The identifier.",
+	  NULL },
+
+	{ "name",
+	  (getter) pyfwevt_channel_get_name,
+	  (setter) 0,
+	  "The name.",
+	  NULL },
 
 	/* Sentinel */
 	{ NULL, NULL, NULL, NULL, NULL }
@@ -298,5 +324,178 @@ void pyfwevt_channel_free(
 	}
 	ob_type->tp_free(
 	 (PyObject*) pyfwevt_channel );
+}
+
+/* Retrieves the identifier
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_channel_get_identifier(
+           pyfwevt_channel_t *pyfwevt_channel,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_channel_get_identifier";
+	uint32_t value_32bit     = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_channel == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid channel.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_channel_get_identifier(
+	          pyfwevt_channel->channel,
+	          &value_32bit,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve identifier.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_32bit );
+
+	return( integer_object );
+}
+
+/* Retrieves the name
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_channel_get_name(
+           pyfwevt_channel_t *pyfwevt_channel,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *string_object  = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_channel_get_name";
+	char *utf8_string        = NULL;
+	size_t utf8_string_size  = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_channel == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid channel.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_channel_get_utf8_name_size(
+	          pyfwevt_channel->channel,
+	          &utf8_string_size,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result == -1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to determine size of name as UTF-8 string.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	else if( ( result == 0 )
+	      || ( utf8_string_size == 0 ) )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
+	}
+	utf8_string = (char *) PyMem_Malloc(
+	                        sizeof( char ) * utf8_string_size );
+
+	if( utf8_string == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create UTF-8 string.",
+		 function );
+
+		goto on_error;
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_channel_get_utf8_name(
+	          pyfwevt_channel->channel,
+	          (uint8_t *) utf8_string,
+	          utf8_string_size,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve name as UTF-8 string.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	/* Pass the string length to PyUnicode_DecodeUTF8 otherwise it makes
+	 * the end of string character is part of the string
+	 */
+	string_object = PyUnicode_DecodeUTF8(
+	                 utf8_string,
+	                 (Py_ssize_t) utf8_string_size - 1,
+	                 NULL );
+
+	if( string_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_IOError,
+		 "%s: unable to convert UTF-8 string into Unicode object.",
+		 function );
+
+		goto on_error;
+	}
+	PyMem_Free(
+	 utf8_string );
+
+	return( string_object );
+
+on_error:
+	if( utf8_string != NULL )
+	{
+		PyMem_Free(
+		 utf8_string );
+	}
+	return( NULL );
 }
 

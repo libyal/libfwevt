@@ -230,6 +230,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libfwevt\libfwevt_template_item.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libfwevt\libfwevt_xml_document.c"
 				>
 			</File>
@@ -341,6 +345,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libfwevt\libfwevt_template.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libfwevt\libfwevt_template_item.h"
 				>
 			</File>
 			<File

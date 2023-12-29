@@ -159,6 +159,11 @@ int libfwevt_internal_channel_free(
 	}
 	if( *internal_channel != NULL )
 	{
+		if( ( *internal_channel )->name != NULL )
+		{
+			memory_free(
+			 ( *internal_channel )->name );
+		}
 		memory_free(
 		 *internal_channel );
 
@@ -200,6 +205,17 @@ int libfwevt_channel_read_data(
 	}
 	internal_channel = (libfwevt_internal_channel_t *) channel;
 
+	if( internal_channel->name != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: invalid channel - name value already set.",
+		 function );
+
+		return( -1 );
+	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -285,7 +301,7 @@ int libfwevt_channel_read_data(
 		 wevt_channel->unknown1,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown1\t\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown1\t\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 
@@ -310,7 +326,7 @@ int libfwevt_channel_read_data(
 			 "%s: invalid channel data offset value out of bounds.",
 			 function );
 
-			return( -1 );
+			goto on_error;
 		}
 		byte_stream_copy_to_uint32_little_endian(
 		 &( data[ channel_data_offset ] ),
@@ -326,7 +342,7 @@ int libfwevt_channel_read_data(
 			 "%s: invalid channel data size value out of bounds.",
 			 function );
 
-			return( -1 );
+			goto on_error;
 		}
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
@@ -356,14 +372,56 @@ int libfwevt_channel_read_data(
 			channel_data_offset += 4;
 			channel_data_size   -= 4;
 
+			if( ( channel_data_size == 0 )
+			 || ( channel_data_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid name size value out of bounds.",
+				 function );
+
+				goto on_error;
+			}
+			internal_channel->name = (uint8_t *) memory_allocate(
+			                                      sizeof( uint8_t ) * channel_data_size );
+
+			if( internal_channel->name == NULL )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_MEMORY,
+				 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
+				 "%s: unable to create name.",
+				 function );
+
+				goto on_error;
+			}
+			internal_channel->name_size = channel_data_size;
+
+			if( memory_copy(
+			     internal_channel->name,
+			     &( data[ channel_data_offset ] ),
+			     channel_data_size ) == NULL )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_MEMORY,
+				 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
+				 "%s: unable to copy name.",
+				 function );
+
+				goto on_error;
+			}
 #if defined( HAVE_DEBUG_OUTPUT )
 			if( libcnotify_verbose != 0 )
 			{
 				if( libfwevt_debug_print_utf16_string_value(
 				     function,
-				     "name\t\t\t\t\t\t",
-				     &( data[ channel_data_offset ] ),
-				     channel_data_size,
+				     "name\t\t\t\t\t",
+				     internal_channel->name,
+				     internal_channel->name_size,
 				     LIBUNA_ENDIAN_LITTLE,
 				     error ) != 1 )
 				{
@@ -374,7 +432,7 @@ int libfwevt_channel_read_data(
 					 "%s: unable to print UTF-16 string value.",
 					 function );
 
-					return( -1 );
+					goto on_error;
 				}
 			}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
@@ -387,6 +445,254 @@ int libfwevt_channel_read_data(
 		 "\n" );
 	}
 #endif
+	return( 1 );
+
+on_error:
+	if( internal_channel->name != NULL )
+	{
+		memory_free(
+		 internal_channel->name );
+
+		internal_channel->name = NULL;
+	}
+	internal_channel->name_size = 0;
+
+	return( -1 );
+}
+
+/* Retrieves the identifier
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_channel_get_identifier(
+     libfwevt_channel_t *channel,
+     uint32_t *identifier,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_channel_t *internal_channel = NULL;
+	static char *function                         = "libfwevt_channel_get_identifier";
+
+	if( channel == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid channel.",
+		 function );
+
+		return( -1 );
+	}
+	internal_channel = (libfwevt_internal_channel_t *) channel;
+
+	if( identifier == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid identifier.",
+		 function );
+
+		return( -1 );
+	}
+	*identifier = internal_channel->identifier;
+
+	return( 1 );
+}
+
+/* Retrieves the size of the UTF-8 formatted name
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_channel_get_utf8_name_size(
+     libfwevt_channel_t *channel,
+     size_t *utf8_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_channel_t *internal_channel = NULL;
+	static char *function                         = "libfwevt_channel_get_utf8_name_size";
+
+	if( channel == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid channel.",
+		 function );
+
+		return( -1 );
+	}
+	internal_channel = (libfwevt_internal_channel_t *) channel;
+
+	if( ( internal_channel->name == NULL )
+	 || ( internal_channel->name_size == 0 ) )
+	{
+		return( 0 );
+	}
+	if( libuna_utf8_string_size_from_utf16_stream(
+	     internal_channel->name,
+	     internal_channel->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
+	     utf8_string_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string size.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the UTF-8 formatted name
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_channel_get_utf8_name(
+     libfwevt_channel_t *channel,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_channel_t *internal_channel = NULL;
+	static char *function                         = "libfwevt_channel_get_utf8_name";
+
+	if( channel == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid channel.",
+		 function );
+
+		return( -1 );
+	}
+	internal_channel = (libfwevt_internal_channel_t *) channel;
+
+	if( ( internal_channel->name == NULL )
+	 || ( internal_channel->name_size == 0 ) )
+	{
+		return( 0 );
+	}
+	if( libuna_utf8_string_copy_from_utf16_stream(
+	     utf8_string,
+	     utf8_string_size,
+	     internal_channel->name,
+	     internal_channel->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the size of the UTF-16 formatted name
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_channel_get_utf16_name_size(
+     libfwevt_channel_t *channel,
+     size_t *utf16_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_channel_t *internal_channel = NULL;
+	static char *function                         = "libfwevt_channel_get_utf16_name_size";
+
+	if( channel == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid channel.",
+		 function );
+
+		return( -1 );
+	}
+	internal_channel = (libfwevt_internal_channel_t *) channel;
+
+	if( ( internal_channel->name == NULL )
+	 || ( internal_channel->name_size == 0 ) )
+	{
+		return( 0 );
+	}
+	if( libuna_utf16_string_size_from_utf16_stream(
+	     internal_channel->name,
+	     internal_channel->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
+	     utf16_string_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-16 string size.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the UTF-16 formatted name
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_channel_get_utf16_name(
+     libfwevt_channel_t *channel,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_channel_t *internal_channel = NULL;
+	static char *function                         = "libfwevt_channel_get_utf16_name";
+
+	if( channel == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid channel.",
+		 function );
+
+		return( -1 );
+	}
+	internal_channel = (libfwevt_internal_channel_t *) channel;
+
+	if( ( internal_channel->name == NULL )
+	 || ( internal_channel->name_size == 0 ) )
+	{
+		return( 0 );
+	}
+	if( libuna_utf16_string_copy_from_utf16_stream(
+	     utf16_string,
+	     utf16_string_size,
+	     internal_channel->name,
+	     internal_channel->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string.",
+		 function );
+
+		return( -1 );
+	}
 	return( 1 );
 }
 

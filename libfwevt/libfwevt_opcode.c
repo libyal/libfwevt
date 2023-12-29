@@ -331,7 +331,7 @@ int libfwevt_opcode_read_data(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: data size\t\t\t\t\t\t: %" PRIu32 "\n",
+			 "%s: data size\t\t\t\t\t: %" PRIu32 "\n",
 			 function,
 			 opcode_data_size );
 		}

@@ -62,9 +62,14 @@ struct libfwevt_internal_template
 	 */
 	uint32_t number_of_names;
 
-	/* The instance values offset
+	/* The templat items offset
 	 */
-	uint32_t instance_values_offset;
+	uint32_t template_items_offset;
+
+	/* The (template) identifier
+	 * Contains a GUID
+	 */
+	uint8_t identifier[ 16 ];
 
 	/* The values array
 	 */
@@ -107,7 +112,7 @@ int libfwevt_template_read_header(
      size_t data_size,
      libcerror_error_t **error );
 
-int libfwevt_template_read_instance_values(
+int libfwevt_template_read_template_items(
      libfwevt_internal_template_t *internal_template,
      const uint8_t *data,
      size_t data_size,
@@ -155,6 +160,13 @@ LIBFWEVT_EXTERN \
 int libfwevt_template_get_size(
      libfwevt_template_t *wevt_template,
      uint32_t *size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_get_identifier(
+     libfwevt_template_t *template,
+     uint8_t *guid_data,
+     size_t guid_data_size,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )
