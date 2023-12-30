@@ -67,7 +67,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of channels." },
 
 	{ "get_channel",
-	  (PyCFunction) pyfwevt_provider_get_channel,
+	  (PyCFunctionWithKeywords) pyfwevt_provider_get_channel,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_channel(channel_index) -> Object\n"
 	  "\n"
@@ -81,7 +81,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of events." },
 
 	{ "get_event",
-	  (PyCFunction) pyfwevt_provider_get_event,
+	  (PyCFunctionWithKeywords) pyfwevt_provider_get_event,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_event(event_index) -> Object\n"
 	  "\n"
@@ -95,7 +95,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of keywords." },
 
 	{ "get_keyword",
-	  (PyCFunction) pyfwevt_provider_get_keyword,
+	  (PyCFunctionWithKeywords) pyfwevt_provider_get_keyword,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_keyword(keyword_index) -> Object\n"
 	  "\n"
@@ -109,7 +109,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of levels." },
 
 	{ "get_level",
-	  (PyCFunction) pyfwevt_provider_get_level,
+	  (PyCFunctionWithKeywords) pyfwevt_provider_get_level,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_level(level_index) -> Object\n"
 	  "\n"
@@ -123,7 +123,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of maps." },
 
 	{ "get_map",
-	  (PyCFunction) pyfwevt_provider_get_map,
+	  (PyCFunctionWithKeywords) pyfwevt_provider_get_map,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_map(map_index) -> Object\n"
 	  "\n"
@@ -137,7 +137,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the template by offset." },
 
 	{ "get_opcode",
-	  (PyCFunction) pyfwevt_provider_get_opcode,
+	  (PyCFunctionWithKeywords) pyfwevt_provider_get_opcode,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_opcode(opcode_index) -> Object\n"
 	  "\n"
@@ -151,7 +151,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of tasks." },
 
 	{ "get_task",
-	  (PyCFunction) pyfwevt_provider_get_task,
+	  (PyCFunctionWithKeywords) pyfwevt_provider_get_task,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_task(task_index) -> Object\n"
 	  "\n"
@@ -165,7 +165,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of templates." },
 
 	{ "get_template",
-	  (PyCFunction) pyfwevt_provider_get_template,
+	  (PyCFunctionWithKeywords) pyfwevt_provider_get_template,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_template(template_index) -> Object\n"
 	  "\n"

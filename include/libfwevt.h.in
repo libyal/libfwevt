@@ -704,6 +704,24 @@ int libfwevt_template_item_get_output_data_type(
      uint8_t *output_data_type,
      libfwevt_error_t **error );
 
+/* Retrieves the number of values
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_template_item_get_number_of_values(
+     libfwevt_template_item_t *template_item,
+     uint16_t *number_of_values,
+     libfwevt_error_t **error );
+
+/* Retrieves the value data size
+ * Returns 1 if successful or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_template_item_get_value_data_size(
+     libfwevt_template_item_t *template_item,
+     uint16_t *value_data_size,
+     libfwevt_error_t **error );
+
 /* Retrieves the size of the UTF-8 formatted name
  * Returns 1 if successful, 0 if not available or -1 on error
  */

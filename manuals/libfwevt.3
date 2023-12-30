@@ -171,6 +171,10 @@ Template item functions
 .Ft int
 .Fn libfwevt_template_item_get_output_data_type "libfwevt_template_item_t *template_item" "uint8_t *output_data_type" "libfwevt_error_t **error"
 .Ft int
+.Fn libfwevt_template_item_get_number_of_values "libfwevt_template_item_t *template_item" "uint16_t *number_of_values" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_item_get_value_data_size "libfwevt_template_item_t *template_item" "uint16_t *value_data_size" "libfwevt_error_t **error"
+.Ft int
 .Fn libfwevt_template_item_get_utf8_name_size "libfwevt_template_item_t *template_item" "size_t *utf8_string_size" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_template_item_get_utf8_name "libfwevt_template_item_t *template_item" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"

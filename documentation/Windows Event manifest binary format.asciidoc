@@ -562,8 +562,8 @@ Including the template header
 | 12 | 4 | | Number of item names
 | 16 | 4 | | Template items offset +
 The offset is relative to the start of the instrumentation manifest
-| 20 | 4 | | [yellow-background]*Unknown (flags?)* +
-Seen 1 in most cases and 2 when UserData is set.
+| 20 | 4 | | [yellow-background]*Unknown (EventType?)* +
+Seen 1 when EventData and 2 when UserData (possibly 3 DebugData, 4 BinaryEventData, 5 ProcessingErrorData?)
 | 24 | 16 | | Identifier +
 Contains a GUID
 | 40 | ... | | Binary XML fragment
@@ -591,14 +591,14 @@ The template item descriptor is 20 bytes in size and consists of:
 |===
 | Offset | Size | Value | Description
 | 0 | 4 | | [yellow-background]*Unknown (empty value)*
-| 4 | 1 | | Input data type +
+| 4 | 1 | | Input data type (inType) +
 See section: <<template_item_input_data_type,Template item input data type>>
-| 5 | 1 | | Output data type +
+| 5 | 1 | | Output data type (outType) +
 See section: <<template_item_output_data_type,Template item output data type>>
 | 6 | 2 | | [yellow-background]*Unknown (empty value)*
 | 8 | 4 | | [yellow-background]*Unknown (empty value)*
-| 12 | 2 | | [yellow-background]*Unknown (empty value)*
-| 14 | 2 | | Data size
+| 12 | 2 | | Number of values (count)
+| 14 | 2 | | Value data size (length)
 | 16 | 4 | | Template item name offset +
 The offset is relative to the start of the instrumentation manifest
 |===
@@ -608,27 +608,28 @@ The offset is relative to the start of the instrumentation manifest
 [cols="1,1,5",options="header"]
 |===
 | Value | Identifier | Description
-| 0x01 | win:UnicodeString |
-| 0x02 | win:AnsiString |
-| 0x03 | win:Int8 |
-| 0x04 | win:UInt8 |
-| 0x05 | win:Int16 |
-| 0x06 | win:UInt16 |
-| 0x07 | win:Int32 |
-| 0x08 | win:UInt32 |
-| 0x09 | win:Int64 |
-| 0x0a | win:UInt64 |
-| 0x0b | win:Float |
-| 0x0c | win:Double |
-| 0x0d | win:Boolean |
-| 0x0e | win:Binary |
-| 0x0f | win:GUID |
+| 0x01 | win:UnicodeString | Unicode string
+| 0x02 | win:AnsiString | ASCII string
+| 0x03 | win:Int8 | 8-bit integer signed
+| 0x04 | win:UInt8 | 8-bit integer unsigned
+| 0x05 | win:Int16 | 16-bit integer signed
+| 0x06 | win:UInt16 | 16-bit integer unsigned
+| 0x07 | win:Int32 | 32-bit integer signed
+| 0x08 | win:UInt32 | 32-bit integer unsigned
+| 0x09 | win:Int64 | 64-bit integer signed
+| 0x0a | win:UInt64 | 64-bit integer unsigned
+| 0x0b | win:Float | Floating point 32-bit (single precision)
+| 0x0c | win:Double | Floating point 64-bit (double precision)
+| 0x0d | win:Boolean | Boolean
+| 0x0e | win:Binary | Binary data
+| 0x0f | win:GUID | GUID
 | 0x10 | win:Pointer |
-| 0x11 | win:FILETIME |
-| 0x12 | win:SYSTEMTIME |
-| 0x13 | win:SID |
-| 0x14 | win:HexInt32 |
-| 0x15 | win:HexInt64 |
+| 0x11 | win:FILETIME | FILETIME (64-bit)
+| 0x12 | win:SYSTEMTIME | System time (128-bit)
+| 0x13 | win:SID | NT Security Identifier (SID) +
+See `[LIBFWNT]`
+| 0x14 | win:HexInt32 | 32-bit integer hexadecimal
+| 0x15 | win:HexInt64 | 64-bit integer hexadecimal
 |===
 
 ==== [[template_item_output_data_type]]Template item output data type
@@ -693,6 +694,14 @@ The data is 8-byte aligned +
 :numbered!:
 [appendix]
 == References
+
+`[LIBFWNT]`
+
+[cols="1,5",options="header"]
+|===
+| Title: | The Language Code Identifier (LCID)
+| URL: | https://github.com/libyal/libfwnt/blob/main/documentation/Language%20Code%20identifiers.asciidoc
+|===
 
 [cols="1,5",options="header"]
 |===

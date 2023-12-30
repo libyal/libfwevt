@@ -45,6 +45,14 @@ struct libfwevt_internal_template_item
 	 */
 	uint8_t output_data_type;
 
+	/* The number of values
+	 */
+	uint16_t number_of_values;
+
+	/* The value data size
+	 */
+	uint16_t value_data_size;
+
 	/* The name offset
 	 */
 	uint32_t name_offset;
@@ -80,15 +88,27 @@ int libfwevt_template_item_read_data(
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
-int libfwevt_tempalte_item_get_input_data_type(
+int libfwevt_template_item_get_input_data_type(
      libfwevt_template_item_t *template_item,
      uint8_t *input_data_type,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
-int libfwevt_tempalte_item_get_output_data_type(
+int libfwevt_template_item_get_output_data_type(
      libfwevt_template_item_t *template_item,
      uint8_t *output_data_type,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_item_get_number_of_values(
+     libfwevt_template_item_t *template_item,
+     uint16_t *number_of_values,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_item_get_value_data_size(
+     libfwevt_template_item_t *template_item,
+     uint16_t *value_data_size,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \

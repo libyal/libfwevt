@@ -49,6 +49,20 @@ PyMethodDef pyfwevt_template_item_object_methods[] = {
 	  "\n"
 	  "Retrieves the output data type." },
 
+	{ "get_number_of_values",
+	  (PyCFunction) pyfwevt_template_item_get_number_of_values,
+	  METH_NOARGS,
+	  "get_number_of_values() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of values." },
+
+	{ "get_value_data_size",
+	  (PyCFunction) pyfwevt_template_item_get_value_data_size,
+	  METH_NOARGS,
+	  "get_value_data_size() -> Integer\n"
+	  "\n"
+	  "Retrieves the value data size." },
+
 	{ "get_name",
 	  (PyCFunction) pyfwevt_template_item_get_name,
 	  METH_NOARGS,
@@ -72,6 +86,18 @@ PyGetSetDef pyfwevt_template_item_object_get_set_definitions[] = {
 	  (getter) pyfwevt_template_item_get_output_data_type,
 	  (setter) 0,
 	  "The output data type.",
+	  NULL },
+
+	{ "number_of_values",
+	  (getter) pyfwevt_template_item_get_number_of_values,
+	  (setter) 0,
+	  "The number of values.",
+	  NULL },
+
+	{ "value_data_size",
+	  (getter) pyfwevt_template_item_get_value_data_size,
+	  (setter) 0,
+	  "The value data size.",
 	  NULL },
 
 	{ "name",
@@ -439,6 +465,110 @@ PyObject *pyfwevt_template_item_get_output_data_type(
 	}
 	integer_object = PyLong_FromUnsignedLong(
 	                  (unsigned long) value_8bit );
+
+	return( integer_object );
+}
+
+/* Retrieves the number of values
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_template_item_get_number_of_values(
+           pyfwevt_template_item_t *pyfwevt_template_item,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_template_item_get_number_of_values";
+	uint16_t value_16bit     = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_template_item == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid template item.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_template_item_get_number_of_values(
+	          pyfwevt_template_item->template_item,
+	          &value_16bit,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of values.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_16bit );
+
+	return( integer_object );
+}
+
+/* Retrieves the value data size
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_template_item_get_value_data_size(
+           pyfwevt_template_item_t *pyfwevt_template_item,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_template_item_get_value_data_size";
+	uint16_t value_16bit     = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_template_item == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid template item.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_template_item_get_value_data_size(
+	          pyfwevt_template_item->template_item,
+	          &value_16bit,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve value data size.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_16bit );
 
 	return( integer_object );
 }

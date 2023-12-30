@@ -72,6 +72,14 @@ PyObject *pyfwevt_template_item_get_output_data_type(
            pyfwevt_template_item_t *pyfwevt_template_item,
            PyObject *arguments );
 
+PyObject *pyfwevt_template_item_get_number_of_values(
+           pyfwevt_template_item_t *pyfwevt_template_item,
+           PyObject *arguments );
+
+PyObject *pyfwevt_template_item_get_value_data_size(
+           pyfwevt_template_item_t *pyfwevt_template_item,
+           PyObject *arguments );
+
 PyObject *pyfwevt_template_item_get_name(
            pyfwevt_template_item_t *pyfwevt_template_item,
            PyObject *arguments );

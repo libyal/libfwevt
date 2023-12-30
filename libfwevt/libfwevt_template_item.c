@@ -277,6 +277,14 @@ int libfwevt_template_item_read_data(
 
 	internal_template_item->output_data_type = data[ data_offset + 5 ];
 
+	byte_stream_copy_to_uint16_little_endian(
+	 &( data[ data_offset + 12 ] ),
+	 internal_template_item->number_of_values );
+
+	byte_stream_copy_to_uint16_little_endian(
+	 &( data[ data_offset + 14 ] ),
+	 internal_template_item->value_data_size );
+
 	byte_stream_copy_to_uint32_little_endian(
 	 &( data[ data_offset + 16 ] ),
 	 name_offset );
@@ -326,21 +334,15 @@ int libfwevt_template_item_read_data(
 		 function,
 		 value_32bit );
 
-		byte_stream_copy_to_uint16_little_endian(
-		 &( data[ data_offset + 12 ] ),
-		 value_16bit );
 		libcnotify_printf(
-		 "%s: unknown5\t\t\t\t: 0x%08" PRIx16 "\n",
+		 "%s: number of values\t\t\t: %" PRIu16 "\n",
 		 function,
-		 value_16bit );
+		 internal_template_item->number_of_values );
 
-		byte_stream_copy_to_uint16_little_endian(
-		 &( data[ data_offset + 14 ] ),
-		 value_16bit );
 		libcnotify_printf(
-		 "%s: data size\t\t\t\t: %" PRIu16 "\n",
+		 "%s: value data size\t\t\t: %" PRIu16 "\n",
 		 function,
-		 value_16bit );
+		 internal_template_item->value_data_size );
 
 		libcnotify_printf(
 		 "%s: name offset\t\t\t\t: 0x%08" PRIx32 "\n",
@@ -585,6 +587,86 @@ int libfwevt_template_item_get_output_data_type(
 		return( -1 );
 	}
 	*output_data_type = internal_template_item->output_data_type;
+
+	return( 1 );
+}
+
+/* Retrieves the number of values
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_template_item_get_number_of_values(
+     libfwevt_template_item_t *template_item,
+     uint16_t *number_of_values,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_get_number_of_values";
+
+	if( template_item == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template item.",
+		 function );
+
+		return( -1 );
+	}
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
+
+	if( number_of_values == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid number of values.",
+		 function );
+
+		return( -1 );
+	}
+	*number_of_values = internal_template_item->number_of_values;
+
+	return( 1 );
+}
+
+/* Retrieves the value data size
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_template_item_get_value_data_size(
+     libfwevt_template_item_t *template_item,
+     uint16_t *value_data_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_get_value_data_size";
+
+	if( template_item == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template item.",
+		 function );
+
+		return( -1 );
+	}
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
+
+	if( value_data_size == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid value data size.",
+		 function );
+
+		return( -1 );
+	}
+	*value_data_size = internal_template_item->value_data_size;
 
 	return( 1 );
 }
