@@ -33,6 +33,12 @@ extern "C" {
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
+void libfwevt_debug_print_input_data_type(
+      uint8_t input_data_type );
+
+void libfwevt_debug_print_output_data_type(
+      uint8_t output_data_type );
+
 void libfwevt_debug_print_value_type(
       uint8_t value_type );
 

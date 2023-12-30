@@ -48,7 +48,13 @@ in the section entitled "GNU Free Documentation License".
 |===
 | Version | Author | Date | Comments
 | 0.0.1 | J.B. Metz | October 2011 | Initial version.
-| 0.0.2 | J.B. Metz | December 2023 | Moved out of MZ, PE-COFF executable file format (EXE) documentation
+| 0.0.2 | J.B. Metz | October 2012 | Additional information regarding WEVT_TEMPLATE resource.
+| 0.0.3 | J.B. Metz | November 2012 | Additional information regarding WEVT_TEMPLATE resource.
+| 0.0.4 | J.B. Metz | December 2012 | Additional information regarding WEVT_TEMPLATE resource.
+| 0.0.5 | J.B. Metz | August 2022 | Additional information regarding WEVT_TEMPLATE resource.
+| 0.0.6 | J.B. Metz | December 2023 | Additional information regarding WEVT_TEMPLATE resource.
+| 0.0.7 | J.B. Metz | December 2023 | Moved out of MZ, PE-COFF executable file format (EXE) documentation
+| 0.0.8 | J.B. Metz | December 2023 | Additional information regarding WEVT_TEMPLATE resource.
 |===
 
 :numbered:
@@ -556,7 +562,8 @@ Including the template header
 | 12 | 4 | | Number of item names
 | 16 | 4 | | Template items offset +
 The offset is relative to the start of the instrumentation manifest
-| 20 | 4 | [yellow-background]*1* | [yellow-background]*Unknown (number of BinXML fragments?)*
+| 20 | 4 | | [yellow-background]*Unknown (flags?)* +
+Seen 1 in most cases and 2 when UserData is set.
 | 24 | 16 | | Identifier +
 Contains a GUID
 | 40 | ... | | Binary XML fragment
@@ -584,13 +591,87 @@ The template item descriptor is 20 bytes in size and consists of:
 |===
 | Offset | Size | Value | Description
 | 0 | 4 | | [yellow-background]*Unknown (empty value)*
-| 4 | 1 | | input data type
-| 5 | 1 | | output data type
+| 4 | 1 | | Input data type +
+See section: <<template_item_input_data_type,Template item input data type>>
+| 5 | 1 | | Output data type +
+See section: <<template_item_output_data_type,Template item output data type>>
 | 6 | 2 | | [yellow-background]*Unknown (empty value)*
 | 8 | 4 | | [yellow-background]*Unknown (empty value)*
-| 12 | 4 | | [yellow-background]*Unknown (empty value)*
+| 12 | 2 | | [yellow-background]*Unknown (empty value)*
+| 14 | 2 | | Data size
 | 16 | 4 | | Template item name offset +
 The offset is relative to the start of the instrumentation manifest
+|===
+
+==== [[template_item_input_data_type]]Template item input data type
+
+[cols="1,1,5",options="header"]
+|===
+| Value | Identifier | Description
+| 0x01 | win:UnicodeString |
+| 0x02 | win:AnsiString |
+| 0x03 | win:Int8 |
+| 0x04 | win:UInt8 |
+| 0x05 | win:Int16 |
+| 0x06 | win:UInt16 |
+| 0x07 | win:Int32 |
+| 0x08 | win:UInt32 |
+| 0x09 | win:Int64 |
+| 0x0a | win:UInt64 |
+| 0x0b | win:Float |
+| 0x0c | win:Double |
+| 0x0d | win:Boolean |
+| 0x0e | win:Binary |
+| 0x0f | win:GUID |
+| 0x10 | win:Pointer |
+| 0x11 | win:FILETIME |
+| 0x12 | win:SYSTEMTIME |
+| 0x13 | win:SID |
+| 0x14 | win:HexInt32 |
+| 0x15 | win:HexInt64 |
+|===
+
+==== [[template_item_output_data_type]]Template item output data type
+
+[cols="1,1,5",options="header"]
+|===
+| Value | Identifier | Description
+| 0x01 | xs:string |
+| 0x02 | xs:dateTime |
+| 0x03 | xs:byte |
+| 0x04 | xs:unsignedByte |
+| 0x05 | xs:short |
+| 0x06 | xs:unsignedShort |
+| 0x07 | xs:int |
+| 0x08 | xs:unsignedInt |
+| 0x09 | xs:long |
+| 0x0a | xs:unsignedLong |
+| 0x0b | xs:float |
+| 0x0c | xs:double |
+| 0x0d | xs:boolean |
+| 0x0e | xs:GUID |
+| 0x0f | xs:hexBinary |
+| 0x10 | win:HexInt8 |
+| 0x11 | win:HexInt16 |
+| 0x12 | win:HexInt32 |
+| 0x13 | win:HexInt64 |
+| 0x14 | win:PID |
+| 0x15 | win:TID |
+| 0x16 | win:Port |
+| 0x17 | win:IPv4 |
+| 0x18 | win:IPv6 |
+| 0x19 | win:SocketAddress |
+| 0x1a | win:CIMDateTime |
+| 0x1b | win:ETWTIME |
+| 0x1c | win:Xml |
+| 0x1d | win:ErrorCode |
+| 0x1e | win:Win32Error |
+| 0x1f | win:NTSTATUS |
+| 0x20 | win:HResult |
+| 0x21 | win:DateTimeCultureInsensitive |
+| 0x22 | win:Json |
+| 0x23 | win:Utf8 |
+| 0x24 | win:Pkcs7WithTypeInfo |
 |===
 
 === Template item name

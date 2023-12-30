@@ -35,6 +35,309 @@
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
+/* Prints the input data type
+ */
+void libfwevt_debug_print_input_data_type(
+      uint8_t input_data_type )
+{
+	switch( input_data_type )
+	{
+		case 0x01:
+			libcnotify_printf(
+			 "win:UnicodeString" );
+			break;
+
+		case 0x02:
+			libcnotify_printf(
+			 "win:AnsiString" );
+			break;
+
+		case 0x03:
+			libcnotify_printf(
+			 "win:Int8" );
+			break;
+
+		case 0x04:
+			libcnotify_printf(
+			 "win:UInt8" );
+			break;
+
+		case 0x05:
+			libcnotify_printf(
+			 "win:Int16" );
+			break;
+
+		case 0x06:
+			libcnotify_printf(
+			 "win:UInt16" );
+			break;
+
+		case 0x07:
+			libcnotify_printf(
+			 "win:Int32" );
+			break;
+
+		case 0x08:
+			libcnotify_printf(
+			 "win:UInt32" );
+			break;
+
+		case 0x09:
+			libcnotify_printf(
+			 "win:Int64" );
+			break;
+
+		case 0x0a:
+			libcnotify_printf(
+			 "win:UInt64" );
+			break;
+
+		case 0x0b:
+			libcnotify_printf(
+			 "win:Float" );
+			break;
+
+		case 0x0c:
+			libcnotify_printf(
+			 "win:Double" );
+			break;
+
+		case 0x0d:
+			libcnotify_printf(
+			 "win:Boolean" );
+			break;
+
+		case 0x0e:
+			libcnotify_printf(
+			 "win:Binary" );
+			break;
+
+		case 0x0f:
+			libcnotify_printf(
+			 "win:GUID" );
+			break;
+
+		case 0x10:
+			libcnotify_printf(
+			 "win:Pointer" );
+			break;
+
+		case 0x11:
+			libcnotify_printf(
+			 "win:FILETIME" );
+			break;
+
+		case 0x12:
+			libcnotify_printf(
+			 "win:SYSTEMTIME" );
+			break;
+
+		case 0x13:
+			libcnotify_printf(
+			 "win:SID" );
+			break;
+
+		case 0x14:
+			libcnotify_printf(
+			 "win:HexInt32" );
+			break;
+
+		case 0x15:
+			libcnotify_printf(
+			 "win:HexInt64" );
+			break;
+
+		default:
+			libcnotify_printf(
+			 "UNKNOWN" );
+			break;
+	}
+}
+
+/* Prints the output data type
+ */
+void libfwevt_debug_print_output_data_type(
+      uint8_t output_data_type )
+{
+	switch( output_data_type )
+	{
+		case 0x01:
+			libcnotify_printf(
+			 "xs:string" );
+			break;
+
+		case 0x02:
+			libcnotify_printf(
+			 "xs:dateTime" );
+			break;
+
+		case 0x03:
+			libcnotify_printf(
+			 "xs:byte" );
+			break;
+
+		case 0x04:
+			libcnotify_printf(
+			 "xs:unsignedByte" );
+			break;
+
+		case 0x05:
+			libcnotify_printf(
+			 "xs:short" );
+			break;
+
+		case 0x06:
+			libcnotify_printf(
+			 "xs:unsignedShort" );
+			break;
+
+		case 0x07:
+			libcnotify_printf(
+			 "xs:int" );
+			break;
+
+		case 0x08:
+			libcnotify_printf(
+			 "xs:unsignedInt" );
+			break;
+
+		case 0x09:
+			libcnotify_printf(
+			 "xs:long" );
+			break;
+
+		case 0x0a:
+			libcnotify_printf(
+			 "xs:unsignedLong" );
+			break;
+
+		case 0x0b:
+			libcnotify_printf(
+			 "xs:float" );
+			break;
+
+		case 0x0c:
+			libcnotify_printf(
+			 "xs:double" );
+			break;
+
+		case 0x0d:
+			libcnotify_printf(
+			 "xs:boolean" );
+			break;
+
+		case 0x0e:
+			libcnotify_printf(
+			 "xs:GUID" );
+			break;
+
+		case 0x0f:
+			libcnotify_printf(
+			 "xs:hexBinary" );
+			break;
+
+		case 0x11:
+			libcnotify_printf(
+			 "win:HexInt16" );
+			break;
+
+		case 0x12:
+			libcnotify_printf(
+			 "win:HexInt32" );
+			break;
+
+		case 0x13:
+			libcnotify_printf(
+			 "win:HexInt64" );
+			break;
+
+		case 0x14:
+			libcnotify_printf(
+			 "win:PID" );
+			break;
+
+		case 0x15:
+			libcnotify_printf(
+			 "win:TID" );
+			break;
+
+		case 0x16:
+			libcnotify_printf(
+			 "win:Port" );
+			break;
+
+		case 0x17:
+			libcnotify_printf(
+			 "win:IPv4" );
+			break;
+
+		case 0x18:
+			libcnotify_printf(
+			 "win:IPv6" );
+			break;
+
+		case 0x19:
+			libcnotify_printf(
+			 "win:SocketAddress" );
+			break;
+
+		case 0x1b:
+			libcnotify_printf(
+			 "win:ETWTIME" );
+			break;
+
+		case 0x1c:
+			libcnotify_printf(
+			 "win:Xml" );
+			break;
+
+		case 0x1d:
+			libcnotify_printf(
+			 "win:ErrorCode" );
+			break;
+
+		case 0x1e:
+			libcnotify_printf(
+			 "win:Win32Error" );
+			break;
+
+		case 0x1f:
+			libcnotify_printf(
+			 "win:NTSTATUS" );
+			break;
+
+		case 0x20:
+			libcnotify_printf(
+			 "win:HResult" );
+			break;
+
+		case 0x21:
+			libcnotify_printf(
+			 "win:DateTimeCultureInsensitive" );
+			break;
+
+		case 0x22:
+			libcnotify_printf(
+			 "win:Json" );
+			break;
+
+		case 0x23:
+			libcnotify_printf(
+			 "win:Utf8" );
+			break;
+
+		case 0x24:
+			libcnotify_printf(
+			 "win:Pkcs7WithTypeInfo" );
+			break;
+
+		default:
+			libcnotify_printf(
+			 "UNKNOWN" );
+			break;
+	}
+}
+
 /* Prints the value type
  */
 void libfwevt_debug_print_value_type(

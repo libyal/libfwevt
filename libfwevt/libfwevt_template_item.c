@@ -296,7 +296,7 @@ int libfwevt_template_item_read_data(
 		 "%s: input data type\t\t\t: 0x%02" PRIx8 " (",
 		 function,
 		 internal_template_item->input_data_type );
-		libfwevt_debug_print_value_type(
+		libfwevt_debug_print_input_data_type(
 		 internal_template_item->input_data_type );
 		libcnotify_printf(
 		 ")\n" );
@@ -305,7 +305,7 @@ int libfwevt_template_item_read_data(
 		 "%s: output data type\t\t\t: 0x%02" PRIx8 " (",
 		 function,
 		 internal_template_item->output_data_type );
-		libfwevt_debug_print_value_type(
+		libfwevt_debug_print_output_data_type(
 		 internal_template_item->output_data_type );
 		libcnotify_printf(
 		 ")\n" );
@@ -326,13 +326,21 @@ int libfwevt_template_item_read_data(
 		 function,
 		 value_32bit );
 
-		byte_stream_copy_to_uint32_little_endian(
+		byte_stream_copy_to_uint16_little_endian(
 		 &( data[ data_offset + 12 ] ),
-		 value_32bit );
+		 value_16bit );
 		libcnotify_printf(
-		 "%s: unknown5\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown5\t\t\t\t: 0x%08" PRIx16 "\n",
 		 function,
-		 value_32bit );
+		 value_16bit );
+
+		byte_stream_copy_to_uint16_little_endian(
+		 &( data[ data_offset + 14 ] ),
+		 value_16bit );
+		libcnotify_printf(
+		 "%s: data size\t\t\t\t: %" PRIu16 "\n",
+		 function,
+		 value_16bit );
 
 		libcnotify_printf(
 		 "%s: name offset\t\t\t\t: 0x%08" PRIx32 "\n",
