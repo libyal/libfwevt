@@ -6,6 +6,7 @@ MSVSCPP_FILES = \
 	fwevt_test_level/fwevt_test_level.vcproj \
 	fwevt_test_manifest/fwevt_test_manifest.vcproj \
 	fwevt_test_map/fwevt_test_map.vcproj \
+	fwevt_test_notify/fwevt_test_notify.vcproj \
 	fwevt_test_opcode/fwevt_test_opcode.vcproj \
 	fwevt_test_provider/fwevt_test_provider.vcproj \
 	fwevt_test_support/fwevt_test_support.vcproj \

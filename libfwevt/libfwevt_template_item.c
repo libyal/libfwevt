@@ -175,7 +175,13 @@ int libfwevt_template_item_read_data(
      size_t data_offset,
      libcerror_error_t **error )
 {
-	static char *function = "libfwevt_template_item_read_data";
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_read_data";
+
+#if defined( HAVE_DEBUG_OUTPUT )
+	uint32_t value_32bit                                      = 0;
+	uint16_t value_16bit                                      = 0;
+#endif
 
 	if( template_item == NULL )
 	{
@@ -188,6 +194,8 @@ int libfwevt_template_item_read_data(
 
 		return( -1 );
 	}
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
+
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -221,7 +229,253 @@ int libfwevt_template_item_read_data(
 
 		return( -1 );
 	}
-/* TODO implement */
+	if( ( data_size < 20 )
+	 || ( data_offset > ( data_size - 20 ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
+		 "%s: invalid data value too small.",
+		 function );
+
+		return( -1 );
+	}
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "%s: template item data:\n",
+		 function );
+		libcnotify_print_data(
+		 &( data[ data_offset ] ),
+		 20,
+		 0 );
+	}
+#endif
+/* TODO change xml template value to handle this type */
+	internal_template_item->input_data_type = data[ data_offset + 4 ];
+
+	internal_template_item->output_data_type = data[ data_offset + 5 ];
+
+	byte_stream_copy_to_uint32_little_endian(
+	 &( data[ data_offset + 16 ] ),
+	 internal_template_item->name_offset );
+
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		byte_stream_copy_to_uint32_little_endian(
+		 &( data[ data_offset ] ),
+		 value_32bit );
+		libcnotify_printf(
+		 "%s: unknown1\t\t\t\t: 0x%08" PRIx32 "\n",
+		 function,
+		 value_32bit );
+
+		libcnotify_printf(
+		 "%s: input data type\t\t\t: 0x%02" PRIx8 " (",
+		 function,
+		 internal_template_item->input_data_type );
+		libfwevt_debug_print_value_type(
+		 internal_template_item->input_data_type );
+		libcnotify_printf(
+		 ")\n" );
+
+		libcnotify_printf(
+		 "%s: output data type\t\t\t: 0x%02" PRIx8 " (",
+		 function,
+		 internal_template_item->output_data_type );
+		libfwevt_debug_print_value_type(
+		 internal_template_item->output_data_type );
+		libcnotify_printf(
+		 ")\n" );
+
+		byte_stream_copy_to_uint16_little_endian(
+		 &( data[ data_offset + 6 ] ),
+		 value_16bit );
+		libcnotify_printf(
+		 "%s: unknown3\t\t\t\t: 0x%04" PRIx16 "\n",
+		 function,
+		 value_16bit );
+
+		byte_stream_copy_to_uint32_little_endian(
+		 &( data[ data_offset + 8 ] ),
+		 value_32bit );
+		libcnotify_printf(
+		 "%s: unknown4\t\t\t\t: 0x%08" PRIx32 "\n",
+		 function,
+		 value_32bit );
+
+		byte_stream_copy_to_uint32_little_endian(
+		 &( data[ data_offset + 12 ] ),
+		 value_32bit );
+		libcnotify_printf(
+		 "%s: unknown5\t\t\t\t: 0x%08" PRIx32 "\n",
+		 function,
+		 value_32bit );
+
+		libcnotify_printf(
+		 "%s: name offset\t\t\t\t: 0x%08" PRIx32 "\n",
+		 function,
+		 internal_template_item->name_offset );
+	}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	return( 1 );
+}
+
+/* Reads the template item
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_template_item_read_name(
+     libfwevt_template_item_t *template_item,
+     const uint8_t *data,
+     size_t data_size,
+     size_t data_offset,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_read_name";
+	uint16_t name_size                                        = 0;
+
+	if( template_item == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template item.",
+		 function );
+
+		return( -1 );
+	}
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
+
+	if( data == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid data.",
+		 function );
+
+		return( -1 );
+	}
+	if( data_size > (size_t) SSIZE_MAX )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid data size value exceeds maximum.",
+		 function );
+
+		return( -1 );
+	}
+	if( data_offset >= data_size )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data offset value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( data_size < 4 )
+	 || ( data_offset > ( data_size - 4 ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
+		 "%s: invalid data value too small.",
+		 function );
+
+		return( -1 );
+	}
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "%s: template item name data:\n",
+		 function );
+		libcnotify_print_data(
+		 &( data[ data_offset ] ),
+		 20,
+		 0 );
+	}
+#endif
+	byte_stream_copy_to_uint32_little_endian(
+	 &( data[ data_offset ] ),
+	 name_size );
+
+	if( name_size > ( data_size - data_offset ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid template - data too small.",
+		 function );
+
+		goto on_error;
+	}
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "%s: name data:\n",
+		 function );
+		libcnotify_print_data(
+		 &( data[ data_offset ] ),
+		 name_size,
+		 0 );
+	}
+#endif
+	if( name_size > 0 )
+	{
+		if( name_size < 4 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid name size value out of bounds.",
+			 function );
+
+			goto on_error;
+		}
+		name_size -= 4;
+	}
+	data_offset += 4;
+
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "%s: name size\t\t\t\t: %" PRIu32 "\n",
+		 function,
+		 name_size );
+
+		libcnotify_printf(
+		 "%s: name data:\n",
+		 function );
+		libcnotify_print_data(
+		 &( data[ data_offset ] ),
+		 name_size,
+		 0 );
+	}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+	internal_template_item->name_size = name_size;
+
+	return( 1 );
+
+on_error:
+	return( -1 );
 }
 

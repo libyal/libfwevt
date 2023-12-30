@@ -6,7 +6,7 @@ $ExitSuccess = 0
 $ExitFailure = 1
 $ExitIgnore = 77
 
-$LibraryTests = "channel error event keyword level manifest map opcode provider support task template xml_document xml_tag xml_template_value xml_token"
+$LibraryTests = "channel error event keyword level manifest map notify opcode provider support task template xml_document xml_tag xml_template_value xml_token"
 $LibraryTestsWithInput = ""
 $OptionSets = ""
 

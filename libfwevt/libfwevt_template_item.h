@@ -37,9 +37,25 @@ typedef struct libfwevt_internal_template_item libfwevt_internal_template_item_t
 
 struct libfwevt_internal_template_item
 {
-	/* The identifier
+	/* The input data type
 	 */
-	uint16_t identifier;
+	uint8_t input_data_type;
+
+	/* The output data type
+	 */
+	uint8_t output_data_type;
+
+	/* The name offset
+	 */
+	uint32_t name_offset;
+
+	/* The name
+	 */
+	uint8_t *name;
+
+	/* The name size
+	 */
+	uint16_t name_size;
 };
 
 int libfwevt_template_item_initialize(
@@ -56,6 +72,13 @@ int libfwevt_internal_template_item_free(
      libcerror_error_t **error );
 
 int libfwevt_template_item_read_data(
+     libfwevt_template_item_t *template_item,
+     const uint8_t *data,
+     size_t data_size,
+     size_t data_offset,
+     libcerror_error_t **error );
+
+int libfwevt_template_item_read_name(
      libfwevt_template_item_t *template_item,
      const uint8_t *data,
      size_t data_size,

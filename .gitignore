@@ -136,6 +136,7 @@ stamp-h[1-9]
 /tests/fwevt_test_level
 /tests/fwevt_test_manifest
 /tests/fwevt_test_map
+/tests/fwevt_test_notify
 /tests/fwevt_test_opcode
 /tests/fwevt_test_provider
 /tests/fwevt_test_support

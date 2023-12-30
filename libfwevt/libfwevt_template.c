@@ -32,6 +32,7 @@
 #include "libfwevt_libcnotify.h"
 #include "libfwevt_libfguid.h"
 #include "libfwevt_template.h"
+#include "libfwevt_template_item.h"
 #include "libfwevt_xml_document.h"
 #include "libfwevt_xml_template_value.h"
 
@@ -623,20 +624,16 @@ int libfwevt_template_read_template_items(
      size_t data_size,
      libcerror_error_t **error )
 {
+	libfwevt_template_item_t *template_item       = NULL;
 	libfwevt_xml_template_value_t *template_value = NULL;
 	static char *function                         = "libfwevt_template_read_template_items";
 	uint32_t template_items_data_offset           = 0;
-	uint32_t first_template_value_data_offset     = 0;
-	uint32_t template_value_data_offset           = 0;
+	uint32_t first_template_item_name_offset      = 0;
+	uint32_t template_item_name_offset            = 0;
 	uint16_t template_value_data_size             = 0;
-	uint8_t template_value_type                   = 0;
+	uint8_t input_data_type                       = 0;
 	int entry_index                               = 0;
 	int template_value_index                      = 0;
-
-#if defined( HAVE_DEBUG_OUTPUT )
-	uint32_t value_32bit                          = 0;
-	uint16_t value_16bit                          = 0;
-#endif
 
 	if( internal_template == NULL )
 	{
@@ -746,206 +743,89 @@ int libfwevt_template_read_template_items(
 #endif
 	do
 	{
-		if( template_items_data_offset > ( data_size - 20 ) )
+		if( libfwevt_template_item_initialize(
+		     &template_item,
+		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid template - data too small.",
+			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+			 "%s: unable to create template item.",
 			 function );
 
 			goto on_error;
 		}
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
+		if( libfwevt_template_item_read_data(
+		     template_item,
+		     data,
+		     data_size,
+		     (size_t) template_items_data_offset,
+		     error ) != 1 )
 		{
-			libcnotify_printf(
-			 "%s: value: %02d header data:\n",
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_IO,
+			 LIBCERROR_IO_ERROR_READ_FAILED,
+			 "%s: unable to read template item: %d.",
 			 function,
 			 template_value_index );
-			libcnotify_print_data(
-			 &( data[ template_items_data_offset ] ),
-			 20,
-			 0 );
+
+			goto on_error;
 		}
-#endif
-/* TODO change xml template value to handle this type */
-		template_value_type = data[ template_items_data_offset + 4 ];
-
-		byte_stream_copy_to_uint32_little_endian(
-		 &( data[ template_items_data_offset + 16 ] ),
-		 template_value_data_offset );
-
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			byte_stream_copy_to_uint32_little_endian(
-			 &( data[ template_items_data_offset ] ),
-			 value_32bit );
-			libcnotify_printf(
-			 "%s: value: %02d unknown1\t\t: 0x%08" PRIx32 "\n",
-			 function,
-			 template_value_index,
-			 value_32bit );
-
-			libcnotify_printf(
-			 "%s: value: %02d type\t\t\t: 0x%02" PRIx8 " (",
-			 function,
-			 template_value_index,
-			 template_value_type );
-			libfwevt_debug_print_value_type(
-			 template_value_type );
-			libcnotify_printf(
-			 ")\n" );
-
-			libcnotify_printf(
-			 "%s: value: %02d unknown2\t\t: 0x%02" PRIx8 "\n",
-			 function,
-			 template_value_index,
-			 data[ template_items_data_offset + 5 ] );
-
-			byte_stream_copy_to_uint16_little_endian(
-			 &( data[ template_items_data_offset + 6 ] ),
-			 value_16bit );
-			libcnotify_printf(
-			 "%s: value: %02d unknown3\t\t: 0x%04" PRIx16 "\n",
-			 function,
-			 template_value_index,
-			 value_16bit );
-
-			byte_stream_copy_to_uint32_little_endian(
-			 &( data[ template_items_data_offset + 8 ] ),
-			 value_32bit );
-			libcnotify_printf(
-			 "%s: value: %02d unknown4\t\t: 0x%08" PRIx32 "\n",
-			 function,
-			 template_value_index,
-			 value_32bit );
-
-			byte_stream_copy_to_uint32_little_endian(
-			 &( data[ template_items_data_offset + 12 ] ),
-			 value_32bit );
-			libcnotify_printf(
-			 "%s: value: %02d unknown5\t\t: 0x%08" PRIx32 "\n",
-			 function,
-			 template_value_index,
-			 value_32bit );
-
-			libcnotify_printf(
-			 "%s: value: %02d offset\t\t: 0x%08" PRIx32 "\n",
-			 function,
-			 template_value_index,
-			 template_value_data_offset );
-		}
-#endif /* defined( HAVE_DEBUG_OUTPUT ) */
-
 		template_items_data_offset += 20;
 
-		if( template_value_data_offset < internal_template->offset )
+		input_data_type           = ( (libfwevt_internal_template_item_t *) template_item )->input_data_type;
+		template_item_name_offset = ( (libfwevt_internal_template_item_t *) template_item )->name_offset;
+
+		if( template_item_name_offset < internal_template->offset )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid template value data offset value out of bounds.",
-			 function );
-
-			goto on_error;
-		}
-		template_value_data_offset -= internal_template->offset;
-
-		if( template_value_data_offset >= data_size )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid template value data offset value out of bounds.",
-			 function );
-
-			goto on_error;
-		}
-		if( template_value_data_offset > ( data_size - 4 ) )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid template - data too small.",
-			 function );
-
-			goto on_error;
-		}
-		if( first_template_value_data_offset == 0 )
-		{
-			first_template_value_data_offset = template_value_data_offset;
-		}
-		byte_stream_copy_to_uint32_little_endian(
-		 &( data[ template_value_data_offset ] ),
-		 template_value_data_size );
-
-		if( template_value_data_size > ( data_size - template_value_data_offset ) )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid template - data too small.",
-			 function );
-
-			goto on_error;
-		}
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			libcnotify_printf(
-			 "%s: value: %02d value data:\n",
+			 "%s: invalid template item: %d name offset value out of bounds.",
 			 function,
 			 template_value_index );
-			libcnotify_print_data(
-			 &( data[ template_value_data_offset ] ),
-			 template_value_data_size,
-			 0 );
+
+			goto on_error;
 		}
-#endif
-		if( template_value_data_size > 0 )
+		template_item_name_offset -= internal_template->offset;
+
+		if( libfwevt_template_item_read_name(
+		     template_item,
+		     data,
+		     data_size,
+		     (size_t) template_item_name_offset,
+		     error ) != 1 )
 		{
-			if( template_value_data_size < 4 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-				 "%s: invalid template value data size value out of bounds.",
-				 function );
-
-				goto on_error;
-			}
-			template_value_data_size -= 4;
-		}
-		template_value_data_offset += 4;
-
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			libcnotify_printf(
-			 "%s: value: %02d size\t\t\t: %" PRIu32 "\n",
-			 function,
-			 template_value_index,
-			 template_value_data_size );
-
-			libcnotify_printf(
-			 "%s: value: %02d data:\n",
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_IO,
+			 LIBCERROR_IO_ERROR_READ_FAILED,
+			 "%s: unable to read template item: %d name.",
 			 function,
 			 template_value_index );
-			libcnotify_print_data(
-			 &( data[ template_value_data_offset ] ),
-			 template_value_data_size,
-			 0 );
-		}
-#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
+			goto on_error;
+		}
+		if( first_template_item_name_offset == 0 )
+		{
+			first_template_item_name_offset = template_item_name_offset;
+		}
+		if( libfwevt_template_item_free(
+		     &template_item,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free template item.",
+			 function );
+
+			goto on_error;
+		}
 		if( libfwevt_xml_template_value_initialize(
 		     &template_value,
 		     error ) != 1 )
@@ -975,7 +855,7 @@ int libfwevt_template_read_template_items(
 		}
 		if( libfwevt_xml_template_value_set_type(
 		     template_value,
-		     template_value_type,
+		     input_data_type,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -989,7 +869,7 @@ int libfwevt_template_read_template_items(
 		}
 		if( libfwevt_xml_template_value_set_offset(
 		     template_value,
-		     template_value_data_offset,
+		     template_item_name_offset,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -1035,11 +915,17 @@ int libfwevt_template_read_template_items(
 
 		template_value_index++;
 	}
-	while( template_items_data_offset < first_template_value_data_offset );
+	while( template_items_data_offset < first_template_item_name_offset );
 
 	return( 1 );
 
 on_error:
+	if( template_item != NULL )
+	{
+		libfwevt_template_item_free(
+		 &template_item,
+		 NULL );
+	}
 	if( template_value != NULL )
 	{
 		libfwevt_xml_template_value_free(

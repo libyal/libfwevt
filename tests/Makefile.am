@@ -41,6 +41,7 @@ check_PROGRAMS = \
 	fwevt_test_level \
 	fwevt_test_manifest \
 	fwevt_test_map \
+	fwevt_test_notify \
 	fwevt_test_opcode \
 	fwevt_test_provider \
 	fwevt_test_support \
@@ -130,6 +131,17 @@ fwevt_test_map_SOURCES = \
 	fwevt_test_unused.h
 
 fwevt_test_map_LDADD = \
+	../libfwevt/libfwevt.la \
+	@LIBCERROR_LIBADD@
+
+fwevt_test_notify_SOURCES = \
+	fwevt_test_libcerror.h \
+	fwevt_test_libfwevt.h \
+	fwevt_test_macros.h \
+	fwevt_test_notify.c \
+	fwevt_test_unused.h
+
+fwevt_test_notify_LDADD = \
 	../libfwevt/libfwevt.la \
 	@LIBCERROR_LIBADD@
 
