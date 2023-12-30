@@ -258,6 +258,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_template_item.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_template_items.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_templates.c"
 				>
 			</File>
@@ -369,6 +377,14 @@
 			</File>
 			<File
 				RelativePath="..\..\pyfwevt\pyfwevt_template.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_template_item.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyfwevt\pyfwevt_template_items.h"
 				>
 			</File>
 			<File

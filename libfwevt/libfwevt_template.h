@@ -71,6 +71,10 @@ struct libfwevt_internal_template
 	 */
 	uint8_t identifier[ 16 ];
 
+	/* The items array
+	 */
+	libcdata_array_t *items_array;
+
 	/* The values array
 	 */
 	libcdata_array_t *values_array;
@@ -164,9 +168,22 @@ int libfwevt_template_get_size(
 
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_identifier(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint8_t *guid_data,
      size_t guid_data_size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_get_number_of_items(
+     libfwevt_template_t *wevt_template,
+     int *number_of_items,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_get_item_by_index(
+     libfwevt_template_t *wevt_template,
+     int item_index,
+     libfwevt_template_item_t **item,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

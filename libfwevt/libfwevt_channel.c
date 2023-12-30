@@ -185,8 +185,8 @@ int libfwevt_channel_read_data(
 	libfwevt_internal_channel_t *internal_channel = NULL;
 	fwevt_template_channel_t *wevt_channel        = NULL;
 	static char *function                         = "libfwevt_channel_read_data";
-	uint32_t channel_data_offset                  = 0;
-	uint32_t channel_data_size                    = 0;
+	uint32_t name_offset                          = 0;
+	uint32_t name_size                            = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint32_t value_32bit                          = 0;
@@ -281,8 +281,8 @@ int libfwevt_channel_read_data(
 	 internal_channel->identifier );
 
 	byte_stream_copy_to_uint32_little_endian(
-	 wevt_channel->data_offset,
-	 channel_data_offset );
+	 wevt_channel->name_offset,
+	 name_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -293,9 +293,9 @@ int libfwevt_channel_read_data(
 		 internal_channel->identifier );
 
 		libcnotify_printf(
-		 "%s: data offset\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: name offset\t\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
-		 channel_data_offset );
+		 name_offset );
 
 		byte_stream_copy_to_uint32_little_endian(
 		 wevt_channel->unknown1,
@@ -315,31 +315,31 @@ int libfwevt_channel_read_data(
 	}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
-	if( channel_data_offset > 0 )
+	if( name_offset > 0 )
 	{
-		if( channel_data_offset >= ( data_size - 4 ) )
+		if( name_offset >= ( data_size - 4 ) )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid channel data offset value out of bounds.",
+			 "%s: invalid name offset value out of bounds.",
 			 function );
 
 			goto on_error;
 		}
 		byte_stream_copy_to_uint32_little_endian(
-		 &( data[ channel_data_offset ] ),
-		 channel_data_size );
+		 &( data[ name_offset ] ),
+		 name_size );
 
-		if( ( data_size < channel_data_size )
-		 || ( channel_data_offset > ( data_size - channel_data_size ) ) )
+		if( ( data_size < name_size )
+		 || ( name_offset > ( data_size - name_size ) ) )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid channel data size value out of bounds.",
+			 "%s: invalid name size value out of bounds.",
 			 function );
 
 			goto on_error;
@@ -351,8 +351,8 @@ int libfwevt_channel_read_data(
 			 "%s: data:\n",
 			 function );
 			libcnotify_print_data(
-			 &( data[ channel_data_offset ] ),
-			 channel_data_size,
+			 &( data[ name_offset ] ),
+			 name_size,
 			 0 );
 		}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
@@ -361,19 +361,19 @@ int libfwevt_channel_read_data(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: data size\t\t\t\t\t: %" PRIu32 "\n",
+			 "%s: name size\t\t\t\t\t: %" PRIu32 "\n",
 			 function,
-			 channel_data_size );
+			 name_size );
 		}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
-		if( channel_data_size >= 4 )
+		if( name_size >= 4 )
 		{
-			channel_data_offset += 4;
-			channel_data_size   -= 4;
+			name_offset += 4;
+			name_size   -= 4;
 
-			if( ( channel_data_size == 0 )
-			 || ( channel_data_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
+			if( ( name_size == 0 )
+			 || ( name_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
 			{
 				libcerror_error_set(
 				 error,
@@ -385,7 +385,7 @@ int libfwevt_channel_read_data(
 				goto on_error;
 			}
 			internal_channel->name = (uint8_t *) memory_allocate(
-			                                      sizeof( uint8_t ) * channel_data_size );
+			                                      sizeof( uint8_t ) * name_size );
 
 			if( internal_channel->name == NULL )
 			{
@@ -398,12 +398,12 @@ int libfwevt_channel_read_data(
 
 				goto on_error;
 			}
-			internal_channel->name_size = channel_data_size;
+			internal_channel->name_size = (size_t) name_size;
 
 			if( memory_copy(
 			     internal_channel->name,
-			     &( data[ channel_data_offset ] ),
-			     channel_data_size ) == NULL )
+			     &( data[ name_offset ] ),
+			     (size_t) name_size ) == NULL )
 			{
 				libcerror_error_set(
 				 error,

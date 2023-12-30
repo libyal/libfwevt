@@ -100,6 +100,20 @@ int libfwevt_template_initialize(
 		goto on_error;
 	}
 	if( libcdata_array_initialize(
+	     &( internal_template->items_array ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create items array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_array_initialize(
 	     &( internal_template->values_array ),
 	     0,
 	     error ) != 1 )
@@ -122,6 +136,13 @@ int libfwevt_template_initialize(
 on_error:
 	if( internal_template != NULL )
 	{
+		if( internal_template->items_array != NULL )
+		{
+			libcdata_array_free(
+			 &( internal_template->items_array ),
+			 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_template_item_free,
+			 NULL );
+		}
 		memory_free(
 		 internal_template );
 	}
@@ -202,6 +223,20 @@ int libfwevt_internal_template_free(
 		{
 			memory_free(
 			 ( *internal_template )->data );
+		}
+		if( libcdata_array_free(
+		     &( ( *internal_template )->items_array ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_template_item_free,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+			 "%s: unable to free items array.",
+			 function );
+
+			result = -1;
 		}
 		if( libcdata_array_free(
 		     &( ( *internal_template )->values_array ),
@@ -761,6 +796,7 @@ int libfwevt_template_read_template_items(
 		     data,
 		     data_size,
 		     (size_t) template_items_data_offset,
+		     internal_template->offset,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -775,57 +811,32 @@ int libfwevt_template_read_template_items(
 		}
 		template_items_data_offset += 20;
 
-		input_data_type           = ( (libfwevt_internal_template_item_t *) template_item )->input_data_type;
 		template_item_name_offset = ( (libfwevt_internal_template_item_t *) template_item )->name_offset;
 
-		if( template_item_name_offset < internal_template->offset )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid template item: %d name offset value out of bounds.",
-			 function,
-			 template_value_index );
-
-			goto on_error;
-		}
-		template_item_name_offset -= internal_template->offset;
-
-		if( libfwevt_template_item_read_name(
-		     template_item,
-		     data,
-		     data_size,
-		     (size_t) template_item_name_offset,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_IO,
-			 LIBCERROR_IO_ERROR_READ_FAILED,
-			 "%s: unable to read template item: %d name.",
-			 function,
-			 template_value_index );
-
-			goto on_error;
-		}
 		if( first_template_item_name_offset == 0 )
 		{
 			first_template_item_name_offset = template_item_name_offset;
 		}
-		if( libfwevt_template_item_free(
-		     &template_item,
+		input_data_type = ( (libfwevt_internal_template_item_t *) template_item )->input_data_type;
+
+		if( libcdata_array_append_entry(
+		     internal_template->items_array,
+		     &entry_index,
+		     (intptr_t *) template_item,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free template item.",
-			 function );
+			 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+			 "%s: unable to append template item: %d to array.",
+			 function,
+			 template_value_index );
 
 			goto on_error;
 		}
+		template_item = NULL;
+
 		if( libfwevt_xml_template_value_initialize(
 		     &template_value,
 		     error ) != 1 )
@@ -915,26 +926,31 @@ int libfwevt_template_read_template_items(
 
 		template_value_index++;
 	}
-	while( template_items_data_offset < first_template_item_name_offset );
+	while( ( internal_template->offset + template_items_data_offset ) < first_template_item_name_offset );
 
 	return( 1 );
 
 on_error:
-	if( template_item != NULL )
-	{
-		libfwevt_template_item_free(
-		 &template_item,
-		 NULL );
-	}
 	if( template_value != NULL )
 	{
 		libfwevt_xml_template_value_free(
 		 &template_value,
 		 NULL );
 	}
+	if( template_item != NULL )
+	{
+		libfwevt_template_item_free(
+		 &template_item,
+		 NULL );
+	}
 	libcdata_array_empty(
 	 internal_template->values_array,
 	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_xml_template_value_free,
+	 NULL );
+
+	libcdata_array_empty(
+	 internal_template->items_array,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_internal_template_item_free,
 	 NULL );
 
 	return( -1 );
@@ -1420,7 +1436,7 @@ int libfwevt_template_get_size(
  * Returns 1 if successful, 0 if value is not available or -1 on error
  */
 int libfwevt_template_get_identifier(
-     libfwevt_template_t *template,
+     libfwevt_template_t *wevt_template,
      uint8_t *guid_data,
      size_t guid_data_size,
      libcerror_error_t **error )
@@ -1428,7 +1444,7 @@ int libfwevt_template_get_identifier(
 	libfwevt_internal_template_t *internal_template = NULL;
 	static char *function                           = "libfwevt_template_get_identifier";
 
-	if( template == NULL )
+	if( wevt_template == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1439,7 +1455,7 @@ int libfwevt_template_get_identifier(
 
 		return( -1 );
 	}
-	internal_template = (libfwevt_internal_template_t *) template;
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
 	if( guid_data == NULL )
 	{
@@ -1475,6 +1491,91 @@ int libfwevt_template_get_identifier(
 		 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
 		 "%s: unable to copy identifier.",
 		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the number of items
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_template_get_number_of_items(
+     libfwevt_template_t *wevt_template,
+     int *number_of_items,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_t *internal_template = NULL;
+	static char *function                           = "libfwevt_template_get_number_of_items";
+
+	if( wevt_template == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template.",
+		 function );
+
+		return( -1 );
+	}
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
+
+	if( libcdata_array_get_number_of_entries(
+	     internal_template->items_array,
+	     number_of_items,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve number of entries.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves a specific item
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_template_get_item_by_index(
+     libfwevt_template_t *wevt_template,
+     int item_index,
+     libfwevt_template_item_t **item,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_t *internal_template = NULL;
+	static char *function                           = "libfwevt_template_get_item_by_index";
+
+	if( wevt_template == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template.",
+		 function );
+
+		return( -1 );
+	}
+	internal_template = (libfwevt_internal_template_t *) wevt_template;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_template->items_array,
+	     item_index,
+	     (intptr_t **) item,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve entry: %d.",
+		 function,
+		 item_index );
 
 		return( -1 );
 	}

@@ -76,13 +76,45 @@ int libfwevt_template_item_read_data(
      const uint8_t *data,
      size_t data_size,
      size_t data_offset,
+     size_t template_data_offset,
      libcerror_error_t **error );
 
-int libfwevt_template_item_read_name(
+LIBFWEVT_EXTERN \
+int libfwevt_tempalte_item_get_input_data_type(
      libfwevt_template_item_t *template_item,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
+     uint8_t *input_data_type,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_tempalte_item_get_output_data_type(
+     libfwevt_template_item_t *template_item,
+     uint8_t *output_data_type,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_item_get_utf8_name_size(
+     libfwevt_template_item_t *template_item,
+     size_t *utf8_string_size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_item_get_utf8_name(
+     libfwevt_template_item_t *template_item,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_item_get_utf16_name_size(
+     libfwevt_template_item_t *template_item,
+     size_t *utf16_string_size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_template_item_get_utf16_name(
+     libfwevt_template_item_t *template_item,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

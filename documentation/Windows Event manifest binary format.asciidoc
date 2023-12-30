@@ -305,7 +305,7 @@ The channel definitions are of variable size and consist of:
 Including the channel definitions header
 | 8 | 4 | | Number of channel definitions
 | 12 | ... | | Array of channel definitions
-| ... | ... | | Channel data
+| ... | ... | | Channel name
 |===
 
 === Channel definition
@@ -334,9 +334,9 @@ or 0xffffffff (-1) if not set
 | | | Operational
 |===
 
-=== Channel data
+=== Channel name
 
-The channel data is of variable size and consists of:
+The channel name is of variable size and consists of:
 
 [cols="1,1,1,5",options="header"]
 |===
@@ -552,21 +552,21 @@ A template definition is of variable size and consists of:
 | 0 | 4 | "TEMP" | Signature
 | 4 | 4 | | Size +
 Including the template header
-| 8 | 4 | | Number of variable descriptors
-| 12 | 4 | | Number of variable names
+| 8 | 4 | | Number of item descriptors
+| 12 | 4 | | Number of item names
 | 16 | 4 | | Template items offset +
 The offset is relative to the start of the instrumentation manifest
 | 20 | 4 | [yellow-background]*1* | [yellow-background]*Unknown (number of BinXML fragments?)*
 | 24 | 16 | | Identifier +
 Contains a GUID
 | 40 | ... | | Binary XML fragment
-| ... | ... | | Template variables descriptors
-| ... | ... | | Template variables names
+| ... | ... | | Template item descriptors
+| ... | ... | | Template item names
 |===
 
 [NOTE]
-If the number of variable descriptors (and number of variable names) the
-template items offset is either 0 or contains the template size.
+If the number of item descriptors (and number of item names) the template items
+offset is either 0 or contains the template size.
 
 === Template binary XML fragment
 

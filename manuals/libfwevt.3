@@ -1,4 +1,4 @@
-.Dd December 29, 2023
+.Dd December 30, 2023
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -157,7 +157,27 @@ Template functions
 .Ft int
 .Fn libfwevt_template_get_size "libfwevt_template_t *wevt_template" "uint32_t *size" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_template_get_identifier "libfwevt_template_t *template" "uint8_t *guid_data" "size_t guid_data_size" "libfwevt_error_t **error"
+.Fn libfwevt_template_get_identifier "libfwevt_template_t *wevt_template" "uint8_t *guid_data" "size_t guid_data_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_get_number_of_items "libfwevt_template_t *wevt_template" "int *number_of_items" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_get_item_by_index "libfwevt_template_t *wevt_template" "int item_index" "libfwevt_template_item_t **item" "libfwevt_error_t **error"
+.Pp
+Template item functions
+.Ft int
+.Fn libfwevt_template_item_free "libfwevt_template_item_t **template_item" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_item_get_input_data_type "libfwevt_template_item_t *template_item" "uint8_t *input_data_type" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_item_get_output_data_type "libfwevt_template_item_t *template_item" "uint8_t *output_data_type" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_item_get_utf8_name_size "libfwevt_template_item_t *template_item" "size_t *utf8_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_item_get_utf8_name "libfwevt_template_item_t *template_item" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_item_get_utf16_name_size "libfwevt_template_item_t *template_item" "size_t *utf16_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_template_item_get_utf16_name "libfwevt_template_item_t *template_item" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
 .Pp
 XML document functions
 .Ft int

@@ -157,6 +157,11 @@ int libfwevt_internal_template_item_free(
 	}
 	if( *internal_template_item != NULL )
 	{
+		if( ( *internal_template_item )->name != NULL )
+		{
+			memory_free(
+			 ( *internal_template_item )->name );
+		}
 		memory_free(
 		 *internal_template_item );
 
@@ -173,10 +178,13 @@ int libfwevt_template_item_read_data(
      const uint8_t *data,
      size_t data_size,
      size_t data_offset,
+     size_t template_data_offset,
      libcerror_error_t **error )
 {
 	libfwevt_internal_template_item_t *internal_template_item = NULL;
 	static char *function                                     = "libfwevt_template_item_read_data";
+	uint32_t name_offset                                      = 0;
+	uint32_t name_size                                        = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint32_t value_32bit                                      = 0;
@@ -196,6 +204,17 @@ int libfwevt_template_item_read_data(
 	}
 	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
 
+	if( internal_template_item->name != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: invalid template item - name value already set.",
+		 function );
+
+		return( -1 );
+	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -260,7 +279,7 @@ int libfwevt_template_item_read_data(
 
 	byte_stream_copy_to_uint32_little_endian(
 	 &( data[ data_offset + 16 ] ),
-	 internal_template_item->name_offset );
+	 name_offset );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -318,26 +337,180 @@ int libfwevt_template_item_read_data(
 		libcnotify_printf(
 		 "%s: name offset\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
-		 internal_template_item->name_offset );
+		 name_offset );
 	}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
+	internal_template_item->name_offset = name_offset;
+
+	if( name_offset > 0 )
+	{
+		if( name_offset < template_data_offset )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid name offset value out of bounds.",
+			 function );
+
+			goto on_error;
+		}
+		name_offset -= template_data_offset;
+
+		if( name_offset >= ( data_size - 4 ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid name offset value out of bounds.",
+			 function );
+
+			goto on_error;
+		}
+		byte_stream_copy_to_uint32_little_endian(
+		 &( data[ name_offset ] ),
+		 name_size );
+
+		if( ( data_size < name_size )
+		 || ( name_offset > ( data_size - name_size ) ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid name size value out of bounds.",
+			 function );
+
+			goto on_error;
+		}
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
+		{
+			libcnotify_printf(
+			 "%s: data:\n",
+			 function );
+			libcnotify_print_data(
+			 &( data[ name_offset ] ),
+			 name_size,
+			 0 );
+		}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
+		{
+			libcnotify_printf(
+			 "%s: name size\t\t\t\t: %" PRIu32 "\n",
+			 function,
+			 name_size );
+		}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+		if( name_size >= 4 )
+		{
+			name_offset += 4;
+			name_size   -= 4;
+
+			if( ( name_size == 0 )
+			 || ( name_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid name size value out of bounds.",
+				 function );
+
+				goto on_error;
+			}
+			internal_template_item->name = (uint8_t *) memory_allocate(
+			                                            sizeof( uint8_t ) * name_size );
+
+			if( internal_template_item->name == NULL )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_MEMORY,
+				 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
+				 "%s: unable to create name.",
+				 function );
+
+				goto on_error;
+			}
+			internal_template_item->name_size = (size_t) name_size;
+
+			if( memory_copy(
+			     internal_template_item->name,
+			     &( data[ name_offset ] ),
+			     (size_t) name_size ) == NULL )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_MEMORY,
+				 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
+				 "%s: unable to copy name.",
+				 function );
+
+				goto on_error;
+			}
+#if defined( HAVE_DEBUG_OUTPUT )
+			if( libcnotify_verbose != 0 )
+			{
+				if( libfwevt_debug_print_utf16_string_value(
+				     function,
+				     "name\t\t\t\t\t",
+				     internal_template_item->name,
+				     internal_template_item->name_size,
+				     LIBUNA_ENDIAN_LITTLE,
+				     error ) != 1 )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+					 "%s: unable to print UTF-16 string value.",
+					 function );
+
+					goto on_error;
+				}
+			}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+		}
+	}
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "\n" );
+	}
+#endif
 	return( 1 );
+
+on_error:
+	if( internal_template_item->name != NULL )
+	{
+		memory_free(
+		 internal_template_item->name );
+
+		internal_template_item->name = NULL;
+	}
+	internal_template_item->name_size = 0;
+
+	return( -1 );
 }
 
-/* Reads the template item
+/* Retrieves the input data type
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_template_item_read_name(
+int libfwevt_template_item_get_input_data_type(
      libfwevt_template_item_t *template_item,
-     const uint8_t *data,
-     size_t data_size,
-     size_t data_offset,
+     uint8_t *input_data_type,
      libcerror_error_t **error )
 {
 	libfwevt_internal_template_item_t *internal_template_item = NULL;
-	static char *function                                     = "libfwevt_template_item_read_name";
-	uint16_t name_size                                        = 0;
+	static char *function                                     = "libfwevt_template_item_get_input_data_type";
 
 	if( template_item == NULL )
 	{
@@ -352,130 +525,255 @@ int libfwevt_template_item_read_name(
 	}
 	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
 
-	if( data == NULL )
+	if( input_data_type == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid data.",
+		 "%s: invalid input data type.",
 		 function );
 
 		return( -1 );
 	}
-	if( data_size > (size_t) SSIZE_MAX )
+	*input_data_type = internal_template_item->input_data_type;
+
+	return( 1 );
+}
+
+/* Retrieves the output data type
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_template_item_get_output_data_type(
+     libfwevt_template_item_t *template_item,
+     uint8_t *output_data_type,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_get_output_data_type";
+
+	if( template_item == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid data size value exceeds maximum.",
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template item.",
 		 function );
 
 		return( -1 );
 	}
-	if( data_offset >= data_size )
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
+
+	if( output_data_type == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid data offset value out of bounds.",
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid output data type.",
 		 function );
 
 		return( -1 );
 	}
-	if( ( data_size < 4 )
-	 || ( data_offset > ( data_size - 4 ) ) )
+	*output_data_type = internal_template_item->output_data_type;
+
+	return( 1 );
+}
+
+/* Retrieves the size of the UTF-8 formatted name
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_template_item_get_utf8_name_size(
+     libfwevt_template_item_t *template_item,
+     size_t *utf8_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_get_utf8_name_size";
+
+	if( template_item == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data value too small.",
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template item.",
 		 function );
 
 		return( -1 );
 	}
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( libcnotify_verbose != 0 )
-	{
-		libcnotify_printf(
-		 "%s: template item name data:\n",
-		 function );
-		libcnotify_print_data(
-		 &( data[ data_offset ] ),
-		 20,
-		 0 );
-	}
-#endif
-	byte_stream_copy_to_uint32_little_endian(
-	 &( data[ data_offset ] ),
-	 name_size );
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
 
-	if( name_size > ( data_size - data_offset ) )
+	if( ( internal_template_item->name == NULL )
+	 || ( internal_template_item->name_size == 0 ) )
+	{
+		return( 0 );
+	}
+	if( libuna_utf8_string_size_from_utf16_stream(
+	     internal_template_item->name,
+	     internal_template_item->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
+	     utf8_string_size,
+	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid template - data too small.",
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string size.",
 		 function );
 
-		goto on_error;
+		return( -1 );
 	}
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( libcnotify_verbose != 0 )
-	{
-		libcnotify_printf(
-		 "%s: name data:\n",
-		 function );
-		libcnotify_print_data(
-		 &( data[ data_offset ] ),
-		 name_size,
-		 0 );
-	}
-#endif
-	if( name_size > 0 )
-	{
-		if( name_size < 4 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid name size value out of bounds.",
-			 function );
-
-			goto on_error;
-		}
-		name_size -= 4;
-	}
-	data_offset += 4;
-
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( libcnotify_verbose != 0 )
-	{
-		libcnotify_printf(
-		 "%s: name size\t\t\t\t: %" PRIu32 "\n",
-		 function,
-		 name_size );
-
-		libcnotify_printf(
-		 "%s: name data:\n",
-		 function );
-		libcnotify_print_data(
-		 &( data[ data_offset ] ),
-		 name_size,
-		 0 );
-	}
-#endif /* defined( HAVE_DEBUG_OUTPUT ) */
-
-	internal_template_item->name_size = name_size;
-
 	return( 1 );
+}
 
-on_error:
-	return( -1 );
+/* Retrieves the UTF-8 formatted name
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_template_item_get_utf8_name(
+     libfwevt_template_item_t *template_item,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_get_utf8_name";
+
+	if( template_item == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template item.",
+		 function );
+
+		return( -1 );
+	}
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
+
+	if( ( internal_template_item->name == NULL )
+	 || ( internal_template_item->name_size == 0 ) )
+	{
+		return( 0 );
+	}
+	if( libuna_utf8_string_copy_from_utf16_stream(
+	     utf8_string,
+	     utf8_string_size,
+	     internal_template_item->name,
+	     internal_template_item->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the size of the UTF-16 formatted name
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_template_item_get_utf16_name_size(
+     libfwevt_template_item_t *template_item,
+     size_t *utf16_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_get_utf16_name_size";
+
+	if( template_item == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template item.",
+		 function );
+
+		return( -1 );
+	}
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
+
+	if( ( internal_template_item->name == NULL )
+	 || ( internal_template_item->name_size == 0 ) )
+	{
+		return( 0 );
+	}
+	if( libuna_utf16_string_size_from_utf16_stream(
+	     internal_template_item->name,
+	     internal_template_item->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
+	     utf16_string_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-16 string size.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the UTF-16 formatted name
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libfwevt_template_item_get_utf16_name(
+     libfwevt_template_item_t *template_item,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_template_item_t *internal_template_item = NULL;
+	static char *function                                     = "libfwevt_template_item_get_utf16_name";
+
+	if( template_item == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid template item.",
+		 function );
+
+		return( -1 );
+	}
+	internal_template_item = (libfwevt_internal_template_item_t *) template_item;
+
+	if( ( internal_template_item->name == NULL )
+	 || ( internal_template_item->name_size == 0 ) )
+	{
+		return( 0 );
+	}
+	if( libuna_utf16_string_copy_from_utf16_stream(
+	     utf16_string,
+	     utf16_string_size,
+	     internal_template_item->name,
+	     internal_template_item->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
 }
 

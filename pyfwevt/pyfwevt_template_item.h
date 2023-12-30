@@ -1,5 +1,5 @@
 /*
- * Python object wrapper of libfwevt_template_t
+ * Python object wrapper of libfwevt_template_item_t
  *
  * Copyright (C) 2011-2023, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _PYFWEVT_TEMPLATE_H )
-#define _PYFWEVT_TEMPLATE_H
+#if !defined( _PYFWEVT_TEMPLATE_ITEM_H )
+#define _PYFWEVT_TEMPLATE_ITEM_H
 
 #include <common.h>
 #include <types.h>
@@ -32,62 +32,53 @@
 extern "C" {
 #endif
 
-typedef struct pyfwevt_template pyfwevt_template_t;
+typedef struct pyfwevt_template_item pyfwevt_template_item_t;
 
-struct pyfwevt_template
+struct pyfwevt_template_item
 {
 	/* Python object initialization
 	 */
 	PyObject_HEAD
 
-	/* The libfwevt template
+	/* The libfwevt template_item
 	 */
-	libfwevt_template_t *template;
+	libfwevt_template_item_t *template_item;
 
 	/* The parent object
 	 */
 	PyObject *parent_object;
 };
 
-extern PyMethodDef pyfwevt_template_object_methods[];
-extern PyTypeObject pyfwevt_template_type_object;
+extern PyMethodDef pyfwevt_template_item_object_methods[];
+extern PyTypeObject pyfwevt_template_item_type_object;
 
-PyObject *pyfwevt_template_new(
-           libfwevt_template_t *template,
+PyObject *pyfwevt_template_item_new(
+           libfwevt_template_item_t *template_item,
            PyObject *parent_object );
 
-int pyfwevt_template_init(
-     pyfwevt_template_t *pyfwevt_template,
+int pyfwevt_template_item_init(
+     pyfwevt_template_item_t *pyfwevt_template_item,
      PyObject *arguments,
      PyObject *keywords );
 
-void pyfwevt_template_free(
-      pyfwevt_template_t *pyfwevt_template );
+void pyfwevt_template_item_free(
+      pyfwevt_template_item_t *pyfwevt_template_item );
 
-PyObject *pyfwevt_template_get_identifier(
-           pyfwevt_template_t *pyfwevt_template,
+PyObject *pyfwevt_template_item_get_input_data_type(
+           pyfwevt_template_item_t *pyfwevt_template_item,
            PyObject *arguments );
 
-PyObject *pyfwevt_template_get_number_of_items(
-           pyfwevt_template_t *pyfwevt_template,
+PyObject *pyfwevt_template_item_get_output_data_type(
+           pyfwevt_template_item_t *pyfwevt_template_item,
            PyObject *arguments );
 
-PyObject *pyfwevt_template_get_item_by_index(
-           PyObject *pyfwevt_template,
-           int item_index );
-
-PyObject *pyfwevt_template_get_item(
-           PyObject *pyfwevt_template,
-           PyObject *arguments,
-           PyObject *keywords );
-
-PyObject *pyfwevt_template_get_items(
-           pyfwevt_template_t *pyfwevt_template,
+PyObject *pyfwevt_template_item_get_name(
+           pyfwevt_template_item_t *pyfwevt_template_item,
            PyObject *arguments );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _PYFWEVT_TEMPLATE_H ) */
+#endif /* !defined( _PYFWEVT_TEMPLATE_ITEM_H ) */
 

@@ -50,6 +50,8 @@
 #include "pyfwevt_task.h"
 #include "pyfwevt_tasks.h"
 #include "pyfwevt_template.h"
+#include "pyfwevt_template_item.h"
+#include "pyfwevt_template_items.h"
 #include "pyfwevt_templates.h"
 #include "pyfwevt_unused.h"
 
@@ -478,6 +480,40 @@ PyMODINIT_FUNC initpyfwevt(
 	 module,
 	 "template",
 	 (PyObject *) &pyfwevt_template_type_object );
+
+	/* Setup the template item type object
+	 */
+	pyfwevt_template_item_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_template_item_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_template_item_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "template_item",
+	 (PyObject *) &pyfwevt_template_item_type_object );
+
+	/* Setup the template items type object
+	 */
+	pyfwevt_template_items_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyfwevt_template_items_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyfwevt_template_items_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "template_items",
+	 (PyObject *) &pyfwevt_template_items_type_object );
 
 	/* Setup the templates type object
 	 */

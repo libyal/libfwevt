@@ -36,6 +36,8 @@ pyfwevt_la_SOURCES = \
 	pyfwevt_task.c pyfwevt_task.h \
 	pyfwevt_tasks.c pyfwevt_tasks.h \
 	pyfwevt_template.c pyfwevt_template.h \
+	pyfwevt_template_item.c pyfwevt_template_item.h \
+	pyfwevt_template_items.c pyfwevt_template_items.h \
 	pyfwevt_templates.c pyfwevt_templates.h \
 	pyfwevt_unused.h
 

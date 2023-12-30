@@ -32,6 +32,8 @@
 #include "pyfwevt_libfwevt.h"
 #include "pyfwevt_python.h"
 #include "pyfwevt_template.h"
+#include "pyfwevt_template_item.h"
+#include "pyfwevt_template_items.h"
 #include "pyfwevt_unused.h"
 
 PyMethodDef pyfwevt_template_object_methods[] = {
@@ -43,6 +45,20 @@ PyMethodDef pyfwevt_template_object_methods[] = {
 	  "\n"
 	  "Retrieves the identifier." },
 
+	{ "get_number_of_items",
+	  (PyCFunction) pyfwevt_template_get_number_of_items,
+	  METH_NOARGS,
+	  "get_number_of_items() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of items." },
+
+	{ "get_item",
+	  (PyCFunction) pyfwevt_template_get_item,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_item(item_index) -> Object\n"
+	  "\n"
+	  "Retrieves the item specified by the index." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
@@ -53,6 +69,18 @@ PyGetSetDef pyfwevt_template_object_get_set_definitions[] = {
 	  (getter) pyfwevt_template_get_identifier,
 	  (setter) 0,
 	  "The identifier.",
+	  NULL },
+
+	{ "number_of_items",
+	  (getter) pyfwevt_template_get_number_of_items,
+	  (setter) 0,
+	  "The number of items.",
+	  NULL },
+
+	{ "items",
+	  (getter) pyfwevt_template_get_items,
+	  (setter) 0,
+	  "The items.",
 	  NULL },
 
 	/* Sentinel */
@@ -376,5 +404,224 @@ PyObject *pyfwevt_template_get_identifier(
 		return( NULL );
 	}
 	return( string_object );
+}
+
+/* Retrieves the number of items
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_template_get_number_of_items(
+           pyfwevt_template_t *pyfwevt_template,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_template_get_number_of_items";
+	int number_of_items      = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_template == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid template.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_template_get_number_of_items(
+	          pyfwevt_template->template,
+	          &number_of_items,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of items.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_items );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_items );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific item by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_template_get_item_by_index(
+           PyObject *pyfwevt_template,
+           int item_index )
+{
+	PyObject *item_object          = NULL;
+	libcerror_error_t *error       = NULL;
+	libfwevt_template_item_t *item = NULL;
+	static char *function          = "pyfwevt_template_get_item_by_index";
+	int result                     = 0;
+
+	if( pyfwevt_template == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid template.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_template_get_item_by_index(
+	          ( (pyfwevt_template_t *) pyfwevt_template )->template,
+	          item_index,
+	          &item,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve item: %d.",
+		 function,
+		 item_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	item_object = pyfwevt_template_item_new(
+	               item,
+	               pyfwevt_template );
+
+	if( item_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create item object.",
+		 function );
+
+		goto on_error;
+	}
+	return( item_object );
+
+on_error:
+	if( item != NULL )
+	{
+		libfwevt_template_item_free(
+		 &item,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific item
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_template_get_item(
+           PyObject *pyfwevt_template,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *item_object       = NULL;
+	static char *keyword_list[] = { "item_index", NULL };
+	int item_index              = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &item_index ) == 0 )
+	{
+		return( NULL );
+	}
+	item_object = pyfwevt_template_get_item_by_index(
+	               pyfwevt_template,
+	               item_index );
+
+	return( item_object );
+}
+
+/* Retrieves a sequence and iterator object for the items
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_template_get_items(
+           pyfwevt_template_t *pyfwevt_template,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyfwevt_template_get_items";
+	int number_of_items       = 0;
+	int result                = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_template == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid template.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_template_get_number_of_items(
+	          pyfwevt_template->template,
+	          &number_of_items,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of items.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyfwevt_template_items_new(
+	                   (PyObject *) pyfwevt_template,
+	                   &pyfwevt_template_get_item_by_index,
+	                   number_of_items );
+
+	if( sequence_object == NULL )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
 }
 

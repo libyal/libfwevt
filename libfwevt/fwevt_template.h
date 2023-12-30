@@ -137,10 +137,10 @@ struct fwevt_template_channel
 	 */
 	uint8_t identifier[ 4 ];
 
-	/* The data offset
+	/* The name offset
 	 * Consists of 4 bytes
 	 */
-	uint8_t data_offset[ 4 ];
+	uint8_t name_offset[ 4 ];
 
 	/* Unknown
 	 * Consists of 4 bytes
