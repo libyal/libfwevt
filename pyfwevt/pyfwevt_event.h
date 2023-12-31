@@ -76,6 +76,10 @@ PyObject *pyfwevt_event_get_message_identifier(
            pyfwevt_event_t *pyfwevt_event,
            PyObject *arguments );
 
+PyObject *pyfwevt_event_get_template_offset(
+           pyfwevt_event_t *pyfwevt_event,
+           PyObject *arguments );
+
 #if defined( __cplusplus )
 }
 #endif

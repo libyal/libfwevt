@@ -53,7 +53,7 @@ PyMethodDef pyfwevt_template_object_methods[] = {
 	  "Retrieves the number of items." },
 
 	{ "get_item",
-	  (PyCFunctionWithKeywords) pyfwevt_template_get_item,
+	  (PyCFunction) pyfwevt_template_get_item,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_item(item_index) -> Object\n"
 	  "\n"

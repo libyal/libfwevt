@@ -56,6 +56,13 @@ PyMethodDef pyfwevt_event_object_methods[] = {
 	  "\n"
 	  "Retrieves the message identifier." },
 
+	{ "get_template_offset",
+	  (PyCFunction) pyfwevt_event_get_template_offset,
+	  METH_NOARGS,
+	  "get_template_offset() -> Integer\n"
+	  "\n"
+	  "Retrieves the template offset." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
@@ -78,6 +85,12 @@ PyGetSetDef pyfwevt_event_object_get_set_definitions[] = {
 	  (getter) pyfwevt_event_get_message_identifier,
 	  (setter) 0,
 	  "The message identifier.",
+	  NULL },
+
+	{ "template_offset",
+	  (getter) pyfwevt_event_get_template_offset,
+	  (setter) 0,
+	  "The template offset.",
 	  NULL },
 
 	/* Sentinel */
@@ -493,6 +506,58 @@ PyObject *pyfwevt_event_get_message_identifier(
 		 error,
 		 PyExc_IOError,
 		 "%s: unable to retrieve message identifier.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_32bit );
+
+	return( integer_object );
+}
+
+/* Retrieves the template offset
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_event_get_template_offset(
+           pyfwevt_event_t *pyfwevt_event,
+           PyObject *arguments PYFWEVT_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyfwevt_event_get_template_offset";
+	uint32_t value_32bit     = 0;
+	int result               = 0;
+
+	PYFWEVT_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyfwevt_event == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid event.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_event_get_template_offset(
+	          pyfwevt_event->event,
+	          &value_32bit,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve template offset.",
 		 function );
 
 		libcerror_error_free(

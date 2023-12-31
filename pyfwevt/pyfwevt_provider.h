@@ -200,6 +200,11 @@ PyObject *pyfwevt_provider_get_template(
            PyObject *arguments,
            PyObject *keywords );
 
+PyObject *pyfwevt_provider_get_template_by_offset(
+           PyObject *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords );
+
 PyObject *pyfwevt_provider_get_templates(
            pyfwevt_provider_t *pyfwevt_provider,
            PyObject *arguments );

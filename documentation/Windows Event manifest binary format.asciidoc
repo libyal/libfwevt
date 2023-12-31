@@ -396,7 +396,7 @@ The offset is relative to the start of the instrumentation manifest or 0 if not 
 | 32 | 4 | | Task definition offset +
 The offset is relative to the start of the instrumentation manifest or 0 if not set
 | 36 | 4 | | [yellow-background]*Unknown (number of 4 byte values?)*
-| 40 | 4 | | [yellow-background]*Unknown (Offset to a 4 byte value?)*
+| 40 | 4 | | [yellow-background]*Unknown (Offset to 4 byte values?)*
 | 44 | 4 | | [yellow-background]*Unknown (Flags)*
 |===
 

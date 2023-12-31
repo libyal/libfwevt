@@ -38,7 +38,7 @@
 PyMethodDef pyfwevt_manifest_object_methods[] = {
 
 	{ "copy_from_byte_stream",
-	  (PyCFunctionWithKeywords) pyfwevt_manifest_copy_from_byte_stream,
+	  (PyCFunction) pyfwevt_manifest_copy_from_byte_stream,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "copy_from_byte_stream(byte_stream)\n"
 	  "\n"
@@ -52,7 +52,7 @@ PyMethodDef pyfwevt_manifest_object_methods[] = {
 	  "Retrieves the number of providers." },
 
 	{ "get_provider",
-	  (PyCFunctionWithKeywords) pyfwevt_manifest_get_provider,
+	  (PyCFunction) pyfwevt_manifest_get_provider,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_provider(provider_index) -> Object\n"
 	  "\n"

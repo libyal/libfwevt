@@ -67,7 +67,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of channels." },
 
 	{ "get_channel",
-	  (PyCFunctionWithKeywords) pyfwevt_provider_get_channel,
+	  (PyCFunction) pyfwevt_provider_get_channel,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_channel(channel_index) -> Object\n"
 	  "\n"
@@ -81,7 +81,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of events." },
 
 	{ "get_event",
-	  (PyCFunctionWithKeywords) pyfwevt_provider_get_event,
+	  (PyCFunction) pyfwevt_provider_get_event,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_event(event_index) -> Object\n"
 	  "\n"
@@ -95,7 +95,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of keywords." },
 
 	{ "get_keyword",
-	  (PyCFunctionWithKeywords) pyfwevt_provider_get_keyword,
+	  (PyCFunction) pyfwevt_provider_get_keyword,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_keyword(keyword_index) -> Object\n"
 	  "\n"
@@ -109,7 +109,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of levels." },
 
 	{ "get_level",
-	  (PyCFunctionWithKeywords) pyfwevt_provider_get_level,
+	  (PyCFunction) pyfwevt_provider_get_level,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_level(level_index) -> Object\n"
 	  "\n"
@@ -123,7 +123,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of maps." },
 
 	{ "get_map",
-	  (PyCFunctionWithKeywords) pyfwevt_provider_get_map,
+	  (PyCFunction) pyfwevt_provider_get_map,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_map(map_index) -> Object\n"
 	  "\n"
@@ -137,7 +137,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the template by offset." },
 
 	{ "get_opcode",
-	  (PyCFunctionWithKeywords) pyfwevt_provider_get_opcode,
+	  (PyCFunction) pyfwevt_provider_get_opcode,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_opcode(opcode_index) -> Object\n"
 	  "\n"
@@ -151,7 +151,7 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of tasks." },
 
 	{ "get_task",
-	  (PyCFunctionWithKeywords) pyfwevt_provider_get_task,
+	  (PyCFunction) pyfwevt_provider_get_task,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_task(task_index) -> Object\n"
 	  "\n"
@@ -165,11 +165,18 @@ PyMethodDef pyfwevt_provider_object_methods[] = {
 	  "Retrieves the number of templates." },
 
 	{ "get_template",
-	  (PyCFunctionWithKeywords) pyfwevt_provider_get_template,
+	  (PyCFunction) pyfwevt_provider_get_template,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_template(template_index) -> Object\n"
 	  "\n"
 	  "Retrieves the template specified by the index." },
+
+	{ "get_template_by_offset",
+	  (PyCFunction) pyfwevt_provider_get_template_by_offset,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_template_by_offset(template_offset) -> Object or None\n"
+	  "\n"
+	  "Retrieves the template specified by the offset." },
 
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
@@ -1797,7 +1804,7 @@ PyObject *pyfwevt_provider_get_opcode_by_index(
 		pyfwevt_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve : %d.",
+		 "%s: unable to retrieve oppcode: %d.",
 		 function,
 		 opcode_index );
 
@@ -2016,7 +2023,7 @@ PyObject *pyfwevt_provider_get_task_by_index(
 		pyfwevt_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve : %d.",
+		 "%s: unable to retrieve task: %d.",
 		 function,
 		 task_index );
 
@@ -2235,7 +2242,7 @@ PyObject *pyfwevt_provider_get_template_by_index(
 		pyfwevt_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve : %d.",
+		 "%s: unable to retrieve template: %d.",
 		 function,
 		 template_index );
 
@@ -2295,6 +2302,90 @@ PyObject *pyfwevt_provider_get_template(
 	                   template_index );
 
 	return( template_object );
+}
+
+/* Retrieves a specific template
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyfwevt_provider_get_template_by_offset(
+           PyObject *pyfwevt_provider,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *template_object     = NULL;
+	libcerror_error_t *error      = NULL;
+	libfwevt_template_t *template = NULL;
+	static char *function         = "pyfwevt_provider_get_template_by_offset";
+	static char *keyword_list[]   = { "template_offset", NULL };
+	unsigned long template_offset = 0;
+	int result                    = 0;
+
+	if( pyfwevt_provider == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid provider.",
+		 function );
+
+		return( NULL );
+	}
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "k",
+	     keyword_list,
+	     &template_offset ) == 0 )
+	{
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libfwevt_provider_get_template_by_offset(
+	          ( (pyfwevt_provider_t *) pyfwevt_provider )->provider,
+	          (uint32_t) template_offset,
+	          &template,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result == -1 )
+	{
+		pyfwevt_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve template at offset: %" PRIu32 " (0x%08" PRIx32 ").",
+		 function,
+		 (uint32_t) template_offset,
+		 (uint32_t) template_offset );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	template_object = pyfwevt_template_new(
+	                   template,
+	                   pyfwevt_provider );
+
+	if( template_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create template object.",
+		 function );
+
+		goto on_error;
+	}
+	return( template_object );
+
+on_error:
+	if( template != NULL )
+	{
+		libfwevt_template_free(
+		 &template,
+		 NULL );
+	}
+	return( NULL );
 }
 
 /* Retrieves a sequence and iterator object for the templates
