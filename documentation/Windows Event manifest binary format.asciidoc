@@ -699,8 +699,8 @@ The data is 8-byte aligned +
 
 [cols="1,5",options="header"]
 |===
-| Title: | The Language Code Identifier (LCID)
-| URL: | https://github.com/libyal/libfwnt/blob/main/documentation/Language%20Code%20identifiers.asciidoc
+| Title: | Security Descriptor
+| URL: | https://github.com/libyal/libfwnt/blob/main/documentation/Security%20Descriptor.asciidoc
 |===
 
 [cols="1,5",options="header"]

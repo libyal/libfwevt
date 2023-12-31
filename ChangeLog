@@ -1,10 +1,13 @@
 TODO
+* Remove the need to create a copy of the template data
+  at worst only have a copy of the BinXML
+** remove libfwevt_template_get_data
+
 * Rename _read() functions to _read_data()
 ** libfwevt_manifest_read
 ** libfwevt_template_read
 ** libfwevt_xml_document_read
-* Remove deprecated libfwevt_xml_document_clone, previously used by libevtx
-* Remove deprecated libfwevt_manifest_get_provider, previously used by libwrc
+
 * Expose libfwevt_xml_tag_free
 
 20140928

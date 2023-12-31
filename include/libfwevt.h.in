@@ -600,6 +600,7 @@ int libfwevt_template_set_ascii_codepage(
 /* Retrieves the data
  * Returns 1 if successful or -1 on error
  */
+LIBFWEVT_DEPRECATED \
 LIBFWEVT_EXTERN \
 int libfwevt_template_get_data(
      libfwevt_template_t *wevt_template,

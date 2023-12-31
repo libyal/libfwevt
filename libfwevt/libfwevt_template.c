@@ -350,8 +350,35 @@ int libfwevt_template_read(
 		goto on_error;
 	}
 	if( ( internal_template->size == 0 )
-	 || ( (size_t) internal_template->size > ( data_size - data_offset ) )
-	 || ( (size_t) internal_template->size > MEMORY_MAXIMUM_ALLOCATION_SIZE ) )
+	 || ( (size_t) internal_template->size > ( data_size - data_offset ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid template size value out of bounds.",
+		 function );
+
+		goto on_error;
+	}
+	internal_template->offset = (uint32_t) data_offset;
+
+	if( libfwevt_template_read_template_items(
+	     internal_template,
+	     &( data[ data_offset ] ),
+	     (size_t) internal_template->size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read template template items.",
+		 function );
+
+		goto on_error;
+	}
+	if( (size_t) internal_template->size > MEMORY_MAXIMUM_ALLOCATION_SIZE )
 	{
 		libcerror_error_set(
 		 error,
@@ -391,7 +418,6 @@ int libfwevt_template_read(
 		goto on_error;
 	}
 	internal_template->data_size = (size_t) internal_template->size;
-	internal_template->offset    = (uint32_t) data_offset;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -1047,21 +1073,6 @@ int libfwevt_template_read_xml_document(
 
 		goto on_error;
 	}
-	if( libfwevt_template_read_template_items(
-	     internal_template,
-	     internal_template->data,
-	     internal_template->data_size,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read template template items.",
-		 function );
-
-		goto on_error;
-	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
@@ -1220,6 +1231,17 @@ int libfwevt_template_set_data(
 	}
 	internal_template = (libfwevt_internal_template_t *) wevt_template;
 
+	if( internal_template->data != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: invalid template - data value already set.",
+		 function );
+
+		return( -1 );
+	}
 	if( data == NULL )
 	{
 		libcerror_error_set(
@@ -1258,7 +1280,8 @@ int libfwevt_template_set_data(
 
 		goto on_error;
 	}
-	if( (size_t) internal_template->size > data_size )
+	if( ( internal_template->size == 0 )
+	 || ( (size_t) internal_template->size > data_size ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1269,13 +1292,22 @@ int libfwevt_template_set_data(
 
 		goto on_error;
 	}
-	if( internal_template->data != NULL )
-	{
-		memory_free(
-		 internal_template->data );
+	internal_template->offset = 0;
 
-		internal_template->data      = NULL;
-		internal_template->data_size = 0;
+	if( libfwevt_template_read_template_items(
+	     internal_template,
+	     data,
+	     data_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read template template items.",
+		 function );
+
+		goto on_error;
 	}
 	internal_template->data = (uint8_t *) memory_allocate(
 	                                       sizeof( uint8_t ) * data_size );
