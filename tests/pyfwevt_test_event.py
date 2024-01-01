@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Python-bindings manifest type test script
+# Python-bindings event type test script
 #
 # Copyright (C) 2011-2024, Joachim Metz <joachim.metz@gmail.com>
 #
@@ -24,8 +24,8 @@ import unittest
 import pyfwevt
 
 
-class ManifestTypeTests(unittest.TestCase):
-  """Tests the manifest type."""
+class ChannelTypeTests(unittest.TestCase):
+  """Tests the event type."""
 
   _TEST_DATA = bytes(bytearray([
 	  0x43, 0x52, 0x49, 0x4d, 0x78, 0x02, 0x00, 0x00, 0x05, 0x00, 0x01, 0x00,
@@ -82,31 +82,69 @@ class ManifestTypeTests(unittest.TestCase):
       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
       0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
-  def test_get_number_of_providers(self):
-    """Tests the get_number_of_providers function and number_of_providers property."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+  def test_get_identifier(self):
+    """Tests the get_identifier function and identifier property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    number_of_providers = manifest.get_number_of_providers()
-    self.assertEqual(number_of_providers, 1)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    self.assertEqual(manifest.number_of_providers, 1)
+    fwevt_event = fwevt_provider.get_event(0)
+    self.assertIsNotNone(fwevt_provider)
 
-  def test_get_provider(self):
-    """Tests the get_provider function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    identifier = fwevt_event.get_identifier()
+    self.assertEqual(identifier, 1)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    self.assertEqual(fwevt_event.identifier, 1)
 
-  def test_get_providers(self):
-    """Tests the providers property."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+  def test_get_version(self):
+    """Tests the get_version function and version property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    providers = list(manifest.providers)
-    self.assertEqual(len(providers), 1)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
+
+    fwevt_event = fwevt_provider.get_event(0)
+    self.assertIsNotNone(fwevt_provider)
+
+    version = fwevt_event.get_version()
+    self.assertEqual(version, 1)
+
+    self.assertEqual(fwevt_event.version, 1)
+
+  def test_get_message_identifier(self):
+    """Tests the get_message_identifier function and message_identifier property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
+
+    fwevt_event = fwevt_provider.get_event(0)
+    self.assertIsNotNone(fwevt_provider)
+
+    message_identifier = fwevt_event.get_message_identifier()
+    self.assertEqual(message_identifier, 0xb0010001)
+
+    self.assertEqual(fwevt_event.message_identifier, 0xb0010001)
+
+  def test_get_template_offset(self):
+    """Tests the get_template_offset function and template_offset property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
+
+    fwevt_event = fwevt_provider.get_event(0)
+    self.assertIsNotNone(fwevt_provider)
+
+    template_offset = fwevt_event.get_template_offset()
+    self.assertEqual(template_offset, 120)
+
+    self.assertEqual(fwevt_event.template_offset, 120)
 
 
 if __name__ == "__main__":

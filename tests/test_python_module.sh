@@ -7,7 +7,7 @@ EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
 EXIT_IGNORE=77;
 
-TEST_FUNCTIONS="manifest provider support";
+TEST_FUNCTIONS="event manifest provider support";
 TEST_FUNCTIONS_WITH_INPUT="";
 OPTION_SETS=();
 

@@ -1,7 +1,7 @@
 /*
  * Python object wrapper of libfwevt_provider_t
  *
- * Copyright (C) 2011-2023, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2011-2024, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -2362,6 +2362,13 @@ PyObject *pyfwevt_provider_get_template_by_offset(
 		 &error );
 
 		goto on_error;
+	}
+	else if( result == 0 )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
 	}
 	template_object = pyfwevt_template_new(
 	                   template,

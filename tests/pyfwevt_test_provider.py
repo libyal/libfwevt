@@ -2,7 +2,7 @@
 #
 # Python-bindings provider type test script
 #
-# Copyright (C) 2011-2023, Joachim Metz <joachim.metz@gmail.com>
+# Copyright (C) 2011-2024, Joachim Metz <joachim.metz@gmail.com>
 #
 # Refer to AUTHORS for acknowledgements.
 #
@@ -18,8 +18,6 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-from __future__ import unicode_literals
 
 import unittest
 
@@ -85,191 +83,223 @@ class ProviderTypeTests(unittest.TestCase):
       0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
   def test_get_identifier(self):
-    """Tests the get_identifier function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_identifier function and identifier property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    identifier = provider.get_identifier()
+    identifier = fwevt_provider.get_identifier()
     self.assertEqual(identifier, '06a2ea53-fc6c-42e5-9176-18749ab2ca13')
 
+    self.assertEqual(fwevt_provider.identifier, '06a2ea53-fc6c-42e5-9176-18749ab2ca13')
+
   def test_get_number_of_channels(self):
-    """Tests the get_number_of_channels function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_number_of_channels function and number_of_channels property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    number_of_channels = provider.get_number_of_channels()
+    number_of_channels = fwevt_provider.get_number_of_channels()
     self.assertEqual(number_of_channels, 0)
+
+    self.assertEqual(fwevt_provider.number_of_channels, 0)
 
   def test_get_channel(self):
     """Tests the get_channel function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
     with self.assertRaises(IOError):
-      provider.get_channel(0)
+      fwevt_provider.get_channel(0)
 
   def test_get_number_of_events(self):
-    """Tests the get_number_of_events function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_number_of_events function and number_of_events property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    number_of_events = provider.get_number_of_events()
+    number_of_events = fwevt_provider.get_number_of_events()
     self.assertEqual(number_of_events, 1)
+
+    self.assertEqual(fwevt_provider.number_of_events, 1)
 
   def test_get_event(self):
     """Tests the get_event function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    event = provider.get_event(0)
+    event = fwevt_provider.get_event(0)
     self.assertIsNotNone(event)
 
   def test_get_number_of_keywords(self):
-    """Tests the get_number_of_keywords function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_number_of_keywords function and number_of_keywords property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    number_of_keywords = provider.get_number_of_keywords()
+    number_of_keywords = fwevt_provider.get_number_of_keywords()
     self.assertEqual(number_of_keywords, 0)
+
+    self.assertEqual(fwevt_provider.number_of_keywords, 0)
 
   def test_get_keyword(self):
     """Tests the get_keyword function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
     with self.assertRaises(IOError):
-      provider.get_keyword(0)
+      fwevt_provider.get_keyword(0)
 
   def test_get_number_of_levels(self):
-    """Tests the get_number_of_levels function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_number_of_levels function and number_of_levels property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    number_of_levels = provider.get_number_of_levels()
+    number_of_levels = fwevt_provider.get_number_of_levels()
     self.assertEqual(number_of_levels, 0)
+
+    self.assertEqual(fwevt_provider.number_of_levels, 0)
 
   def test_get_level(self):
     """Tests the get_level function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
     with self.assertRaises(IOError):
-      provider.get_level(0)
+      fwevt_provider.get_level(0)
 
   def test_get_number_of_maps(self):
-    """Tests the get_number_of_maps function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_number_of_maps function and number_of_maps property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    number_of_maps = provider.get_number_of_maps()
+    number_of_maps = fwevt_provider.get_number_of_maps()
     self.assertEqual(number_of_maps, 0)
+
+    self.assertEqual(fwevt_provider.number_of_maps, 0)
 
   def test_get_map(self):
     """Tests the get_map function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
     with self.assertRaises(IOError):
-      provider.get_map(0)
+      fwevt_provider.get_map(0)
 
   def test_get_number_of_opcodes(self):
-    """Tests the get_number_of_opcodes function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_number_of_opcodes function and number_of_opcodes property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    number_of_opcodes = provider.get_number_of_opcodes()
+    number_of_opcodes = fwevt_provider.get_number_of_opcodes()
     self.assertEqual(number_of_opcodes, 0)
+
+    self.assertEqual(fwevt_provider.number_of_opcodes, 0)
 
   def test_get_opcode(self):
     """Tests the get_opcode function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
     with self.assertRaises(IOError):
-      provider.get_opcode(0)
+      fwevt_provider.get_opcode(0)
 
   def test_get_number_of_tasks(self):
-    """Tests the get_number_of_tasks function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_number_of_tasks function and number_of_tasks property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    number_of_tasks = provider.get_number_of_tasks()
+    number_of_tasks = fwevt_provider.get_number_of_tasks()
     self.assertEqual(number_of_tasks, 0)
+
+    self.assertEqual(fwevt_provider.number_of_tasks, 0)
 
   def test_get_task(self):
     """Tests the get_task function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
     with self.assertRaises(IOError):
-      provider.get_task(0)
+      fwevt_provider.get_task(0)
 
   def test_get_number_of_templates(self):
-    """Tests the get_number_of_templates function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    """Tests the get_number_of_templates function and number_of_templates property."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    number_of_templates = provider.get_number_of_templates()
+    number_of_templates = fwevt_provider.get_number_of_templates()
     self.assertEqual(number_of_templates, 1)
+
+    self.assertEqual(fwevt_provider.number_of_templates, 1)
 
   def test_get_template(self):
     """Tests the get_template function."""
-    manifest = pyfwevt.manifest()
-    manifest.copy_from_byte_stream(self._TEST_DATA)
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
 
-    provider = manifest.get_provider(0)
-    self.assertIsNotNone(provider)
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
 
-    template = provider.get_template(0)
+    template = fwevt_provider.get_template(0)
     self.assertIsNotNone(template)
+
+  def test_get_template_by_offset(self):
+    """Tests the get_template_by_offset function."""
+    fwevt_manifest = pyfwevt.manifest()
+    fwevt_manifest.copy_from_byte_stream(self._TEST_DATA)
+
+    fwevt_provider = fwevt_manifest.get_provider(0)
+    self.assertIsNotNone(fwevt_provider)
+
+    template = fwevt_provider.get_template_by_offset(120)
+    self.assertIsNotNone(template)
+
+    template = fwevt_provider.get_template_by_offset(999)
+    self.assertIsNone(template)
 
 
 if __name__ == "__main__":
