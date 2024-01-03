@@ -965,8 +965,8 @@ on_error:
 	}
 	if( template_item != NULL )
 	{
-		libfwevt_template_item_free(
-		 &template_item,
+		libfwevt_internal_template_item_free(
+		 (libfwevt_internal_template_item_t **) &template_item,
 		 NULL );
 	}
 	libcdata_array_empty(
