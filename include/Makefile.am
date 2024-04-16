@@ -14,13 +14,11 @@ EXTRA_DIST = \
 	libfwevt/features.h.in \
 	libfwevt/types.h.in
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	libfwevt.h \
+	libfwevt/definitions.h \
+	libfwevt/features.h \
+	libfwevt/types.h \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f libfwevt.h
-	-rm -f libfwevt/definitions.h
-	-rm -f libfwevt/features.h
-	-rm -f libfwevt/types.h
-	-rm -f Makefile
 

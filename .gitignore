@@ -147,6 +147,7 @@ stamp-h[1-9]
 /tests/fwevt_test_xml_tag
 /tests/fwevt_test_xml_template_value
 /tests/fwevt_test_xml_token
+/tests/notify_stream.log
 /tests/tmp*
 
 # Local library dependencies specific files
