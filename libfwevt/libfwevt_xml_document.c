@@ -577,7 +577,7 @@ int libfwevt_xml_document_read_attribute(
 
 		return( -1 );
 	}
-	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
+	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) != 0 )
 	{
 		additional_value_size = 4;
 
@@ -650,7 +650,7 @@ int libfwevt_xml_document_read_attribute(
 			libcnotify_print_data(
 			 &( xml_document_data[ xml_document_data_offset ] ),
 			 additional_value_size + 1,
-			 0 );
+			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 		}
 #endif
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -733,7 +733,7 @@ int libfwevt_xml_document_read_attribute(
 				libcnotify_print_data(
 				 &( xml_document_data[ xml_document_data_offset ] ),
 				 trailing_data_size,
-				 0 );
+				 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 			}
 #endif
 			xml_document_data_offset += trailing_data_size;
@@ -1105,7 +1105,7 @@ int libfwevt_xml_document_read_cdata_section(
 		libcnotify_print_data(
 		 xml_document_data,
 		 3,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 	byte_stream_copy_to_uint16_little_endian(
@@ -1157,7 +1157,7 @@ int libfwevt_xml_document_read_cdata_section(
 		libcnotify_print_data(
 		 &( xml_document_data[ 3 ] ),
 		 value_data_size,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 	if( libfwevt_xml_tag_set_value_type(
@@ -1691,22 +1691,12 @@ int libfwevt_xml_document_read_element(
 
 		return( -1 );
 	}
-	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
+	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) != 0 )
 	{
 		additional_value_size = 4;
 	}
-	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS ) == 0 )
-	{
-		element_size_offset = 1;
-	}
-	else
-	{
-		element_size_offset = 3;
-	}
-	xml_document_data      = &( binary_data[ binary_data_offset ] );
-	xml_document_data_size = binary_data_size - binary_data_offset;
-
-	if( xml_document_data_size < ( element_size_offset + 4 + additional_value_size ) )
+	if( ( binary_data_size < ( 5 + additional_value_size ) )
+	 || ( binary_data_offset > ( binary_data_size - 5 - additional_value_size ) ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -1730,6 +1720,9 @@ int libfwevt_xml_document_read_element(
 
 		goto on_error;
 	}
+	xml_document_data      = &( binary_data[ binary_data_offset ] );
+	xml_document_data_size = binary_data_size - binary_data_offset;
+
 	do
 	{
 		if( ( template_value_array_recursion_depth < 0 )
@@ -1757,6 +1750,19 @@ int libfwevt_xml_document_read_element(
 
 			goto on_error;
 		}
+		/* Note that the dependency identifier is an optional value.
+		 */
+		element_size_offset = 1;
+
+		byte_stream_copy_to_uint32_little_endian(
+		 &( xml_document_data[ element_size_offset ] ),
+		 element_size );
+
+		if( ( xml_document_data_size > 7 )
+		 && ( element_size > ( xml_document_data_size - 7 ) ) )
+		{
+			element_size_offset = 3;
+		}
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
@@ -1771,7 +1777,7 @@ int libfwevt_xml_document_read_element(
 			libcnotify_print_data(
 			 xml_document_data,
 			 element_size_offset + 4 + additional_value_size,
-			 0 );
+			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 		}
 #endif
 		byte_stream_copy_to_uint32_little_endian(
@@ -1877,7 +1883,7 @@ int libfwevt_xml_document_read_element(
 				libcnotify_print_data(
 				 &( xml_document_data[ xml_document_data_offset ] ),
 				 trailing_data_size,
-				 0 );
+				 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 			}
 #endif
 			xml_document_data_offset += trailing_data_size;
@@ -2649,7 +2655,7 @@ int libfwevt_xml_document_read_entity_reference(
 
 		return( -1 );
 	}
-	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
+	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) != 0 )
 	{
 		additional_value_size = 4;
 	}
@@ -2681,7 +2687,7 @@ int libfwevt_xml_document_read_entity_reference(
 		libcnotify_print_data(
 		 xml_document_data,
 		 1 + additional_value_size,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -2766,7 +2772,7 @@ int libfwevt_xml_document_read_entity_reference(
 			libcnotify_print_data(
 			 &( xml_document_data[ xml_document_data_offset ] ),
 			 trailing_data_size,
-			 0 );
+			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 		}
 #endif
 		xml_token->size          += trailing_data_size;
@@ -3503,7 +3509,7 @@ int libfwevt_xml_document_read_name(
 		libcnotify_print_data(
 		 xml_document_data,
 		 additional_value_size + 4,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) != 0 )
@@ -3581,7 +3587,7 @@ int libfwevt_xml_document_read_name(
 		libcnotify_print_data(
 		 &( xml_document_data[ xml_document_data_offset ] ),
 		 name_size,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 	if( libfwevt_xml_tag_set_name_data(
@@ -4173,7 +4179,7 @@ int libfwevt_xml_document_read_pi_data(
 		libcnotify_print_data(
 		 &( xml_document_data[ 3 ] ),
 		 value_data_size,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 	if( libfwevt_xml_tag_set_value_type(
@@ -4332,7 +4338,7 @@ int libfwevt_xml_document_read_pi_target(
 
 		return( -1 );
 	}
-	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) == 0 )
+	if( ( flags & LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS ) != 0 )
 	{
 		additional_value_size = 4;
 	}
@@ -4391,7 +4397,7 @@ int libfwevt_xml_document_read_pi_target(
 		libcnotify_print_data(
 		 xml_document_data,
 		 1 + additional_value_size,
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -4485,7 +4491,7 @@ int libfwevt_xml_document_read_pi_target(
 			libcnotify_print_data(
 			 &( xml_document_data[ 5 ] ),
 			 trailing_data_size,
-			 0 );
+			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 		}
 #endif
 		xml_token->size          += trailing_data_size;
@@ -4822,7 +4828,7 @@ int libfwevt_xml_document_read_template_instance(
 			libcnotify_print_data(
 			 &( binary_data[ binary_data_offset ] ),
 			 trailing_data_size,
-			 0 );
+			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 		}
 #endif
 		xml_token->size    += trailing_data_size;
@@ -6068,7 +6074,7 @@ int libfwevt_xml_document_substitute_template_value(
 				     binary_data_size,
 				     binary_data_offset,
 				     ascii_codepage,
-				     flags & ~( LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS ),
+				     flags,
 				     template_values_array,
 				     xml_tag,
 				     element_recursion_depth + 1,

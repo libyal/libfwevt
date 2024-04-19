@@ -4518,7 +4518,7 @@ int fwevt_test_xml_document_read(
 	          65536,
 	          0x850,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -4538,7 +4538,7 @@ int fwevt_test_xml_document_read(
 	          65536,
 	          0x850,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -4628,7 +4628,7 @@ int fwevt_test_xml_document_read_with_template_values(
 	          65536,
 	          0x850,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          NULL,
 	          &error );
 
@@ -4687,7 +4687,7 @@ int fwevt_test_xml_document_read_with_template_values(
 	          65536,
 	          0x850,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          NULL,
 	          &error );
 
@@ -4709,7 +4709,7 @@ int fwevt_test_xml_document_read_with_template_values(
 	          65536,
 	          0x850,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          NULL,
 	          &error );
 
@@ -4731,7 +4731,7 @@ int fwevt_test_xml_document_read_with_template_values(
 	          (size_t) SSIZE_MAX + 1,
 	          0x850,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          NULL,
 	          &error );
 
@@ -4755,7 +4755,7 @@ int fwevt_test_xml_document_read_with_template_values(
 	          65536,
 	          65536,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          NULL,
 	          &error );
 
@@ -4779,7 +4779,7 @@ int fwevt_test_xml_document_read_with_template_values(
 	          11,
 	          0x850,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          NULL,
 	          &error );
 
@@ -5311,7 +5311,7 @@ int main(
 	          65536,
 	          0x850,
 	          LIBUNA_CODEPAGE_WINDOWS_1252,
-	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS | LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DEPENDENCY_IDENTIFIERS,
+	          LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
