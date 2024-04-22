@@ -666,7 +666,7 @@ int libfwevt_debug_print_utf16_string_value(
 		goto on_error;
 	}
 	libcnotify_printf(
-	 "%s: %s: %s\n",
+	 "%s: %s: %" PRIs_SYSTEM "\n",
 	 function_name,
 	 value_name,
 	 string );

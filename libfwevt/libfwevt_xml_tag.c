@@ -224,19 +224,8 @@ int libfwevt_xml_tag_free(
 		}
 		if( internal_xml_tag->name != NULL )
 		{
-			if( libfvalue_value_free(
-			     &( internal_xml_tag->name ),
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free name.",
-				 function );
-
-				result = -1;
-			}
+			memory_free(
+			 internal_xml_tag->name );
 		}
 		memory_free(
 		 internal_xml_tag );
@@ -316,14 +305,13 @@ int libfwevt_xml_tag_set_type(
 	return( 1 );
 }
 
-/* Sets the name data
+/* Sets UTF-16 little-endian encoded name data
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_xml_tag_set_name_data(
      libfwevt_xml_tag_t *xml_tag,
      const uint8_t *data,
      size_t data_size,
-     int encoding,
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
@@ -342,46 +330,84 @@ int libfwevt_xml_tag_set_name_data(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfvalue_value_type_initialize(
-	     &( internal_xml_tag->name ),
-	     LIBFVALUE_VALUE_TYPE_STRING_UTF16,
-	     error ) != 1 )
+	if( internal_xml_tag->name != NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create name.",
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: invalid XML tag - name value already set.",
 		 function );
 
-		goto on_error;
+		return( -1 );
 	}
-	if( libfvalue_value_set_data(
-	     internal_xml_tag->name,
-	     data,
-	     data_size,
-	     encoding,
-	     LIBFVALUE_VALUE_DATA_FLAG_NON_MANAGED,
-	     error ) != 1 )
+	if( data == NULL )
 	{
 		libcerror_error_set(
 		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-		 "%s: unable to set name data.",
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid data.",
 		 function );
 
-		goto on_error;
+		return( -1 );
+	}
+	if( data_size > (size_t) MEMORY_MAXIMUM_ALLOCATION_SIZE )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid data size value exceeds maximum.",
+		 function );
+
+		return( -1 );
+	}
+	if( data_size > 0 )
+	{
+		internal_xml_tag->name = (uint8_t *) memory_allocate(
+		                                      sizeof( uint8_t ) * data_size );
+
+		if( internal_xml_tag->name == NULL )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_MEMORY,
+			 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
+			 "%s: unable to create name.",
+			 function );
+
+			goto on_error;
+		}
+		internal_xml_tag->name_size = data_size;
+
+		if( memory_copy(
+		     internal_xml_tag->name,
+		     data,
+		     data_size ) == NULL )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_MEMORY,
+			 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
+			 "%s: unable to copy name.",
+			 function );
+
+			goto on_error;
+		}
 	}
 	return( 1 );
 
 on_error:
 	if( internal_xml_tag->name != NULL )
 	{
-		libfvalue_value_free(
-		 &( internal_xml_tag->name ),
-		 NULL );
+		memory_free(
+		 internal_xml_tag->name );
+
+		internal_xml_tag->name = NULL;
 	}
+	internal_xml_tag->name_size = 0;
+
 	return( -1 );
 }
 
@@ -731,9 +757,10 @@ int libfwevt_xml_tag_get_utf8_name_size(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfvalue_value_get_utf8_string_size(
+	if( libuna_utf8_string_size_from_utf16_stream(
 	     internal_xml_tag->name,
-	     0,
+	     internal_xml_tag->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
 	     utf8_string_size,
 	     error ) != 1 )
 	{
@@ -741,7 +768,7 @@ int libfwevt_xml_tag_get_utf8_name_size(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size of UTF-8 string of name.",
+		 "%s: unable to retrieve UTF-8 string size.",
 		 function );
 
 		return( -1 );
@@ -774,18 +801,19 @@ int libfwevt_xml_tag_get_utf8_name(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfvalue_value_copy_to_utf8_string(
-	     internal_xml_tag->name,
-	     0,
+	if( libuna_utf8_string_copy_from_utf16_stream(
 	     utf8_string,
 	     utf8_string_size,
+	     internal_xml_tag->name,
+	     internal_xml_tag->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to copy name to UTF-8 string.",
+		 "%s: unable to retrieve UTF-8 string.",
 		 function );
 
 		return( -1 );
@@ -817,9 +845,10 @@ int libfwevt_xml_tag_get_utf16_name_size(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfvalue_value_get_utf16_string_size(
+	if( libuna_utf16_string_size_from_utf16_stream(
 	     internal_xml_tag->name,
-	     0,
+	     internal_xml_tag->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
 	     utf16_string_size,
 	     error ) != 1 )
 	{
@@ -827,7 +856,7 @@ int libfwevt_xml_tag_get_utf16_name_size(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size of UTF-16 string of name.",
+		 "%s: unable to retrieve UTF-16 string size.",
 		 function );
 
 		return( -1 );
@@ -860,18 +889,19 @@ int libfwevt_xml_tag_get_utf16_name(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfvalue_value_copy_to_utf16_string(
-	     internal_xml_tag->name,
-	     0,
+	if( libuna_utf16_string_copy_from_utf16_stream(
 	     utf16_string,
 	     utf16_string_size,
+	     internal_xml_tag->name,
+	     internal_xml_tag->name_size,
+	     LIBUNA_ENDIAN_LITTLE,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to copy name to UTF-16 string.",
+		 "%s: unable to retrieve UTF-16 string.",
 		 function );
 
 		return( -1 );
@@ -1192,9 +1222,7 @@ int libfwevt_xml_tag_get_attribute_by_utf8_name(
 	size_t utf8_string_index                                = 0;
 	size_t value_entry_data_size                            = 0;
 	int attribute_index                                     = 0;
-	int encoding                                            = 0;
 	int number_of_attributes                                = 0;
-	int value_type                                          = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -1303,49 +1331,10 @@ int libfwevt_xml_tag_get_attribute_by_utf8_name(
 
 			return( -1 );
 		}
-		if( libfvalue_value_get_type(
-		     internal_attribute_xml_tag->name,
-		     &value_type,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve attribute name value type.",
-			 function );
+/* TODO bounds check and clean up */
+		value_entry_data      = internal_attribute_xml_tag->name;
+		value_entry_data_size = internal_attribute_xml_tag->name_size;
 
-			return( -1 );
-		}
-		if( value_type != LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: unsupported attribute name value type: %d.",
-			 function,
-			 value_type );
-
-			return( -1 );
-		}
-		if( libfvalue_value_get_entry_data(
-		     internal_attribute_xml_tag->name,
-		     0,
-		     &value_entry_data,
-		     &value_entry_data_size,
-		     &encoding,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve attribute name value type.",
-			 function );
-
-			return( -1 );
-		}
 		if( ( value_entry_data[ value_entry_data_size - 2 ] == 0 )
 		 && ( value_entry_data[ value_entry_data_size - 1 ] == 0 ) )
 		{
@@ -1430,9 +1419,7 @@ int libfwevt_xml_tag_get_attribute_by_utf16_name(
 	size_t utf16_string_index                               = 0;
 	size_t value_entry_data_size                            = 0;
 	int attribute_index                                     = 0;
-	int encoding                                            = 0;
 	int number_of_attributes                                = 0;
-	int value_type                                          = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -1541,49 +1528,10 @@ int libfwevt_xml_tag_get_attribute_by_utf16_name(
 
 			return( -1 );
 		}
-		if( libfvalue_value_get_type(
-		     internal_attribute_xml_tag->name,
-		     &value_type,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve attribute name value type.",
-			 function );
+/* TODO bounds check and clean up */
+		value_entry_data      = internal_attribute_xml_tag->name;
+		value_entry_data_size = internal_attribute_xml_tag->name_size;
 
-			return( -1 );
-		}
-		if( value_type != LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: unsupported attribute name value type: %d.",
-			 function,
-			 value_type );
-
-			return( -1 );
-		}
-		if( libfvalue_value_get_entry_data(
-		     internal_attribute_xml_tag->name,
-		     0,
-		     &value_entry_data,
-		     &value_entry_data_size,
-		     &encoding,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve attribute name value type.",
-			 function );
-
-			return( -1 );
-		}
 		if( ( value_entry_data[ value_entry_data_size - 2 ] == 0 )
 		 && ( value_entry_data[ value_entry_data_size - 1 ] == 0 ) )
 		{
@@ -1753,9 +1701,7 @@ int libfwevt_xml_tag_get_element_by_utf8_name(
 	size_t utf8_string_index                              = 0;
 	size_t value_entry_data_size                          = 0;
 	int element_index                                     = 0;
-	int encoding                                          = 0;
 	int number_of_elements                                = 0;
-	int value_type                                        = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -1864,49 +1810,10 @@ int libfwevt_xml_tag_get_element_by_utf8_name(
 
 			return( -1 );
 		}
-		if( libfvalue_value_get_type(
-		     internal_element_xml_tag->name,
-		     &value_type,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve element name value type.",
-			 function );
+/* TODO bounds check and clean up */
+		value_entry_data      = internal_element_xml_tag->name;
+		value_entry_data_size = internal_element_xml_tag->name_size;
 
-			return( -1 );
-		}
-		if( value_type != LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: unsupported element name value type: %d.",
-			 function,
-			 value_type );
-
-			return( -1 );
-		}
-		if( libfvalue_value_get_entry_data(
-		     internal_element_xml_tag->name,
-		     0,
-		     &value_entry_data,
-		     &value_entry_data_size,
-		     &encoding,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve element name value type.",
-			 function );
-
-			return( -1 );
-		}
 		if( ( value_entry_data[ value_entry_data_size - 2 ] == 0 )
 		 && ( value_entry_data[ value_entry_data_size - 1 ] == 0 ) )
 		{
@@ -1991,9 +1898,7 @@ int libfwevt_xml_tag_get_element_by_utf16_name(
 	size_t utf16_string_index                             = 0;
 	size_t value_entry_data_size                          = 0;
 	int element_index                                     = 0;
-	int encoding                                          = 0;
 	int number_of_elements                                = 0;
-	int value_type                                        = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -2102,49 +2007,10 @@ int libfwevt_xml_tag_get_element_by_utf16_name(
 
 			return( -1 );
 		}
-		if( libfvalue_value_get_type(
-		     internal_element_xml_tag->name,
-		     &value_type,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve element name value type.",
-			 function );
+/* TODO bounds check and clean up */
+		value_entry_data      = internal_element_xml_tag->name;
+		value_entry_data_size = internal_element_xml_tag->name_size;
 
-			return( -1 );
-		}
-		if( value_type != LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: unsupported element name value type: %d.",
-			 function,
-			 value_type );
-
-			return( -1 );
-		}
-		if( libfvalue_value_get_entry_data(
-		     internal_element_xml_tag->name,
-		     0,
-		     &value_entry_data,
-		     &value_entry_data_size,
-		     &encoding,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve element name value type.",
-			 function );
-
-			return( -1 );
-		}
 		if( ( value_entry_data[ value_entry_data_size - 2 ] == 0 )
 		 && ( value_entry_data[ value_entry_data_size - 1 ] == 0 ) )
 		{
@@ -2978,9 +2844,10 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 
 			return( -1 );
 		}
-		if( libfvalue_value_get_utf8_string_size(
+		if( libuna_utf8_string_size_from_utf16_stream(
 		     internal_xml_tag->name,
-		     0,
+		     internal_xml_tag->name_size,
+		     LIBUNA_ENDIAN_LITTLE,
 		     &name_size,
 		     error ) != 1 )
 		{
@@ -2988,7 +2855,7 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve size of UTF-8 string of name.",
+			 "%s: unable to retrieve UTF-8 string size or name.",
 			 function );
 
 			return( -1 );
@@ -3032,10 +2899,11 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 
 					return( -1 );
 				}
-				if( libfvalue_value_get_utf8_string_size(
+				if( libuna_utf8_string_size_from_utf16_stream(
 				     internal_attribute_xml_tag->name,
-				     0,
-				     &string_size,
+				     internal_attribute_xml_tag->name_size,
+				     LIBUNA_ENDIAN_LITTLE,
+				     &name_size,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -3215,9 +3083,10 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 	}
 	else if( internal_xml_tag->type == LIBFWEVT_XML_TAG_TYPE_PI )
 	{
-		if( libfvalue_value_get_utf8_string_size(
+		if( libuna_utf8_string_size_from_utf16_stream(
 		     internal_xml_tag->name,
-		     0,
+		     internal_xml_tag->name_size,
+		     LIBUNA_ENDIAN_LITTLE,
 		     &name_size,
 		     error ) != 1 )
 		{
@@ -3225,7 +3094,7 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve UTF-8 string size of name.",
+			 "%s: unable to retrieve UTF-8 string size or name.",
 			 function );
 
 			return( -1 );
@@ -3390,12 +3259,13 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 
 			return( -1 );
 		}
-		if( libfvalue_value_copy_to_utf8_string_with_index(
-		     internal_xml_tag->name,
-		     0,
+		if( libuna_utf8_string_with_index_copy_from_utf16_stream(
 		     utf8_string,
 		     utf8_string_size,
 		     &string_index,
+		     internal_xml_tag->name,
+		     internal_xml_tag->name_size,
+		     LIBUNA_ENDIAN_LITTLE,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -3456,12 +3326,13 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 				}
 				utf8_string[ string_index++ ] = (uint8_t) ' ';
 
-				if( libfvalue_value_copy_to_utf8_string_with_index(
-				     internal_attribute_xml_tag->name,
-				     0,
+				if( libuna_utf8_string_with_index_copy_from_utf16_stream(
 				     utf8_string,
 				     utf8_string_size,
 				     &string_index,
+				     internal_attribute_xml_tag->name,
+				     internal_attribute_xml_tag->name_size,
+				     LIBUNA_ENDIAN_LITTLE,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -3601,12 +3472,13 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 				utf8_string[ string_index++ ] = (uint8_t) '<';
 				utf8_string[ string_index++ ] = (uint8_t) '/';
 
-				if( libfvalue_value_copy_to_utf8_string_with_index(
-				     internal_xml_tag->name,
-				     0,
+				if( libuna_utf8_string_with_index_copy_from_utf16_stream(
 				     utf8_string,
 				     utf8_string_size,
 				     &string_index,
+				     internal_xml_tag->name,
+				     internal_xml_tag->name_size,
+				     LIBUNA_ENDIAN_LITTLE,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -3724,12 +3596,13 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 			utf8_string[ string_index++ ] = (uint8_t) '<';
 			utf8_string[ string_index++ ] = (uint8_t) '/';
 
-			if( libfvalue_value_copy_to_utf8_string_with_index(
-			     internal_xml_tag->name,
-			     0,
+			if( libuna_utf8_string_with_index_copy_from_utf16_stream(
 			     utf8_string,
 			     utf8_string_size,
 			     &string_index,
+			     internal_xml_tag->name,
+			     internal_xml_tag->name_size,
+			     LIBUNA_ENDIAN_LITTLE,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -3840,12 +3713,13 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 		}
 		utf8_string[ string_index++ ] = (uint8_t) '?';
 
-		if( libfvalue_value_copy_to_utf8_string_with_index(
-		     internal_xml_tag->name,
-		     0,
+		if( libuna_utf8_string_with_index_copy_from_utf16_stream(
 		     utf8_string,
 		     utf8_string_size,
 		     &string_index,
+		     internal_xml_tag->name,
+		     internal_xml_tag->name_size,
+		     LIBUNA_ENDIAN_LITTLE,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -4598,9 +4472,10 @@ int libfwevt_xml_tag_get_utf16_xml_string_size(
 
 			return( -1 );
 		}
-		if( libfvalue_value_get_utf16_string_size(
+		if( libuna_utf16_string_size_from_utf16_stream(
 		     internal_xml_tag->name,
-		     0,
+		     internal_xml_tag->name_size,
+		     LIBUNA_ENDIAN_LITTLE,
 		     &name_size,
 		     error ) != 1 )
 		{
@@ -4652,9 +4527,10 @@ int libfwevt_xml_tag_get_utf16_xml_string_size(
 
 					return( -1 );
 				}
-				if( libfvalue_value_get_utf16_string_size(
+				if( libuna_utf16_string_size_from_utf16_stream(
 				     internal_attribute_xml_tag->name,
-				     0,
+				     internal_attribute_xml_tag->name_size,
+				     LIBUNA_ENDIAN_LITTLE,
 				     &string_size,
 				     error ) != 1 )
 				{
@@ -4835,9 +4711,10 @@ int libfwevt_xml_tag_get_utf16_xml_string_size(
 	}
 	else if( internal_xml_tag->type == LIBFWEVT_XML_TAG_TYPE_PI )
 	{
-		if( libfvalue_value_get_utf16_string_size(
+		if( libuna_utf16_string_size_from_utf16_stream(
 		     internal_xml_tag->name,
-		     0,
+		     internal_xml_tag->name_size,
+		     LIBUNA_ENDIAN_LITTLE,
 		     &name_size,
 		     error ) != 1 )
 		{
@@ -5010,12 +4887,13 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 
 			return( -1 );
 		}
-		if( libfvalue_value_copy_to_utf16_string_with_index(
-		     internal_xml_tag->name,
-		     0,
+		if( libuna_utf16_string_with_index_copy_from_utf16_stream(
 		     utf16_string,
 		     utf16_string_size,
 		     &string_index,
+		     internal_xml_tag->name,
+		     internal_xml_tag->name_size,
+		     LIBUNA_ENDIAN_LITTLE,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -5076,12 +4954,13 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 				}
 				utf16_string[ string_index++ ] = (uint16_t) ' ';
 
-				if( libfvalue_value_copy_to_utf16_string_with_index(
-				     internal_attribute_xml_tag->name,
-				     0,
+				if( libuna_utf16_string_with_index_copy_from_utf16_stream(
 				     utf16_string,
 				     utf16_string_size,
 				     &string_index,
+				     internal_attribute_xml_tag->name,
+				     internal_attribute_xml_tag->name_size,
+				     LIBUNA_ENDIAN_LITTLE,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -5221,12 +5100,13 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 				utf16_string[ string_index++ ] = (uint16_t) '<';
 				utf16_string[ string_index++ ] = (uint16_t) '/';
 
-				if( libfvalue_value_copy_to_utf16_string_with_index(
-				     internal_xml_tag->name,
-				     0,
+				if( libuna_utf16_string_with_index_copy_from_utf16_stream(
 				     utf16_string,
 				     utf16_string_size,
 				     &string_index,
+				     internal_xml_tag->name,
+				     internal_xml_tag->name_size,
+				     LIBUNA_ENDIAN_LITTLE,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -5344,12 +5224,13 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 			utf16_string[ string_index++ ] = (uint16_t) '<';
 			utf16_string[ string_index++ ] = (uint16_t) '/';
 
-			if( libfvalue_value_copy_to_utf16_string_with_index(
-			     internal_xml_tag->name,
-			     0,
+			if( libuna_utf16_string_with_index_copy_from_utf16_stream(
 			     utf16_string,
 			     utf16_string_size,
 			     &string_index,
+			     internal_xml_tag->name,
+			     internal_xml_tag->name_size,
+			     LIBUNA_ENDIAN_LITTLE,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -5460,12 +5341,13 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 		}
 		utf16_string[ string_index++ ] = (uint16_t) '?';
 
-		if( libfvalue_value_copy_to_utf16_string_with_index(
-		     internal_xml_tag->name,
-		     0,
+		if( libuna_utf16_string_with_index_copy_from_utf16_stream(
 		     utf16_string,
 		     utf16_string_size,
 		     &string_index,
+		     internal_xml_tag->name,
+		     internal_xml_tag->name_size,
+		     LIBUNA_ENDIAN_LITTLE,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -5534,6 +5416,126 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 }
 
 #if defined( HAVE_DEBUG_OUTPUT )
+
+/* Debug prints the name
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_tag_debug_print_name_string(
+     libfwevt_internal_xml_tag_t *internal_xml_tag,
+     libcerror_error_t **error )
+{
+	system_character_t *name_string = NULL;
+	static char *function           = "libfwevt_xml_tag_debug_print_name_string";
+	size_t name_string_size         = 0;
+	int result                      = 0;
+
+	if( internal_xml_tag == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML tag.",
+		 function );
+
+		return( -1 );
+	}
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	result = libuna_utf16_string_size_from_utf16_stream(
+		  internal_xml_tag->name,
+		  internal_xml_tag->name_size,
+		  LIBUNA_ENDIAN_LITTLE,
+		  &name_string_size,
+		  error );
+#else
+	result = libuna_utf8_string_size_from_utf16_stream(
+		  internal_xml_tag->name,
+		  internal_xml_tag->name_size,
+		  LIBUNA_ENDIAN_LITTLE,
+		  &name_string_size,
+		  error );
+#endif
+	if( result != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to determine size of name string.",
+		 function );
+
+		goto on_error;
+	}
+	if( name_string_size > (size_t) ( SSIZE_MAX / sizeof( system_character_t ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid name string size value exceeds maximum.",
+		 function );
+
+		goto on_error;
+	}
+	name_string = system_string_allocate(
+	               name_string_size );
+
+	if( name_string == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_MEMORY,
+		 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
+		 "%s: unable to create name string.",
+		 function );
+
+		goto on_error;
+	}
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	result = libuna_utf16_string_copy_from_utf16_stream(
+		  (libuna_utf16_character_t *) name_string,
+		  name_string_size,
+		  internal_xml_tag->name,
+		  internal_xml_tag->name_size,
+		  LIBUNA_ENDIAN_LITTLE,
+		  error );
+#else
+	result = libuna_utf8_string_copy_from_utf16_stream(
+		  (libuna_utf8_character_t *) name_string,
+		  name_string_size,
+		  internal_xml_tag->name,
+		  internal_xml_tag->name_size,
+		  LIBUNA_ENDIAN_LITTLE,
+		  error );
+#endif
+	if( result != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set name string.",
+		 function );
+
+		goto on_error;
+	}
+	libcnotify_printf(
+	 "%" PRIs_SYSTEM "",
+	 name_string );
+
+	memory_free(
+	 name_string );
+
+	return( 1 );
+
+on_error:
+	if( name_string != NULL )
+	{
+		memory_free(
+		 name_string );
+	}
+	return( -1 );
+}
 
 /* Debug prints the XML value
  * Returns 1 if successful or -1 on error
@@ -5839,10 +5841,8 @@ int libfwevt_xml_tag_debug_print(
 
 			return( -1 );
 		}
-		if( libfvalue_value_print(
-		     internal_xml_tag->name,
-		     0,
-		     0,
+		if( libfwevt_xml_tag_debug_print_name_string(
+		     internal_xml_tag,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -5891,10 +5891,8 @@ int libfwevt_xml_tag_debug_print(
 				libcnotify_printf(
 				 " " );
 
-				if( libfvalue_value_print(
-				     internal_attribute_xml_tag->name,
-				     0,
-				     0,
+				if( libfwevt_xml_tag_debug_print_name_string(
+				     internal_attribute_xml_tag,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -5979,10 +5977,8 @@ int libfwevt_xml_tag_debug_print(
 				libcnotify_printf(
 				 "</" );
 
-				if( libfvalue_value_print(
-				     internal_xml_tag->name,
-				     0,
-				     0,
+				if( libfwevt_xml_tag_debug_print_name_string(
+				     internal_xml_tag,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -6052,10 +6048,8 @@ int libfwevt_xml_tag_debug_print(
 			libcnotify_printf(
 			 "</" );
 
-			if( libfvalue_value_print(
-			     internal_xml_tag->name,
-			     0,
-			     0,
+			if( libfwevt_xml_tag_debug_print_name_string(
+			     internal_xml_tag,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -6102,10 +6096,8 @@ int libfwevt_xml_tag_debug_print(
 		libcnotify_printf(
 		 "?" );
 
-		if( libfvalue_value_print(
-		     internal_xml_tag->name,
-		     0,
-		     0,
+		if( libfwevt_xml_tag_debug_print_name_string(
+		     internal_xml_tag,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -6171,10 +6163,8 @@ int libfwevt_xml_tag_name_debug_print(
 	 "%s: name\t\t\t\t\t: ",
 	 function );
 
-	if( libfvalue_value_print(
-	     internal_xml_tag->name,
-	     0,
-	     0,
+	if( libfwevt_xml_tag_debug_print_name_string(
+	     internal_xml_tag,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

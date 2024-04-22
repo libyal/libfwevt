@@ -379,6 +379,7 @@ on_error:
 int fwevt_test_xml_tag_set_name_data(
      void )
 {
+	uint8_t name_data[ 10 ]     = { 'n', 0, 'a', 0, 'm', 0, 'e', 0, 0 };
 	libcerror_error_t *error    = NULL;
 	libfwevt_xml_tag_t *xml_tag = NULL;
 	int result                  = 0;
@@ -406,9 +407,8 @@ int fwevt_test_xml_tag_set_name_data(
 	 */
 	result = libfwevt_xml_tag_set_name_data(
 	          xml_tag,
-	          (uint8_t *) "name",
-	          4,
-	          LIBUNA_CODEPAGE_ASCII,
+	          name_data,
+	          10,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -424,9 +424,8 @@ int fwevt_test_xml_tag_set_name_data(
 	 */
 	result = libfwevt_xml_tag_set_name_data(
 	          NULL,
-	          (uint8_t *) "name",
-	          4,
-	          LIBUNA_CODEPAGE_ASCII,
+	          name_data,
+	          10,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -444,8 +443,7 @@ int fwevt_test_xml_tag_set_name_data(
 	result = libfwevt_xml_tag_set_name_data(
 	          xml_tag,
 	          NULL,
-	          4,
-	          LIBUNA_CODEPAGE_ASCII,
+	          10,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -462,9 +460,8 @@ int fwevt_test_xml_tag_set_name_data(
 
 	result = libfwevt_xml_tag_set_name_data(
 	          xml_tag,
-	          (uint8_t *) "name",
+	          name_data,
 	          (size_t) SSIZE_MAX + 1,
-	          LIBUNA_CODEPAGE_ASCII,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3783,6 +3780,7 @@ int main(
 {
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
+	uint8_t name_data[ 10 ]     = { 'n', 0, 'a', 0, 'm', 0, 'e', 0, 0 };
 	libcerror_error_t *error    = NULL;
 	libfwevt_xml_tag_t *xml_tag = NULL;
 	int result                  = 0;
@@ -3857,9 +3855,8 @@ int main(
 
 	result = libfwevt_xml_tag_set_name_data(
 	          xml_tag,
-	          (uint8_t *) "name",
-	          4,
-	          LIBUNA_CODEPAGE_ASCII,
+	          name_data,
+	          10,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(

@@ -1,6 +1,8 @@
 TODO
-* Remove the need to create a copy of the template data
-  at worst only have a copy of the BinXML
+* Replace libfvalue by native functions
+** Check use of libfwevt_xml_tag_get_value
+
+* Remove the need to create a copy of the template data at worst only have a copy of the BinXML
 ** remove libfwevt_template_get_data
 
 * Rename _read() functions to _read_data()

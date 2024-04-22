@@ -3594,7 +3594,6 @@ int libfwevt_xml_document_read_name(
 	     xml_tag,
 	     &( xml_document_data[ xml_document_data_offset ] ),
 	     name_size,
-	     LIBFVALUE_CODEPAGE_UTF16_LITTLE_ENDIAN,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

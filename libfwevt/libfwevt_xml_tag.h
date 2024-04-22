@@ -43,9 +43,13 @@ struct libfwevt_internal_xml_tag
 	 */
 	uint8_t type;
 
-	/* The name (value)
+	/* The name
 	 */
-	libfvalue_value_t *name;
+	uint8_t *name;
+
+	/* The name size
+	 */
+	size_t name_size;
 
 	/* The value type
 	 */
@@ -85,7 +89,6 @@ int libfwevt_xml_tag_set_name_data(
      libfwevt_xml_tag_t *xml_tag,
      const uint8_t *data,
      size_t data_size,
-     int encoding,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_get_value(
@@ -309,6 +312,10 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
      libcerror_error_t **error );
 
 #if defined( HAVE_DEBUG_OUTPUT )
+
+int libfwevt_xml_tag_debug_print_name_string(
+     libfwevt_internal_xml_tag_t *internal_xml_tag,
+     libcerror_error_t **error );
 
 int libfwevt_xml_tag_debug_print_value_string(
      libfwevt_internal_xml_tag_t *internal_xml_tag,
