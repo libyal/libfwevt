@@ -45,7 +45,8 @@ libfwevt_la_SOURCES = \
 	libfwevt_xml_document.c libfwevt_xml_document.h \
 	libfwevt_xml_tag.c libfwevt_xml_tag.h \
 	libfwevt_xml_template_value.c libfwevt_xml_template_value.h \
-	libfwevt_xml_token.c libfwevt_xml_token.h
+	libfwevt_xml_token.c libfwevt_xml_token.h \
+	libfwevt_xml_value.c libfwevt_xml_value.h
 
 libfwevt_la_LIBADD = \
 	@LIBCERROR_LIBADD@ \

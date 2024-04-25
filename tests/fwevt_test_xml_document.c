@@ -4405,7 +4405,6 @@ int fwevt_test_xml_document_get_root_xml_tag(
 	 "error",
 	 error );
 
-/* TODO
 	result = libfwevt_xml_tag_free(
 	          &root_xml_tag,
 	          NULL );
@@ -4422,7 +4421,6 @@ int fwevt_test_xml_document_get_root_xml_tag(
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
-*/
 
 	/* Test error cases
 	 */
@@ -4468,14 +4466,12 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-/* TODO
 	if( root_xml_tag != NULL )
 	{
 		libfwevt_xml_tag_free(
 		 &root_xml_tag,
 		 NULL );
 	}
-*/
 	return( 0 );
 }
 

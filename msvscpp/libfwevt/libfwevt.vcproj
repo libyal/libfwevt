@@ -249,6 +249,10 @@
 				RelativePath="..\..\libfwevt\libfwevt_xml_token.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\libfwevt\libfwevt_xml_value.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -373,6 +377,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libfwevt\libfwevt_xml_token.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libfwevt\libfwevt_xml_value.h"
 				>
 			</File>
 		</Filter>

@@ -141,8 +141,8 @@ int libfwevt_xml_document_free(
 
 		if( internal_xml_document->root_xml_tag != NULL )
 		{
-			if( libfwevt_xml_tag_free(
-			     &( internal_xml_document->root_xml_tag ),
+			if( libfwevt_internal_xml_tag_free(
+			     (libfwevt_internal_xml_tag_t **) &( internal_xml_document->root_xml_tag ),
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -923,8 +923,8 @@ int libfwevt_xml_document_read_attribute(
 
 	if( attribute_xml_tag != NULL )
 	{
-		if( libfwevt_xml_tag_free(
-		     &attribute_xml_tag,
+		if( libfwevt_internal_xml_tag_free(
+		     (libfwevt_internal_xml_tag_t **) &attribute_xml_tag,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -955,8 +955,8 @@ int libfwevt_xml_document_read_attribute(
 on_error:
 	if( attribute_xml_tag != NULL )
 	{
-		libfwevt_xml_tag_free(
-		 &attribute_xml_tag,
+		libfwevt_internal_xml_tag_free(
+		 (libfwevt_internal_xml_tag_t **) &attribute_xml_tag,
 		 NULL );
 	}
 	if( xml_sub_token != NULL )
@@ -1539,8 +1539,8 @@ int libfwevt_xml_document_read_character_reference(
 		}
 	}
 #endif
-	if( libfwevt_xml_tag_free(
-	     &character_xml_tag,
+	if( libfwevt_internal_xml_tag_free(
+	     (libfwevt_internal_xml_tag_t **) &character_xml_tag,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1567,8 +1567,8 @@ on_error:
 	}
 	if( character_xml_tag != NULL )
 	{
-		libfwevt_xml_tag_free(
-		 &character_xml_tag,
+		libfwevt_internal_xml_tag_free(
+		 (libfwevt_internal_xml_tag_t **) &character_xml_tag,
 		 NULL );
 	}
 	return( -1 );
@@ -2503,8 +2503,8 @@ int libfwevt_xml_document_read_element(
 
 	if( element_xml_tag != NULL )
 	{
-		if( libfwevt_xml_tag_free(
-		     &element_xml_tag,
+		if( libfwevt_internal_xml_tag_free(
+		     (libfwevt_internal_xml_tag_t **) &element_xml_tag,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -2536,8 +2536,8 @@ on_error:
 	if( ( element_xml_tag != NULL )
 	 && ( element_xml_tag != internal_xml_document->root_xml_tag ) )
 	{
-		libfwevt_xml_tag_free(
-		 &element_xml_tag,
+		libfwevt_internal_xml_tag_free(
+		 (libfwevt_internal_xml_tag_t **) &element_xml_tag,
 		 NULL );
 	}
 	if( xml_sub_token != NULL )
@@ -3016,8 +3016,8 @@ int libfwevt_xml_document_read_entity_reference(
 	}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
-	if( libfwevt_xml_tag_free(
-	     &entity_xml_tag,
+	if( libfwevt_internal_xml_tag_free(
+	     (libfwevt_internal_xml_tag_t **) &entity_xml_tag,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3044,8 +3044,8 @@ on_error:
 	}
 	if( entity_xml_tag != NULL )
 	{
-		libfwevt_xml_tag_free(
-		 &entity_xml_tag,
+		libfwevt_internal_xml_tag_free(
+		 (libfwevt_internal_xml_tag_t **) &entity_xml_tag,
 		 NULL );
 	}
 	return( -1 );
@@ -4609,8 +4609,8 @@ on_error:
 	}
 	if( pi_xml_tag != NULL )
 	{
-		libfwevt_xml_tag_free(
-		 &pi_xml_tag,
+		libfwevt_internal_xml_tag_free(
+		 (libfwevt_internal_xml_tag_t **) &pi_xml_tag,
 		 NULL );
 	}
 	return( -1 );

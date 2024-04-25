@@ -48,6 +48,7 @@ typedef struct libfwevt_template_item {}	libfwevt_template_item_t;
 typedef struct libfwevt_xml_document {}		libfwevt_xml_document_t;
 typedef struct libfwevt_xml_tag {}		libfwevt_xml_tag_t;
 typedef struct libfwevt_xml_template_value {}	libfwevt_xml_template_value_t;
+typedef struct libfwevt_xml_value {}		libfwevt_xml_value_t;
 
 #else
 typedef intptr_t libfwevt_channel_t;
@@ -64,6 +65,7 @@ typedef intptr_t libfwevt_template_item_t;
 typedef intptr_t libfwevt_xml_document_t;
 typedef intptr_t libfwevt_xml_tag_t;
 typedef intptr_t libfwevt_xml_template_value_t;
+typedef intptr_t libfwevt_xml_value_t;
 
 #endif /* defined( HAVE_DEBUG_OUTPUT ) && !defined( WINAPI ) */
 

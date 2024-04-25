@@ -28,7 +28,6 @@
 #include "libfwevt_extern.h"
 #include "libfwevt_libcdata.h"
 #include "libfwevt_libcerror.h"
-#include "libfwevt_libfvalue.h"
 #include "libfwevt_types.h"
 
 #if defined( __cplusplus )
@@ -51,13 +50,9 @@ struct libfwevt_internal_xml_tag
 	 */
 	size_t name_size;
 
-	/* The value type
+	/* The value
 	 */
-	int value_type;
-
-	/* The value (value)
-	 */
-	libfvalue_value_t *value;
+	libfwevt_xml_value_t *value;
 
 	/* The attributes array
 	 */
@@ -76,8 +71,13 @@ int libfwevt_xml_tag_initialize(
      libfwevt_xml_tag_t **xml_tag,
      libcerror_error_t **error );
 
+LIBFWEVT_EXTERN \
 int libfwevt_xml_tag_free(
      libfwevt_xml_tag_t **xml_tag,
+     libcerror_error_t **error );
+
+int libfwevt_internal_xml_tag_free(
+     libfwevt_internal_xml_tag_t **internal_xml_tag,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_set_type(
@@ -93,7 +93,7 @@ int libfwevt_xml_tag_set_name_data(
 
 int libfwevt_xml_tag_get_value(
      libfwevt_xml_tag_t *xml_tag,
-     libfvalue_value_t **value,
+     libfwevt_xml_value_t **xml_value,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_set_value_type(

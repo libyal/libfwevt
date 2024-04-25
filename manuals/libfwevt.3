@@ -1,4 +1,4 @@
-.Dd December 30, 2023
+.Dd April 25, 2024
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -201,6 +201,8 @@ XML document functions
 .Pp
 XML tag functions
 .Ft int
+.Fn libfwevt_xml_tag_free "libfwevt_xml_tag_t **xml_tag" "libfwevt_error_t **error"
+.Ft int
 .Fn libfwevt_xml_tag_get_utf8_name_size "libfwevt_xml_tag_t *xml_tag" "size_t *utf8_string_size" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_xml_tag_get_utf8_name "libfwevt_xml_tag_t *xml_tag" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
@@ -234,6 +236,28 @@ XML tag functions
 .Fn libfwevt_xml_tag_get_element_by_utf16_name "libfwevt_xml_tag_t *xml_tag" "const uint16_t *utf16_string" "size_t utf16_string_length" "libfwevt_xml_tag_t **element_xml_tag" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_xml_tag_get_flags "libfwevt_xml_tag_t *xml_tag" "uint8_t *flags" "libfwevt_error_t **error"
+.Pp
+XML value functions
+.Ft int
+.Fn libfwevt_xml_value_free "libfwevt_xml_value_t **xml_value" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_get_data_size "libfwevt_xml_value_t *xml_value" "size_t *data_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_copy_data "libfwevt_xml_value_t *xml_value" "uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_copy_to_8bit "libfwevt_xml_value_t *xml_value" "uint8_t *value_8bit" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_copy_to_32bit "libfwevt_xml_value_t *xml_value" "uint32_t *value_32bit" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_copy_to_64bit "libfwevt_xml_value_t *xml_value" "uint64_t *value_64bit" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_get_utf8_string_size "libfwevt_xml_value_t *xml_value" "size_t *utf8_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_copy_to_utf8_string "libfwevt_xml_value_t *xml_value" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_get_utf16_string_size "libfwevt_xml_value_t *xml_value" "size_t *utf16_string_size" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_xml_value_copy_to_utf16_string "libfwevt_xml_value_t *xml_value" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
 .Sh DESCRIPTION
 The
 .Fn libfwevt_get_version

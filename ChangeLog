@@ -10,8 +10,6 @@ TODO
 ** libfwevt_template_read
 ** libfwevt_xml_document_read
 
-* Expose libfwevt_xml_tag_free
-
 20140928
 * see `git log' for more recent change log
 * Created stand-alone version of version used in libevt

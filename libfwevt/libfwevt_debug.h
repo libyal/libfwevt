@@ -26,6 +26,7 @@
 #include <types.h>
 
 #include "libfwevt_libcerror.h"
+#include "libfwevt_types.h"
 
 #if defined( __cplusplus )
 extern "C" {
