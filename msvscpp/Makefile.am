@@ -17,6 +17,7 @@ MSVSCPP_FILES = \
 	fwevt_test_xml_tag/fwevt_test_xml_tag.vcproj \
 	fwevt_test_xml_template_value/fwevt_test_xml_template_value.vcproj \
 	fwevt_test_xml_token/fwevt_test_xml_token.vcproj \
+	fwevt_test_xml_value/fwevt_test_xml_value.vcproj \
 	libcdata/libcdata.vcproj \
 	libcerror/libcerror.vcproj \
 	libcnotify/libcnotify.vcproj \

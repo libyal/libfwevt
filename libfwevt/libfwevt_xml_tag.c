@@ -437,46 +437,6 @@ on_error:
 	return( -1 );
 }
 
-/* Retrieves the value
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_tag_get_value(
-     libfwevt_xml_tag_t *xml_tag,
-     libfwevt_xml_value_t **xml_value,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
-	static char *function                         = "libfwevt_xml_tag_get_value";
-
-	if( xml_tag == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid XML tag.",
-		 function );
-
-		return( -1 );
-	}
-	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
-
-	if( xml_value == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid XML value.",
-		 function );
-
-		return( -1 );
-	}
-	*xml_value = internal_xml_tag->value;
-
-	return( 1 );
-}
-
 /* Sets the value type
  * Returns 1 if successful or -1 on error
  */
@@ -949,6 +909,46 @@ int libfwevt_xml_tag_get_utf16_name(
 
 		return( -1 );
 	}
+	return( 1 );
+}
+
+/* Retrieves the value
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_tag_get_value(
+     libfwevt_xml_tag_t *xml_tag,
+     libfwevt_xml_value_t **xml_value,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
+	static char *function                         = "libfwevt_xml_tag_get_value";
+
+	if( xml_tag == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML tag.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	*xml_value = internal_xml_tag->value;
+
 	return( 1 );
 }
 

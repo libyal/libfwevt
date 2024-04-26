@@ -1,4 +1,6 @@
 TODO
+* add pyfwevt_xml_value
+
 * Replace libfvalue by native functions
 ** Check use of libfwevt_xml_tag_get_value
 

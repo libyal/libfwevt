@@ -91,11 +91,6 @@ int libfwevt_xml_tag_set_name_data(
      size_t data_size,
      libcerror_error_t **error );
 
-int libfwevt_xml_tag_get_value(
-     libfwevt_xml_tag_t *xml_tag,
-     libfwevt_xml_value_t **xml_value,
-     libcerror_error_t **error );
-
 int libfwevt_xml_tag_set_value_type(
      libfwevt_xml_tag_t *xml_tag,
      int value_type,
@@ -162,6 +157,12 @@ int libfwevt_xml_tag_get_utf16_name(
      libfwevt_xml_tag_t *xml_tag,
      uint16_t *utf16_string,
      size_t utf16_string_size,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_xml_tag_get_value(
+     libfwevt_xml_tag_t *xml_tag,
+     libfwevt_xml_value_t **xml_value,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \

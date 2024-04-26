@@ -52,7 +52,8 @@ check_PROGRAMS = \
 	fwevt_test_xml_document \
 	fwevt_test_xml_tag \
 	fwevt_test_xml_template_value \
-	fwevt_test_xml_token
+	fwevt_test_xml_token \
+	fwevt_test_xml_value
 
 fwevt_test_channel_SOURCES = \
 	fwevt_test_channel.c \
@@ -263,6 +264,20 @@ fwevt_test_xml_token_SOURCES = \
 	fwevt_test_xml_token.c
 
 fwevt_test_xml_token_LDADD = \
+	../libfwevt/libfwevt.la \
+	@LIBCERROR_LIBADD@
+
+fwevt_test_xml_value_SOURCES = \
+	fwevt_test_libcerror.h \
+	fwevt_test_libfvalue.h \
+	fwevt_test_libfwevt.h \
+	fwevt_test_libuna.h \
+	fwevt_test_macros.h \
+	fwevt_test_memory.c fwevt_test_memory.h \
+	fwevt_test_unused.h \
+	fwevt_test_xml_value.c
+
+fwevt_test_xml_value_LDADD = \
 	../libfwevt/libfwevt.la \
 	@LIBCERROR_LIBADD@
 

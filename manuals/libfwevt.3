@@ -1,4 +1,4 @@
-.Dd April 25, 2024
+.Dd April 26, 2024
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -211,13 +211,7 @@ XML tag functions
 .Ft int
 .Fn libfwevt_xml_tag_get_utf16_name "libfwevt_xml_tag_t *xml_tag" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_xml_tag_get_utf8_value_size "libfwevt_xml_tag_t *xml_tag" "size_t *utf8_string_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_xml_tag_get_utf8_value "libfwevt_xml_tag_t *xml_tag" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_xml_tag_get_utf16_value_size "libfwevt_xml_tag_t *xml_tag" "size_t *utf16_string_size" "libfwevt_error_t **error"
-.Ft int
-.Fn libfwevt_xml_tag_get_utf16_value "libfwevt_xml_tag_t *xml_tag" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
+.Fn libfwevt_xml_tag_get_value "libfwevt_xml_tag_t *xml_tag" "libfwevt_xml_value_t **xml_value" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_xml_tag_get_number_of_attributes "libfwevt_xml_tag_t *xml_tag" "int *number_of_attributes" "libfwevt_error_t **error"
 .Ft int
