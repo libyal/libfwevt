@@ -1078,8 +1078,9 @@ int libfwevt_xml_value_copy_data(
      libfwevt_error_t **error );
 
 /* Copies the value data to an 8-bit value
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
+LIBFWEVT_DEPRECATED \
 LIBFWEVT_EXTERN \
 int libfwevt_xml_value_copy_to_8bit(
      libfwevt_xml_value_t *xml_value,
@@ -1087,8 +1088,9 @@ int libfwevt_xml_value_copy_to_8bit(
      libfwevt_error_t **error );
 
 /* Copies the value data to an 32-bit value
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
+LIBFWEVT_DEPRECATED \
 LIBFWEVT_EXTERN \
 int libfwevt_xml_value_copy_to_32bit(
      libfwevt_xml_value_t *xml_value,
@@ -1096,16 +1098,53 @@ int libfwevt_xml_value_copy_to_32bit(
      libfwevt_error_t **error );
 
 /* Copies the value data to an 64-bit value
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
+LIBFWEVT_DEPRECATED \
 LIBFWEVT_EXTERN \
 int libfwevt_xml_value_copy_to_64bit(
      libfwevt_xml_value_t *xml_value,
      uint64_t *value_64bit,
      libfwevt_error_t **error );
 
+/* Retrieves the value data as a 8-bit integer value
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_value_get_data_as_8bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint8_t *value_8bit,
+     libfwevt_error_t **error );
+
+/* Retrieves the value data as a 32-bit integer value
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_value_get_data_as_32bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint32_t *value_32bit,
+     libfwevt_error_t **error );
+
+/* Retrieves the value data as a 64-bit integer value
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_value_get_data_as_64bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint64_t *value_64bit,
+     libfwevt_error_t **error );
+
+/* Retrieves the value data as a 64-bit FILETIME value
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ */
+LIBFWEVT_EXTERN \
+int libfwevt_value_get_data_as_filetime(
+     libfwevt_xml_value_t *xml_value,
+     uint64_t *filetime,
+     libfwevt_error_t **error );
+
 /* Retrieves the size of an UTF-8 encoded string of the value data
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
 LIBFWEVT_EXTERN \
 int libfwevt_xml_value_get_utf8_string_size(
@@ -1114,7 +1153,7 @@ int libfwevt_xml_value_get_utf8_string_size(
      libfwevt_error_t **error );
 
 /* Copies the value data to an UTF-8 encoded string
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
 LIBFWEVT_EXTERN \
 int libfwevt_xml_value_copy_to_utf8_string(
@@ -1124,7 +1163,7 @@ int libfwevt_xml_value_copy_to_utf8_string(
      libfwevt_error_t **error );
 
 /* Retrieves the size of an UTF-16 encoded string of the value data
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
 LIBFWEVT_EXTERN \
 int libfwevt_xml_value_get_utf16_string_size(
@@ -1133,7 +1172,7 @@ int libfwevt_xml_value_get_utf16_string_size(
      libfwevt_error_t **error );
 
 /* Copies the value data to an UTF-16 encoded string
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
 LIBFWEVT_EXTERN \
 int libfwevt_xml_value_copy_to_utf16_string(

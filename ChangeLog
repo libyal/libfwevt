@@ -1,5 +1,7 @@
 TODO
-* add pyfwevt_xml_value
+* add pyfwevt_xml_document, pyfwevt_xml_tag and pyfwevt_xml_value
+
+* remove deprecated API functions
 
 * Replace libfvalue by native functions
 ** Check use of libfwevt_xml_tag_get_value

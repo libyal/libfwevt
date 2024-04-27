@@ -18,6 +18,7 @@ libfwevt_la_SOURCES = \
 	fwevt_template.h \
 	libfwevt.c \
 	libfwevt_channel.c libfwevt_channel.h \
+	libfwevt_date_time.c libfwevt_date_time.h \
 	libfwevt_debug.c libfwevt_debug.h \
 	libfwevt_definitions.h \
 	libfwevt_extern.h \

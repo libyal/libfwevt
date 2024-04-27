@@ -23,6 +23,7 @@
 #include <memory.h>
 #include <types.h>
 
+#include "libfwevt_date_time.h"
 #include "libfwevt_libcerror.h"
 #include "libfwevt_libfvalue.h"
 #include "libfwevt_types.h"
@@ -203,7 +204,7 @@ int libfwevt_xml_value_set_data(
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function = "libfwevt_xml_value_get_type";
+	static char *function                             = "libfwevt_xml_value_set_data";
 
 	if( xml_value == NULL )
 	{
@@ -545,7 +546,7 @@ int libfwevt_xml_value_copy_data(
 }
 
 /* Copies the value data to a 8-bit integer
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
 int libfwevt_xml_value_copy_to_8bit(
      libfwevt_xml_value_t *xml_value,
@@ -590,7 +591,7 @@ int libfwevt_xml_value_copy_to_8bit(
 }
 
 /* Copies the value data to a 32-bit integer
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
 int libfwevt_xml_value_copy_to_32bit(
      libfwevt_xml_value_t *xml_value,
@@ -635,7 +636,7 @@ int libfwevt_xml_value_copy_to_32bit(
 }
 
 /* Copies the value data to a 64-bit integer
- * Returns 1 if successful, 0 if size value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
  */
 int libfwevt_xml_value_copy_to_64bit(
      libfwevt_xml_value_t *xml_value,
@@ -675,6 +676,545 @@ int libfwevt_xml_value_copy_to_64bit(
 		 function );
 
 		return( -1 );
+	}
+	return( result );
+}
+
+/* Retrieves the value data as a 8-bit integer value
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ */
+int libfwevt_value_get_data_as_8bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint8_t *value_8bit,
+     libcerror_error_t **error )
+{
+	uint8_t utf8_string[ 4 ];
+
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_value_get_data_as_8bit_integer";
+	size_t utf8_string_index                          = 0;
+	uint8_t safe_value_8bit                           = 0;
+	int result                                        = 0;
+	int value_type                                    = 0;
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfvalue_value_get_type(
+	     internal_xml_value->value,
+	     &value_type,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve value type.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( value_type != LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+	 && ( value_type != LIBFVALUE_VALUE_TYPE_INTEGER_8BIT ) )
+	{
+		return( 0 );
+	}
+	if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+	{
+		if( value_8bit == NULL )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+			 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+			 "%s: invalid value 8-bit.",
+			 function );
+
+			return( -1 );
+		}
+		result = libfvalue_value_copy_to_utf8_string(
+		          internal_xml_value->value,
+		          0,
+		          utf8_string,
+		          4,
+		          error );
+
+		if( result == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+			 "%s: unable to copy value to UTF-8 string.",
+			 function );
+
+			return( -1 );
+		}
+		else if( result != 0 )
+		{
+/* TODO optimize by direclty using value data */
+			for( utf8_string_index = 0;
+			     utf8_string_index < 4;
+			     utf8_string_index++ )
+			{
+				if( utf8_string[ utf8_string_index ] == 0 )
+				{
+					break;
+				}
+				if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
+				 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+					 "%s: invalid integer string.",
+					 function );
+
+					return( -1 );
+				}
+				safe_value_8bit *= 10;
+				safe_value_8bit += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+			}
+			if( utf8_string[ utf8_string_index ] != 0 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+				 "%s: unsupported integer string.",
+				 function );
+
+				return( -1 );
+			}
+			*value_8bit = safe_value_8bit;
+		}
+	}
+	else if( value_type == LIBFVALUE_VALUE_TYPE_INTEGER_8BIT )
+	{
+		result = libfvalue_value_copy_to_8bit(
+		          internal_xml_value->value,
+		          0,
+		          value_8bit,
+		          error );
+
+		if( result == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+			 "%s: unable to copy value to 8-bit integer.",
+			 function );
+
+			return( -1 );
+		}
+	}
+	return( result );
+}
+
+/* Retrieves the value data as a 32-bit integer value
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ */
+int libfwevt_value_get_data_as_32bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint32_t *value_32bit,
+     libcerror_error_t **error )
+{
+	uint8_t utf8_string[ 12 ];
+
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_value_get_data_as_32bit_integer";
+	size_t utf8_string_index                          = 0;
+	uint32_t safe_value_32bit                         = 0;
+	int result                                        = 0;
+	int value_type                                    = 0;
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfvalue_value_get_type(
+	     internal_xml_value->value,
+	     &value_type,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve value type.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( value_type != LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+	 && ( value_type != LIBFVALUE_VALUE_TYPE_INTEGER_32BIT ) )
+	{
+		return( 0 );
+	}
+	if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+	{
+		if( value_32bit == NULL )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+			 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+			 "%s: invalid value 32-bit.",
+			 function );
+
+			return( -1 );
+		}
+		result = libfvalue_value_copy_to_utf8_string(
+		          internal_xml_value->value,
+		          0,
+		          utf8_string,
+		          12,
+		          error );
+
+		if( result == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+			 "%s: unable to copy value to UTF-8 string.",
+			 function );
+
+			return( -1 );
+		}
+		else if( result != 0 )
+		{
+/* TODO optimize by direclty using value data */
+			for( utf8_string_index = 0;
+			     utf8_string_index < 11;
+			     utf8_string_index++ )
+			{
+				if( utf8_string[ utf8_string_index ] == 0 )
+				{
+					break;
+				}
+				if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
+				 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+					 "%s: invalid integer string.",
+					 function );
+
+					return( -1 );
+				}
+				safe_value_32bit *= 10;
+				safe_value_32bit += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+			}
+			if( utf8_string[ utf8_string_index ] != 0 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+				 "%s: unsupported integer string.",
+				 function );
+
+				return( -1 );
+			}
+			*value_32bit = safe_value_32bit;
+		}
+	}
+	else if( value_type == LIBFVALUE_VALUE_TYPE_INTEGER_32BIT )
+	{
+		result = libfvalue_value_copy_to_32bit(
+		          internal_xml_value->value,
+		          0,
+		          value_32bit,
+		          error );
+
+		if( result == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+			 "%s: unable to copy value to 32-bit integer.",
+			 function );
+
+			return( -1 );
+		}
+	}
+	return( result );
+}
+
+/* Retrieves the value data as a 64-bit integer value
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ */
+int libfwevt_value_get_data_as_64bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint64_t *value_64bit,
+     libcerror_error_t **error )
+{
+	uint8_t utf8_string[ 24 ];
+
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_value_get_data_as_64bit_integer";
+	size_t utf8_string_index                          = 0;
+	uint64_t safe_value_64bit                         = 0;
+	int result                                        = 0;
+	int value_type                                    = 0;
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfvalue_value_get_type(
+	     internal_xml_value->value,
+	     &value_type,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve value type.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( value_type != LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+	 && ( value_type != LIBFVALUE_VALUE_TYPE_INTEGER_64BIT ) )
+	{
+		return( 0 );
+	}
+	if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+	{
+		if( value_64bit == NULL )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+			 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+			 "%s: invalid value 64-bit.",
+			 function );
+
+			return( -1 );
+		}
+		result = libfvalue_value_copy_to_utf8_string(
+		          internal_xml_value->value,
+		          0,
+		          utf8_string,
+		          12,
+		          error );
+
+		if( result == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+			 "%s: unable to copy value to UTF-8 string.",
+			 function );
+
+			return( -1 );
+		}
+		else if( result != 0 )
+		{
+/* TODO optimize by direclty using value data */
+			for( utf8_string_index = 0;
+			     utf8_string_index < 21;
+			     utf8_string_index++ )
+			{
+				if( utf8_string[ utf8_string_index ] == 0 )
+				{
+					break;
+				}
+				if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
+				 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+					 "%s: invalid integer string.",
+					 function );
+
+					return( -1 );
+				}
+				safe_value_64bit *= 10;
+				safe_value_64bit += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+			}
+			if( utf8_string[ utf8_string_index ] != 0 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+				 "%s: unsupported integer string.",
+				 function );
+
+				return( -1 );
+			}
+			*value_64bit = safe_value_64bit;
+		}
+	}
+	else if( value_type == LIBFVALUE_VALUE_TYPE_INTEGER_64BIT )
+	{
+		result = libfvalue_value_copy_to_64bit(
+		          internal_xml_value->value,
+		          0,
+		          value_64bit,
+		          error );
+
+		if( result == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+			 "%s: unable to copy value to 64-bit integer.",
+			 function );
+
+			return( -1 );
+		}
+	}
+	return( result );
+}
+
+/* Retrieves the value data as a 64-bit FILETIME value
+ * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ */
+int libfwevt_value_get_data_as_filetime(
+     libfwevt_xml_value_t *xml_value,
+     uint64_t *filetime,
+     libcerror_error_t **error )
+{
+	uint8_t utf8_string[ 32 ];
+
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_value_get_data_as_filetime";
+	int result                                        = 0;
+	int value_type                                    = 0;
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfvalue_value_get_type(
+	     internal_xml_value->value,
+	     &value_type,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve value type.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( value_type != LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+	 && ( value_type != LIBFVALUE_VALUE_TYPE_FILETIME ) )
+	{
+		return( 0 );
+	}
+	if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+	{
+		result = libfvalue_value_copy_to_utf8_string(
+		          internal_xml_value->value,
+		          0,
+		          utf8_string,
+		          32,
+		          error );
+
+		if( result == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+			 "%s: unable to copy value to UTF-8 string.",
+			 function );
+
+			return( -1 );
+		}
+		else if( result != 0 )
+		{
+/* TODO optimize by direclty using value data */
+			if( libfwevt_utf8_string_copy_to_filetime(
+			     utf8_string,
+			     32,
+			     filetime,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+				 "%s: unable to copy UTF-8 string to FILETIME.",
+				 function );
+
+				return( -1 );
+			}
+		}
+	}
+	else if( value_type == LIBFVALUE_VALUE_TYPE_FILETIME )
+	{
+		result = libfvalue_value_copy_to_64bit(
+		          internal_xml_value->value,
+		          0,
+		          filetime,
+		          error );
+
+		if( result == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+			 "%s: unable to copy value to 64-bit integer.",
+			 function );
+
+			return( -1 );
+		}
 	}
 	return( result );
 }

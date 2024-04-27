@@ -1,4 +1,4 @@
-.Dd April 26, 2024
+.Dd April 27, 2024
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -239,11 +239,11 @@ XML value functions
 .Ft int
 .Fn libfwevt_xml_value_copy_data "libfwevt_xml_value_t *xml_value" "uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_xml_value_copy_to_8bit "libfwevt_xml_value_t *xml_value" "uint8_t *value_8bit" "libfwevt_error_t **error"
+.Fn libfwevt_value_get_data_as_8bit_integer "libfwevt_xml_value_t *xml_value" "uint8_t *value_8bit" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_xml_value_copy_to_32bit "libfwevt_xml_value_t *xml_value" "uint32_t *value_32bit" "libfwevt_error_t **error"
+.Fn libfwevt_value_get_data_as_32bit_integer "libfwevt_xml_value_t *xml_value" "uint32_t *value_32bit" "libfwevt_error_t **error"
 .Ft int
-.Fn libfwevt_xml_value_copy_to_64bit "libfwevt_xml_value_t *xml_value" "uint64_t *value_64bit" "libfwevt_error_t **error"
+.Fn libfwevt_value_get_data_as_64bit_integer "libfwevt_xml_value_t *xml_value" "uint64_t *value_64bit" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_xml_value_get_utf8_string_size "libfwevt_xml_value_t *xml_value" "size_t *utf8_string_size" "libfwevt_error_t **error"
 .Ft int

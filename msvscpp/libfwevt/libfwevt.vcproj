@@ -178,6 +178,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libfwevt\libfwevt_date_time.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libfwevt\libfwevt_debug.c"
 				>
 			</File>
@@ -265,6 +269,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libfwevt\libfwevt_channel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libfwevt\libfwevt_date_time.h"
 				>
 			</File>
 			<File

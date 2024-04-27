@@ -131,6 +131,30 @@ int libfwevt_xml_value_copy_to_64bit(
      uint64_t *value_64bit,
      libcerror_error_t **error );
 
+LIBFWEVT_EXTERN \
+int libfwevt_value_get_data_as_8bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint8_t *value_8bit,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_value_get_data_as_32bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint32_t *value_32bit,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_value_get_data_as_64bit_integer(
+     libfwevt_xml_value_t *xml_value,
+     uint64_t *value_64bit,
+     libcerror_error_t **error );
+
+LIBFWEVT_EXTERN \
+int libfwevt_value_get_data_as_filetime(
+     libfwevt_xml_value_t *xml_value,
+     uint64_t *filetime,
+     libcerror_error_t **error );
+
 int libfwevt_xml_value_get_utf8_string_size_with_index(
      libfwevt_xml_value_t *xml_value,
      int value_entry_index,

@@ -7,7 +7,7 @@ EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
 EXIT_IGNORE=77;
 
-LIBRARY_TESTS="channel error event keyword level manifest map notify opcode provider support task template xml_document xml_tag xml_template_value xml_token xml_value";
+LIBRARY_TESTS="channel date_time error event keyword level manifest map notify opcode provider support task template xml_document xml_tag xml_template_value xml_token xml_value";
 LIBRARY_TESTS_WITH_INPUT="";
 OPTION_SETS=();
 
