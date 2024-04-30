@@ -246,18 +246,6 @@ int libfwevt_xml_tag_set_flags(
      uint8_t flags,
      libcerror_error_t **error );
 
-int libfwevt_xml_tag_get_utf8_xml_value_string_size(
-     libfwevt_internal_xml_tag_t *internal_xml_tag,
-     size_t *utf8_string_size,
-     libcerror_error_t **error );
-
-int libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
-     libfwevt_internal_xml_tag_t *internal_xml_tag,
-     uint8_t *utf8_string,
-     size_t utf8_string_size,
-     size_t *utf8_string_index,
-     libcerror_error_t **error );
-
 int libfwevt_xml_tag_get_utf8_xml_string_size(
      libfwevt_xml_tag_t *xml_tag,
      int xml_tag_level,
@@ -270,18 +258,6 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
      uint8_t *utf8_string,
      size_t utf8_string_size,
      size_t *utf8_string_index,
-     libcerror_error_t **error );
-
-int libfwevt_xml_tag_get_utf16_xml_value_string_size(
-     libfwevt_internal_xml_tag_t *internal_xml_tag,
-     size_t *utf16_string_size,
-     libcerror_error_t **error );
-
-int libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
-     libfwevt_internal_xml_tag_t *internal_xml_tag,
-     uint16_t *utf16_string,
-     size_t utf16_string_size,
-     size_t *utf16_string_index,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_get_utf16_xml_string_size(

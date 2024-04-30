@@ -4,6 +4,7 @@ MSVSCPP_FILES = \
 	fwevt_test_date_time/fwevt_test_date_time.vcproj \
 	fwevt_test_error/fwevt_test_error.vcproj \
 	fwevt_test_event/fwevt_test_event.vcproj \
+	fwevt_test_integer/fwevt_test_integer.vcproj \
 	fwevt_test_keyword/fwevt_test_keyword.vcproj \
 	fwevt_test_level/fwevt_test_level.vcproj \
 	fwevt_test_manifest/fwevt_test_manifest.vcproj \

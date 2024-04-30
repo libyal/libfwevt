@@ -254,6 +254,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libfwevt\libfwevt_xml_string.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libfwevt\libfwevt_xml_tag.c"
 				>
 			</File>
@@ -401,6 +405,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libfwevt\libfwevt_xml_document.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libfwevt\libfwevt_xml_string.h"
 				>
 			</File>
 			<File

@@ -62,14 +62,14 @@ int libfwevt_integer_copy_from_utf16_stream(
 		return( -1 );
 	}
 	if( ( utf16_stream_size < 2 )
-	 || ( utf16_stream_size > 42 )
+	 || ( utf16_stream_size > SSIZE_MAX )
 	 || ( ( utf16_stream_size % 2 ) != 0 ) )
 	{
 		libcerror_error_set(
 		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-		 "%s: unsupported UTF-16 stream size.",
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: UTF-16 stream size value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -78,13 +78,24 @@ int libfwevt_integer_copy_from_utf16_stream(
 	     utf16_stream_offset < utf16_stream_size;
 	     utf16_stream_offset += 2 )
 	{
+		if( utf16_stream_offset >= 42 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+			 "%s: unsupported UTF-16 stream.",
+			 function );
+
+			return( -1 );
+		}
 		if( utf16_stream[ utf16_stream_offset + 1 ] != 0 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: invalid integer string.",
+			 "%s: unsupported integer string.",
 			 function );
 
 			return( -1 );
@@ -109,6 +120,18 @@ int libfwevt_integer_copy_from_utf16_stream(
 		}
 		safe_integer_value *= 10;
 		safe_integer_value += digit - (uint8_t) '0';
+	}
+	if( ( utf16_stream[ utf16_stream_offset ] != 0 )
+	 || ( utf16_stream[ utf16_stream_offset + 1 ] != 0 ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+		 "%s: unsupported integer string.",
+		 function );
+
+		return( -1 );
 	}
 	*integer_value = safe_integer_value;
 

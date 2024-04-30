@@ -1,4 +1,5 @@
 TODO
+* change XML value as string output to resemble wevtutil
 * add pyfwevt_xml_document, pyfwevt_xml_tag and pyfwevt_xml_value
 * add support for hexadecimal integers in data_as_integer functions
 * improve integer XML value formatting

@@ -584,10 +584,10 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libfwevt_xml_value_get_data_as_utf8_string_with_index function
+/* Tests the libfwevt_internal_xml_value_get_data_as_utf8_string_with_index function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_xml_value_get_data_as_utf8_string_with_index(
+int fwevt_test_internal_xml_value_get_data_as_utf8_string_with_index(
      libfwevt_xml_value_t *xml_value )
 {
 	uint8_t utf8_string[ 32 ];
@@ -598,11 +598,12 @@ int fwevt_test_xml_value_get_data_as_utf8_string_with_index(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_xml_value_get_data_as_utf8_string_with_index(
-	          xml_value,
+	result = libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
+	          (libfwevt_internal_xml_value_t *) xml_value,
 	          utf8_string,
 	          32,
 	          &utf8_string_index,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -616,11 +617,12 @@ int fwevt_test_xml_value_get_data_as_utf8_string_with_index(
 
 	/* Test error cases
 	 */
-	result = libfwevt_xml_value_get_data_as_utf8_string_with_index(
+	result = libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
 	          NULL,
 	          utf8_string,
 	          32,
 	          &utf8_string_index,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -635,11 +637,12 @@ int fwevt_test_xml_value_get_data_as_utf8_string_with_index(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_xml_value_get_data_as_utf8_string_with_index(
-	          xml_value,
+	result = libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
+	          (libfwevt_internal_xml_value_t *) xml_value,
 	          NULL,
 	          32,
 	          &utf8_string_index,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -654,11 +657,12 @@ int fwevt_test_xml_value_get_data_as_utf8_string_with_index(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_xml_value_get_data_as_utf8_string_with_index(
-	          xml_value,
+	result = libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
+	          (libfwevt_internal_xml_value_t *) xml_value,
 	          utf8_string,
 	          (size_t) SSIZE_MAX + 1,
 	          &utf8_string_index,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -673,11 +677,12 @@ int fwevt_test_xml_value_get_data_as_utf8_string_with_index(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_xml_value_get_data_as_utf8_string_with_index(
-	          xml_value,
+	result = libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
+	          (libfwevt_internal_xml_value_t *) xml_value,
 	          utf8_string,
 	          32,
 	          NULL,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -776,10 +781,10 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libfwevt_xml_value_get_data_as_utf16_string_with_index function
+/* Tests the libfwevt_internal_xml_value_get_data_as_utf16_string_with_index function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_xml_value_get_data_as_utf16_string_with_index(
+int fwevt_test_internal_xml_value_get_data_as_utf16_string_with_index(
      libfwevt_xml_value_t *xml_value )
 {
 	uint16_t utf16_string[ 32 ];
@@ -790,11 +795,12 @@ int fwevt_test_xml_value_get_data_as_utf16_string_with_index(
 
 	/* Test regular cases
 	 */
-	result = libfwevt_xml_value_get_data_as_utf16_string_with_index(
-	          xml_value,
+	result = libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
+	          (libfwevt_internal_xml_value_t *) xml_value,
 	          utf16_string,
 	          32,
 	          &utf16_string_index,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -808,11 +814,12 @@ int fwevt_test_xml_value_get_data_as_utf16_string_with_index(
 
 	/* Test error cases
 	 */
-	result = libfwevt_xml_value_get_data_as_utf16_string_with_index(
+	result = libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
 	          NULL,
 	          utf16_string,
 	          32,
 	          &utf16_string_index,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -827,11 +834,12 @@ int fwevt_test_xml_value_get_data_as_utf16_string_with_index(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_xml_value_get_data_as_utf16_string_with_index(
-	          xml_value,
+	result = libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
+	          (libfwevt_internal_xml_value_t *) xml_value,
 	          NULL,
 	          32,
 	          &utf16_string_index,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -846,11 +854,12 @@ int fwevt_test_xml_value_get_data_as_utf16_string_with_index(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_xml_value_get_data_as_utf16_string_with_index(
-	          xml_value,
+	result = libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
+	          (libfwevt_internal_xml_value_t *) xml_value,
 	          utf16_string,
 	          (size_t) SSIZE_MAX + 1,
 	          &utf16_string_index,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -865,11 +874,12 @@ int fwevt_test_xml_value_get_data_as_utf16_string_with_index(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_xml_value_get_data_as_utf16_string_with_index(
-	          xml_value,
+	result = libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
+	          (libfwevt_internal_xml_value_t *) xml_value,
 	          utf16_string,
 	          32,
 	          NULL,
+	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -1010,8 +1020,8 @@ int main(
 	/* TODO: add tests for libfwevt_xml_value_get_data_as_utf8_string */
 
 	FWEVT_TEST_RUN_WITH_ARGS(
-	 "libfwevt_xml_value_get_data_as_utf8_string_with_index",
-	 fwevt_test_xml_value_get_data_as_utf8_string_with_index,
+	 "libfwevt_internal_xml_value_get_data_as_utf8_string_with_index",
+	 fwevt_test_internal_xml_value_get_data_as_utf8_string_with_index,
 	 xml_value );
 
 	/* TODO: add tests for libfwevt_xml_value_get_utf16_string_size_with_index */
@@ -1026,8 +1036,8 @@ int main(
 	/* TODO: add tests for libfwevt_xml_value_get_data_as_utf16_string */
 
 	FWEVT_TEST_RUN_WITH_ARGS(
-	 "libfwevt_xml_value_get_data_as_utf16_string_with_index",
-	 fwevt_test_xml_value_get_data_as_utf16_string_with_index,
+	 "libfwevt_internal_xml_value_get_data_as_utf16_string_with_index",
+	 fwevt_test_internal_xml_value_get_data_as_utf16_string_with_index,
 	 xml_value );
 
 #if defined( HAVE_DEBUG_OUTPUT )

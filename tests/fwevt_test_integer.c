@@ -1,5 +1,5 @@
 /*
- * Library date and time functions test program
+ * Library integer functions test program
  *
  * Copyright (C) 2011-2024, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -33,38 +33,29 @@
 #include "fwevt_test_macros.h"
 #include "fwevt_test_unused.h"
 
-#include "../libfwevt/libfwevt_date_time.h"
+#include "../libfwevt/libfwevt_integer.h"
 
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
-/* Tests the libfwevt_filetime_copy_from_utf16_stream function
+/* Tests the libfwevt_integer_copy_from_utf16_stream function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_filetime_copy_from_utf16_stream(
+int fwevt_test_integer_copy_from_utf16_stream(
      void )
 {
-	uint8_t utf16_stream1[ 62 ] = {
-		'1', 0, '6', 0, '0', 0, '1', 0, '-', 0, '0', 0, '1', 0, '-', 0,
-	       	'0', 0, '1', 0, 'T', 0, '0', 0, '0', 0, ':', 0, '0', 0, '0', 0,
-	       	':', 0, '0', 0, '0', 0, '.', 0, '0', 0, '0', 0, '0', 0, '0', 0,
-	       	'0', 0, '0', 0, '0', 0, '0', 0, '0', 0, 'Z', 0, 0, 0 };
-
-	uint8_t utf16_stream2[ 62 ] = {
-		'2', 0, '0', 0, '2', 0, '2', 0, '-', 0, '0', 0, '7', 0, '-', 0,
-	       	'0', 0, '6', 0, 'T', 0, '1', 0, '2', 0, ':', 0, '2', 0, '4', 0,
-	       	':', 0, '4', 0, '0', 0, '.', 0, '6', 0, '0', 0, '8', 0, '1', 0,
-	       	'1', 0, '5', 0, '5', 0, '0', 0, '0', 0, 'Z', 0, 0, 0 };
+	uint8_t utf16_stream1[ 10 ] = {
+		'1', 0, '2', 0, '3', 0, '4', 0, 0, 0 };
 
 	libcerror_error_t *error = NULL;
-	uint64_t filetime        = 0;
+	uint64_t integer_value   = 0;
 	int result               = 0;
 
 	/* Test regular cases
 	 */
-	result = libfwevt_filetime_copy_from_utf16_stream(
-	          &filetime,
+	result = libfwevt_integer_copy_from_utf16_stream(
+	          &integer_value,
 	          utf16_stream1,
-	          62,
+	          10,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -73,29 +64,9 @@ int fwevt_test_filetime_copy_from_utf16_stream(
 	 1 );
 
 	FWEVT_TEST_ASSERT_EQUAL_UINT64(
-	 "filetime",
-	 filetime,
-	 (uint64_t) 0 );
-
-	FWEVT_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	result = libfwevt_filetime_copy_from_utf16_stream(
-	          &filetime,
-	          utf16_stream2,
-	          62,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	FWEVT_TEST_ASSERT_EQUAL_UINT64(
-	 "filetime",
-	 filetime,
-	 (uint64_t) 133015838806081155UL );
+	 "integer_value",
+	 integer_value,
+	 (uint64_t) 1234 );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -103,10 +74,10 @@ int fwevt_test_filetime_copy_from_utf16_stream(
 
 	/* Test error cases
 	 */
-	result = libfwevt_filetime_copy_from_utf16_stream(
+	result = libfwevt_integer_copy_from_utf16_stream(
 	          NULL,
 	          utf16_stream1,
-	          62,
+	          10,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -121,10 +92,10 @@ int fwevt_test_filetime_copy_from_utf16_stream(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_filetime_copy_from_utf16_stream(
-	          &filetime,
+	result = libfwevt_integer_copy_from_utf16_stream(
+	          &integer_value,
 	          NULL,
-	          62,
+	          10,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -139,8 +110,8 @@ int fwevt_test_filetime_copy_from_utf16_stream(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_filetime_copy_from_utf16_stream(
-	          &filetime,
+	result = libfwevt_integer_copy_from_utf16_stream(
+	          &integer_value,
 	          utf16_stream1,
 	          0,
 	          &error );
@@ -157,8 +128,8 @@ int fwevt_test_filetime_copy_from_utf16_stream(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_filetime_copy_from_utf16_stream(
-	          &filetime,
+	result = libfwevt_integer_copy_from_utf16_stream(
+	          &integer_value,
 	          utf16_stream1,
 	          (size_t) SSIZE_MAX + 1,
 	          &error );
@@ -175,10 +146,10 @@ int fwevt_test_filetime_copy_from_utf16_stream(
 	libcerror_error_free(
 	 &error );
 
-	result = libfwevt_filetime_copy_from_utf16_stream(
-	          &filetime,
+	result = libfwevt_integer_copy_from_utf16_stream(
+	          &integer_value,
 	          utf16_stream1,
-	          63,
+	          9,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -224,8 +195,24 @@ int main(
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_filetime_copy_from_utf16_stream",
-	 fwevt_test_filetime_copy_from_utf16_stream );
+	 "libfwevt_integer_copy_from_utf16_stream",
+	 fwevt_test_integer_copy_from_utf16_stream );
+
+	/* TODO: add tests for libfwevt_integer_as_signed_decimal_get_string_size */
+
+	/* TODO: add tests for libfwevt_integer_as_signed_decimal_copy_to_utf8_string_with_index */
+
+	/* TODO: add tests for libfwevt_integer_as_signed_decimal_copy_to_utf16_string_with_index */
+
+	/* TODO: add tests for libfwevt_integer_as_unsigned_decimal_get_string_size */
+
+	/* TODO: add tests for libfwevt_integer_as_unsigned_decimal_copy_to_utf8_string_with_index */
+
+	/* TODO: add tests for libfwevt_integer_as_unsigned_decimal_copy_to_utf16_string_with_index */
+
+	/* TODO: add tests for libfwevt_integer_as_hexadecimal_copy_to_utf8_string_with_index */
+
+	/* TODO: add tests for libfwevt_integer_as_hexadecimal_copy_to_utf16_string_with_index */
 
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 

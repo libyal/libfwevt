@@ -38,6 +38,7 @@
 #include "libfwevt_libfwnt.h"
 #include "libfwevt_libuna.h"
 #include "libfwevt_types.h"
+#include "libfwevt_xml_string.h"
 #include "libfwevt_xml_value.h"
 
 /* Creates a XML value
@@ -1332,6 +1333,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
      libfwevt_internal_xml_value_t *internal_xml_value,
      int data_segment_index,
      size_t *utf8_string_size,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment = NULL;
@@ -1386,9 +1388,18 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
 			{
 				result = 1;
 			}
-			else
+			else if( escape_characters == 0 )
 			{
 				result = libuna_utf8_string_size_from_utf16_stream(
+				          data_segment->data,
+				          data_segment->data_size,
+				          LIBUNA_ENDIAN_LITTLE,
+				          &safe_utf8_string_size,
+				          error );
+			}
+			else
+			{
+				result = libfwevt_utf8_xml_string_size_from_utf16_stream(
 				          data_segment->data,
 				          data_segment->data_size,
 				          LIBUNA_ENDIAN_LITTLE,
@@ -1412,6 +1423,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
 				          &safe_utf8_string_size,
 				          error );
 			}
+/* TODO add support for escape_characters */
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_INTEGER_8BIT:
@@ -1579,6 +1591,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
      uint8_t *utf8_string,
      size_t utf8_string_size,
      size_t *utf8_string_index,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment = NULL;
@@ -1652,14 +1665,28 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 	switch( internal_xml_value->value_type & 0x7f )
 	{
 		case LIBFWEVT_VALUE_TYPE_STRING_UTF16:
-			result = libuna_utf8_string_with_index_copy_from_utf16_stream(
-			          utf8_string,
-			          utf8_string_size,
-			          utf8_string_index,
-			          data_segment->data,
-			          data_segment->data_size,
-			          LIBUNA_ENDIAN_LITTLE,
-			          error );
+			if( escape_characters == 0 )
+			{
+				result = libuna_utf8_string_with_index_copy_from_utf16_stream(
+				          utf8_string,
+				          utf8_string_size,
+				          utf8_string_index,
+				          data_segment->data,
+				          data_segment->data_size,
+				          LIBUNA_ENDIAN_LITTLE,
+				          error );
+			}
+			else
+			{
+				result = libfwevt_utf8_xml_string_with_index_copy_from_utf16_stream(
+				          utf8_string,
+				          utf8_string_size,
+				          utf8_string_index,
+				          data_segment->data,
+				          data_segment->data_size,
+				          LIBUNA_ENDIAN_LITTLE,
+				          error );
+			}
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_STRING_BYTE_STREAM:
@@ -1672,6 +1699,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 			          data_segment->data_size,
 			          LIBUNA_CODEPAGE_WINDOWS_1252,
 			          error );
+/* TODO add support for escape_characters */
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_INTEGER_8BIT:
@@ -1887,79 +1915,23 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 	return( 1 );
 }
 
-/* Retrieves the size of an UTF-8 encoded string of the value data
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_value_get_utf8_string_size(
-     libfwevt_xml_value_t *xml_value,
-     size_t *utf8_string_size,
-     libcerror_error_t **error )
-{
-	static char *function = "libfwevt_xml_value_get_utf8_string_size";
-
-	if( libfwevt_xml_value_get_data_as_utf8_string_size(
-	     xml_value,
-	     utf8_string_size,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size of UTF-8 string.",
-		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Copies the value data to an UTF-8 encoded string
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_value_copy_to_utf8_string(
-     libfwevt_xml_value_t *xml_value,
-     uint8_t *utf8_string,
-     size_t utf8_string_size,
-     libcerror_error_t **error )
-{
-	static char *function = "libfwevt_xml_value_copy_to_utf8_string";
-
-	if( libfwevt_xml_value_get_data_as_utf8_string(
-	     xml_value,
-	     utf8_string,
-	     utf8_string_size,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size of UTF-8 string.",
-		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
 /* Retrieves the size of the value data formatted as an UTF-8 string
  * The string size includes the end of string character
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_xml_value_get_data_as_utf8_string_size(
-     libfwevt_xml_value_t *xml_value,
+int libfwevt_internal_xml_value_get_data_as_utf8_string_size(
+     libfwevt_internal_xml_value_t *internal_xml_value,
      size_t *utf8_string_size,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_data_as_utf8_string_size";
-	size_t data_segment_size                          = 0;
-	size_t safe_utf8_string_size                      = 0;
-	int data_segment_index                            = 0;
-	int number_of_data_segments                       = 0;
+	static char *function        = "libfwevt_internal_xml_value_get_data_as_utf8_string_size";
+	size_t data_segment_size     = 0;
+	size_t safe_utf8_string_size = 0;
+	int data_segment_index       = 0;
+	int number_of_data_segments  = 0;
 
-	if( xml_value == NULL )
+	if( internal_xml_value == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -1970,8 +1942,6 @@ int libfwevt_xml_value_get_data_as_utf8_string_size(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( utf8_string_size == NULL )
 	{
 		libcerror_error_set(
@@ -2005,6 +1975,7 @@ int libfwevt_xml_value_get_data_as_utf8_string_size(
 		     internal_xml_value,
 		     data_segment_index,
 		     &data_segment_size,
+		     escape_characters,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -2031,52 +2002,20 @@ int libfwevt_xml_value_get_data_as_utf8_string_size(
  * The string size should include the end of string character
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_xml_value_get_data_as_utf8_string(
-     libfwevt_xml_value_t *xml_value,
-     uint8_t *utf8_string,
-     size_t utf8_string_size,
-     libcerror_error_t **error )
-{
-	static char *function    = "libfwevt_xml_value_get_data_as_utf8_string";
-	size_t utf8_string_index = 0;
-
-	if( libfwevt_xml_value_get_data_as_utf8_string_with_index(
-	     xml_value,
-	     utf8_string,
-	     utf8_string_size,
-	     &utf8_string_index,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size of UTF-8 string.",
-		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves the data formatted as an UTF-8 string
- * The string size should include the end of string character
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_value_get_data_as_utf8_string_with_index(
-     libfwevt_xml_value_t *xml_value,
+int libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
+     libfwevt_internal_xml_value_t *internal_xml_value,
      uint8_t *utf8_string,
      size_t utf8_string_size,
      size_t *utf8_string_index,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_data_as_utf8_string_with_index";
-	size_t safe_utf8_string_index                     = 0;
-	int data_segment_index                            = 0;
-	int number_of_data_segments                       = 0;
+	static char *function         = "libfwevt_internal_xml_value_get_data_as_utf8_string_with_index";
+	size_t safe_utf8_string_index = 0;
+	int data_segment_index        = 0;
+	int number_of_data_segments   = 0;
 
-	if( xml_value == NULL )
+	if( internal_xml_value == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -2087,8 +2026,6 @@ int libfwevt_xml_value_get_data_as_utf8_string_with_index(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( utf8_string == NULL )
 	{
 		libcerror_error_set(
@@ -2148,6 +2085,7 @@ int libfwevt_xml_value_get_data_as_utf8_string_with_index(
 		     utf8_string,
 		     utf8_string_size,
 		     &safe_utf8_string_index,
+		     escape_characters,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -2180,6 +2118,167 @@ int libfwevt_xml_value_get_data_as_utf8_string_with_index(
 	return( 1 );
 }
 
+/* Retrieves the size of an UTF-8 encoded string of the value data
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_get_utf8_string_size(
+     libfwevt_xml_value_t *xml_value,
+     size_t *utf8_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_xml_value_get_utf8_string_size";
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfwevt_internal_xml_value_get_data_as_utf8_string_size(
+	     internal_xml_value,
+	     utf8_string_size,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size of UTF-8 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Copies the value data to an UTF-8 encoded string
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_copy_to_utf8_string(
+     libfwevt_xml_value_t *xml_value,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_xml_value_copy_to_utf8_string";
+
+	if( libfwevt_xml_value_get_data_as_utf8_string(
+	     xml_value,
+	     utf8_string,
+	     utf8_string_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size of UTF-8 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the size of the value data formatted as an UTF-8 string
+ * The string size includes the end of string character
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_get_data_as_utf8_string_size(
+     libfwevt_xml_value_t *xml_value,
+     size_t *utf8_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_xml_value_get_data_as_utf8_string_size";
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfwevt_internal_xml_value_get_data_as_utf8_string_size(
+	     internal_xml_value,
+	     utf8_string_size,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string size.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the data formatted as an UTF-8 string
+ * The string size should include the end of string character
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_get_data_as_utf8_string(
+     libfwevt_xml_value_t *xml_value,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_xml_value_get_data_as_utf8_string";
+	size_t utf8_string_index                          = 0;
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
+	     internal_xml_value,
+	     utf8_string,
+	     utf8_string_size,
+	     &utf8_string_index,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size of UTF-8 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
 /* Retrieves the size of the data segment formatted as an UTF-16 string
  * The string size includes the end of string character
  * Returns 1 if successful or -1 on error
@@ -2188,6 +2287,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
      libfwevt_internal_xml_value_t *internal_xml_value,
      int data_segment_index,
      size_t *utf16_string_size,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment = NULL;
@@ -2242,9 +2342,18 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
 			{
 				result = 1;
 			}
-			else
+			else if( escape_characters == 0 )
 			{
 				result = libuna_utf16_string_size_from_utf16_stream(
+				          data_segment->data,
+				          data_segment->data_size,
+				          LIBUNA_ENDIAN_LITTLE,
+				          &safe_utf16_string_size,
+				          error );
+			}
+			else
+			{
+				result = libfwevt_utf16_xml_string_size_from_utf16_stream(
 				          data_segment->data,
 				          data_segment->data_size,
 				          LIBUNA_ENDIAN_LITTLE,
@@ -2268,6 +2377,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
 				          &safe_utf16_string_size,
 				          error );
 			}
+/* TODO add support for escape_characters */
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_INTEGER_8BIT:
@@ -2443,6 +2553,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
      uint16_t *utf16_string,
      size_t utf16_string_size,
      size_t *utf16_string_index,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment = NULL;
@@ -2516,14 +2627,28 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
 	switch( internal_xml_value->value_type & 0x7f )
 	{
 		case LIBFWEVT_VALUE_TYPE_STRING_UTF16:
-			result = libuna_utf16_string_with_index_copy_from_utf16_stream(
-			          utf16_string,
-			          utf16_string_size,
-			          utf16_string_index,
-			          data_segment->data,
-			          data_segment->data_size,
-			          LIBUNA_ENDIAN_LITTLE,
-			          error );
+			if( escape_characters == 0 )
+			{
+				result = libuna_utf16_string_with_index_copy_from_utf16_stream(
+				          utf16_string,
+				          utf16_string_size,
+				          utf16_string_index,
+				          data_segment->data,
+				          data_segment->data_size,
+				          LIBUNA_ENDIAN_LITTLE,
+				          error );
+			}
+			else
+			{
+				result = libfwevt_utf16_xml_string_with_index_copy_from_utf16_stream(
+				          utf16_string,
+				          utf16_string_size,
+				          utf16_string_index,
+				          data_segment->data,
+				          data_segment->data_size,
+				          LIBUNA_ENDIAN_LITTLE,
+				          error );
+			}
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_STRING_BYTE_STREAM:
@@ -2536,6 +2661,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
 			          data_segment->data_size,
 			          LIBUNA_CODEPAGE_WINDOWS_1252,
 			          error );
+/* TODO add support for escape_characters */
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_INTEGER_8BIT:
@@ -2760,79 +2886,23 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
 	return( 1 );
 }
 
-/* Retrieves the size of an UTF-16 encoded string of the value data
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_value_get_utf16_string_size(
-     libfwevt_xml_value_t *xml_value,
-     size_t *utf16_string_size,
-     libcerror_error_t **error )
-{
-	static char *function = "libfwevt_xml_value_get_utf16_string_size";
-
-	if( libfwevt_xml_value_get_data_as_utf16_string_size(
-	     xml_value,
-	     utf16_string_size,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size of UTF-16 string.",
-		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Copies the value data to an UTF-16 encoded string
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_value_copy_to_utf16_string(
-     libfwevt_xml_value_t *xml_value,
-     uint16_t *utf16_string,
-     size_t utf16_string_size,
-     libcerror_error_t **error )
-{
-	static char *function = "libfwevt_xml_value_copy_to_utf16_string";
-
-	if( libfwevt_xml_value_get_data_as_utf16_string(
-	     xml_value,
-	     utf16_string,
-	     utf16_string_size,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size of UTF-16 string.",
-		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
 /* Retrieves the size of the value data formatted as an UTF-16 string
  * The string size includes the end of string character
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_xml_value_get_data_as_utf16_string_size(
-     libfwevt_xml_value_t *xml_value,
+int libfwevt_internal_xml_value_get_data_as_utf16_string_size(
+     libfwevt_internal_xml_value_t *internal_xml_value,
      size_t *utf16_string_size,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_data_as_utf16_string_size";
-	size_t data_segment_size                          = 0;
-	size_t safe_utf16_string_size                     = 0;
-	int data_segment_index                            = 0;
-	int number_of_data_segments                       = 0;
+	static char *function         = "libfwevt_internal_xml_value_get_data_as_utf16_string_size";
+	size_t data_segment_size      = 0;
+	size_t safe_utf16_string_size = 0;
+	int data_segment_index        = 0;
+	int number_of_data_segments   = 0;
 
-	if( xml_value == NULL )
+	if( internal_xml_value == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -2843,8 +2913,6 @@ int libfwevt_xml_value_get_data_as_utf16_string_size(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( utf16_string_size == NULL )
 	{
 		libcerror_error_set(
@@ -2878,6 +2946,7 @@ int libfwevt_xml_value_get_data_as_utf16_string_size(
 		     internal_xml_value,
 		     data_segment_index,
 		     &data_segment_size,
+		     escape_characters,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -2904,52 +2973,20 @@ int libfwevt_xml_value_get_data_as_utf16_string_size(
  * The string size should include the end of string character
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_xml_value_get_data_as_utf16_string(
-     libfwevt_xml_value_t *xml_value,
-     uint16_t *utf16_string,
-     size_t utf16_string_size,
-     libcerror_error_t **error )
-{
-	static char *function     = "libfwevt_xml_value_get_data_as_utf16_string";
-	size_t utf16_string_index = 0;
-
-	if( libfwevt_xml_value_get_data_as_utf16_string_with_index(
-	     xml_value,
-	     utf16_string,
-	     utf16_string_size,
-	     &utf16_string_index,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size of UTF-16 string.",
-		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
-/* Retrieves the data formatted as an UTF-16 string
- * The string size should include the end of string character
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_value_get_data_as_utf16_string_with_index(
-     libfwevt_xml_value_t *xml_value,
+int libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
+     libfwevt_internal_xml_value_t *internal_xml_value,
      uint16_t *utf16_string,
      size_t utf16_string_size,
      size_t *utf16_string_index,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_data_as_utf16_string_with_index";
-	size_t safe_utf16_string_index                    = 0;
-	int data_segment_index                            = 0;
-	int number_of_data_segments                       = 0;
+	static char *function          = "libfwevt_internal_xml_value_get_data_as_utf16_string_with_index";
+	size_t safe_utf16_string_index = 0;
+	int data_segment_index         = 0;
+	int number_of_data_segments    = 0;
 
-	if( xml_value == NULL )
+	if( internal_xml_value == NULL )
 	{
 		libcerror_error_set(
 		 error,
@@ -2960,8 +2997,6 @@ int libfwevt_xml_value_get_data_as_utf16_string_with_index(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( utf16_string == NULL )
 	{
 		libcerror_error_set(
@@ -3021,6 +3056,7 @@ int libfwevt_xml_value_get_data_as_utf16_string_with_index(
 		     utf16_string,
 		     utf16_string_size,
 		     &safe_utf16_string_index,
+		     escape_characters,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -3050,6 +3086,167 @@ int libfwevt_xml_value_get_data_as_utf16_string_with_index(
 
 	*utf16_string_index = safe_utf16_string_index;
 
+	return( 1 );
+}
+
+/* Retrieves the size of an UTF-16 encoded string of the value data
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_get_utf16_string_size(
+     libfwevt_xml_value_t *xml_value,
+     size_t *utf16_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_xml_value_get_utf16_string_size";
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfwevt_internal_xml_value_get_data_as_utf16_string_size(
+	     internal_xml_value,
+	     utf16_string_size,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size of UTF-16 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Copies the value data to an UTF-16 encoded string
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_copy_to_utf16_string(
+     libfwevt_xml_value_t *xml_value,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
+     libcerror_error_t **error )
+{
+	static char *function = "libfwevt_xml_value_copy_to_utf16_string";
+
+	if( libfwevt_xml_value_get_data_as_utf16_string(
+	     xml_value,
+	     utf16_string,
+	     utf16_string_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size of UTF-16 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the size of the value data formatted as an UTF-16 string
+ * The string size includes the end of string character
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_get_data_as_utf16_string_size(
+     libfwevt_xml_value_t *xml_value,
+     size_t *utf16_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_xml_value_get_data_as_utf16_string_size";
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfwevt_internal_xml_value_get_data_as_utf16_string_size(
+	     internal_xml_value,
+	     utf16_string_size,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-16 string size.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the data formatted as an UTF-16 string
+ * The string size should include the end of string character
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_get_data_as_utf16_string(
+     libfwevt_xml_value_t *xml_value,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
+     libcerror_error_t **error )
+{
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_xml_value_get_data_as_utf16_string";
+	size_t utf16_string_index                         = 0;
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+	if( libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
+	     internal_xml_value,
+	     utf16_string,
+	     utf16_string_size,
+	     &utf16_string_index,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size of UTF-16 string.",
+		 function );
+
+		return( -1 );
+	}
 	return( 1 );
 }
 
@@ -3088,12 +3285,14 @@ int libfwevt_debug_print_xml_value_with_index(
 		  internal_xml_value,
 		  data_segment_index,
 		  &value_string_size,
+		  0,
 		  error );
 #else
 	result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
 		  internal_xml_value,
 		  data_segment_index,
 		  &value_string_size,
+		  0,
 		  error );
 #endif
 	if( result != 1 )
@@ -3141,6 +3340,7 @@ int libfwevt_debug_print_xml_value_with_index(
 			  (libuna_utf16_character_t *) value_string,
 			  value_string_size,
 			  &value_string_index,
+			  0,
 			  error );
 #else
 		result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
@@ -3149,6 +3349,7 @@ int libfwevt_debug_print_xml_value_with_index(
 			  (libuna_utf8_character_t *) value_string,
 			  value_string_size,
 			  &value_string_index,
+			  0,
 			  error );
 #endif
 		if( result != 1 )
