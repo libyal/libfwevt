@@ -29,7 +29,6 @@
 #endif
 
 #include "fwevt_test_libcerror.h"
-#include "fwevt_test_libfvalue.h"
 #include "fwevt_test_libfwevt.h"
 #include "fwevt_test_libuna.h"
 #include "fwevt_test_macros.h"
@@ -546,7 +545,7 @@ int fwevt_test_xml_tag_set_value_type(
 	 */
 	result = libfwevt_xml_tag_set_value_type(
 	          xml_tag,
-	          LIBFVALUE_VALUE_TYPE_BINARY_DATA,
+	          LIBFWEVT_VALUE_TYPE_BINARY_DATA,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -562,7 +561,7 @@ int fwevt_test_xml_tag_set_value_type(
 	 */
 	result = libfwevt_xml_tag_set_value_type(
 	          NULL,
-	          LIBFVALUE_VALUE_TYPE_BINARY_DATA,
+	          LIBFWEVT_VALUE_TYPE_BINARY_DATA,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -579,121 +578,7 @@ int fwevt_test_xml_tag_set_value_type(
 
 	result = libfwevt_xml_tag_set_value_type(
 	          xml_tag,
-	          LIBFVALUE_VALUE_TYPE_INTEGER_32BIT,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 -1 );
-
-	FWEVT_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	 &error );
-
-	/* Clean up
-	 */
-	result = libfwevt_internal_xml_tag_free(
-	          (libfwevt_internal_xml_tag_t **) &xml_tag,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	FWEVT_TEST_ASSERT_IS_NULL(
-	 "xml_tag",
-	 xml_tag );
-
-	FWEVT_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	return( 1 );
-
-on_error:
-	if( error != NULL )
-	{
-		libcerror_error_free(
-		 &error );
-	}
-	if( xml_tag != NULL )
-	{
-		libfwevt_internal_xml_tag_free(
-		 (libfwevt_internal_xml_tag_t **) &xml_tag,
-		 NULL );
-	}
-	return( 0 );
-}
-
-/* Tests the libfwevt_xml_tag_set_value_format_flags function
- * Returns 1 if successful or 0 if not
- */
-int fwevt_test_xml_tag_set_value_format_flags(
-     void )
-{
-	libcerror_error_t *error    = NULL;
-	libfwevt_xml_tag_t *xml_tag = NULL;
-	int result                  = 0;
-
-	/* Initialize test
-	 */
-	result = libfwevt_xml_tag_initialize(
-	          &xml_tag,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	FWEVT_TEST_ASSERT_IS_NOT_NULL(
-	 "xml_tag",
-	 xml_tag );
-
-	FWEVT_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	result = libfwevt_xml_tag_set_value_type(
-	          xml_tag,
-	          LIBFVALUE_VALUE_TYPE_BINARY_DATA,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	FWEVT_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* Test regular cases
-	 */
-	result = libfwevt_xml_tag_set_value_format_flags(
-	          xml_tag,
-	          LIBFVALUE_BINARY_DATA_FORMAT_TYPE_BASE16,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	FWEVT_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* Test error cases
-	 */
-	result = libfwevt_xml_tag_set_value_format_flags(
-	          NULL,
-	          LIBFVALUE_BINARY_DATA_FORMAT_TYPE_BASE16,
+	          LIBFWEVT_VALUE_TYPE_INTEGER_32BIT,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -775,7 +660,7 @@ int fwevt_test_xml_tag_set_value_data(
 
 	result = libfwevt_xml_tag_set_value_type(
 	          xml_tag,
-	          LIBFVALUE_VALUE_TYPE_BINARY_DATA,
+	          LIBFWEVT_VALUE_TYPE_BINARY_DATA,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -793,7 +678,6 @@ int fwevt_test_xml_tag_set_value_data(
 	          xml_tag,
 	          (uint8_t *) "data",
 	          4,
-	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -811,7 +695,6 @@ int fwevt_test_xml_tag_set_value_data(
 	          NULL,
 	          (uint8_t *) "data",
 	          4,
-	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -830,7 +713,6 @@ int fwevt_test_xml_tag_set_value_data(
 	          xml_tag,
 	          NULL,
 	          4,
-	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -849,7 +731,6 @@ int fwevt_test_xml_tag_set_value_data(
 	          xml_tag,
 	          (uint8_t *) "data",
 	          (size_t) SSIZE_MAX + 1,
-	          0,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2969,21 +2850,26 @@ on_error:
 int fwevt_test_xml_tag_get_utf8_xml_value_string_size(
      libfwevt_xml_tag_t *xml_tag )
 {
-	libcerror_error_t *error          = NULL;
-	size_t utf8_xml_value_string_size = 0;
-	int result                        = 0;
+	libcerror_error_t *error    = NULL;
+	size_t utf8_xml_string_size = 0;
+	int result                  = 0;
 
 	/* Test regular cases
 	 */
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_size(
 	          (libfwevt_internal_xml_tag_t *) xml_tag,
-	          &utf8_xml_value_string_size,
+	          &utf8_xml_string_size,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_SIZE(
+	 "utf8_xml_string_size",
+	 utf8_xml_string_size,
+	 (size_t) 9 );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -2993,7 +2879,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_size(
 	 */
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_size(
 	          NULL,
-	          &utf8_xml_value_string_size,
+	          &utf8_xml_string_size,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3042,7 +2928,10 @@ on_error:
 int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
      libfwevt_xml_tag_t *xml_tag )
 {
-	uint8_t utf8_string[ 32 ];
+	uint8_t expected_utf8_string[ 9 ] = {
+		'6', '4', '6', '1', '7', '4', '6', '1', 0 };
+
+	uint8_t utf8_string[ 12 ];
 
 	libcerror_error_t *error = NULL;
 	size_t utf8_string_index = 0;
@@ -3053,7 +2942,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf8_string,
-	          32,
+	          12,
 	          &utf8_string_index,
 	          &error );
 
@@ -3062,16 +2951,33 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
 	 result,
 	 1 );
 
+	FWEVT_TEST_ASSERT_EQUAL_SIZE(
+	 "utf8_string_index",
+	 utf8_string_index,
+	 (size_t) 9 );
+
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
 
+	result = memory_compare(
+	          expected_utf8_string,
+	          utf8_string,
+	          9 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
 	/* Test error cases
 	 */
+	utf8_string_index = 0;
+
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 	          NULL,
 	          utf8_string,
-	          32,
+	          12,
 	          &utf8_string_index,
 	          &error );
 
@@ -3090,7 +2996,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          NULL,
-	          32,
+	          12,
 	          &utf8_string_index,
 	          &error );
 
@@ -3128,7 +3034,7 @@ int fwevt_test_xml_tag_get_utf8_xml_value_string_with_index(
 	result = libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf8_string,
-	          32,
+	          12,
 	          NULL,
 	          &error );
 
@@ -3288,6 +3194,8 @@ int fwevt_test_xml_tag_get_utf8_xml_string_with_index(
 
 	/* Test error cases
 	 */
+	utf8_string_index = 0;
+
 	result = libfwevt_xml_tag_get_utf8_xml_string_with_index(
 	          NULL,
 	          0,
@@ -3385,21 +3293,26 @@ on_error:
 int fwevt_test_xml_tag_get_utf16_xml_value_string_size(
      libfwevt_xml_tag_t *xml_tag )
 {
-	libcerror_error_t *error           = NULL;
-	size_t utf16_xml_value_string_size = 0;
-	int result                         = 0;
+	libcerror_error_t *error     = NULL;
+	size_t utf16_xml_string_size = 0;
+	int result                   = 0;
 
 	/* Test regular cases
 	 */
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_size(
 	          (libfwevt_internal_xml_tag_t *) xml_tag,
-	          &utf16_xml_value_string_size,
+	          &utf16_xml_string_size,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_SIZE(
+	 "utf16_xml_string_size",
+	 utf16_xml_string_size,
+	 (size_t) 9 );
 
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -3409,7 +3322,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_size(
 	 */
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_size(
 	          NULL,
-	          &utf16_xml_value_string_size,
+	          &utf16_xml_string_size,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3458,7 +3371,10 @@ on_error:
 int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
      libfwevt_xml_tag_t *xml_tag )
 {
-	uint16_t utf16_string[ 32 ];
+	uint16_t expected_utf16_string[ 9 ] = {
+		'6', '4', '6', '1', '7', '4', '6', '1', 0 };
+
+	uint16_t utf16_string[ 12 ];
 
 	libcerror_error_t *error  = NULL;
 	size_t utf16_string_index = 0;
@@ -3469,7 +3385,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf16_string,
-	          32,
+	          12,
 	          &utf16_string_index,
 	          &error );
 
@@ -3478,16 +3394,33 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
 	 result,
 	 1 );
 
+	FWEVT_TEST_ASSERT_EQUAL_SIZE(
+	 "utf16_string_index",
+	 utf16_string_index,
+	 (size_t) 9 );
+
 	FWEVT_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
 
+	result = memory_compare(
+	          expected_utf16_string,
+	          utf16_string,
+	          9 );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
 	/* Test error cases
 	 */
+	utf16_string_index = 0;
+
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 	          NULL,
 	          utf16_string,
-	          32,
+	          12,
 	          &utf16_string_index,
 	          &error );
 
@@ -3506,7 +3439,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          NULL,
-	          32,
+	          12,
 	          &utf16_string_index,
 	          &error );
 
@@ -3544,7 +3477,7 @@ int fwevt_test_xml_tag_get_utf16_xml_value_string_with_index(
 	result = libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 	          (libfwevt_internal_xml_tag_t *) xml_tag,
 	          utf16_string,
-	          32,
+	          12,
 	          NULL,
 	          &error );
 
@@ -3704,6 +3637,8 @@ int fwevt_test_xml_tag_get_utf16_xml_string_with_index(
 
 	/* Test error cases
 	 */
+	utf16_string_index = 0;
+
 	result = libfwevt_xml_tag_get_utf16_xml_string_with_index(
 	          NULL,
 	          0,
@@ -3846,16 +3781,10 @@ int main(
 	 fwevt_test_xml_tag_set_value_type );
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_xml_tag_set_value_format_flags",
-	 fwevt_test_xml_tag_set_value_format_flags );
-
-	FWEVT_TEST_RUN(
 	 "libfwevt_xml_tag_set_value_data",
 	 fwevt_test_xml_tag_set_value_data );
 
 	/* TODO: add tests for libfwevt_xml_tag_append_value_data */
-
-	/* TODO: add tests for libfwevt_xml_tag_set_value_strings_array */
 
 	/* TODO: add tests for libfwevt_xml_tag_append_attribute */
 
@@ -3899,7 +3828,7 @@ int main(
 
 	result = libfwevt_xml_tag_set_value_type(
 	          xml_tag,
-	          LIBFVALUE_VALUE_TYPE_BINARY_DATA,
+	          LIBFWEVT_VALUE_TYPE_BINARY_DATA,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3915,21 +3844,6 @@ int main(
 	          xml_tag,
 	          (uint8_t *) "data",
 	          4,
-	          0,
-	          &error );
-
-	FWEVT_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	FWEVT_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	result = libfwevt_xml_tag_set_value_format_flags(
-	          xml_tag,
-	          LIBFVALUE_BINARY_DATA_FORMAT_TYPE_BASE16,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(

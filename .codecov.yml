@@ -13,6 +13,6 @@ coverage:
     - "libcthreads/*"
     - "libfdatetime/*"
     - "libfguid/*"
-    - "libfvalue/*"
+    - "libfwnt/*"
     - "libuna/*"
     - "tests/*"

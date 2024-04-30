@@ -39,8 +39,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\include;..\..\common;..\..\libcerror;..\..\libcthreads;..\..\libcdata;..\..\libcnotify;..\..\libfdatetime;..\..\libfguid;..\..\libfvalue;..\..\libuna"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;HAVE_LOCAL_LIBCERROR;HAVE_LOCAL_LIBCTHREADS;HAVE_LOCAL_LIBCDATA;HAVE_LOCAL_LIBCNOTIFY;HAVE_LOCAL_LIBFDATETIME;HAVE_LOCAL_LIBFGUID;HAVE_LOCAL_LIBFVALUE;HAVE_LOCAL_LIBUNA;LIBFWEVT_DLL_EXPORT"
+				AdditionalIncludeDirectories="..\..\include;..\..\common;..\..\libcerror;..\..\libcthreads;..\..\libcdata;..\..\libcnotify;..\..\libfdatetime;..\..\libfguid;..\..\libfwnt;..\..\libuna"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;HAVE_LOCAL_LIBCERROR;HAVE_LOCAL_LIBCTHREADS;HAVE_LOCAL_LIBCDATA;HAVE_LOCAL_LIBCNOTIFY;HAVE_LOCAL_LIBFDATETIME;HAVE_LOCAL_LIBFGUID;HAVE_LOCAL_LIBFWNT;HAVE_LOCAL_LIBUNA;LIBFWEVT_DLL_EXPORT"
 				RuntimeLibrary="2"
 				WarningLevel="4"
 				CompileAs="1"
@@ -110,8 +110,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;..\..\common;..\..\libcerror;..\..\libcthreads;..\..\libcdata;..\..\libcnotify;..\..\libfdatetime;..\..\libfguid;..\..\libfvalue;..\..\libuna"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;HAVE_LOCAL_LIBCERROR;HAVE_LOCAL_LIBCTHREADS;HAVE_LOCAL_LIBCDATA;HAVE_LOCAL_LIBCNOTIFY;HAVE_LOCAL_LIBFDATETIME;HAVE_LOCAL_LIBFGUID;HAVE_LOCAL_LIBFVALUE;HAVE_LOCAL_LIBUNA;LIBFWEVT_DLL_EXPORT"
+				AdditionalIncludeDirectories="..\..\include;..\..\common;..\..\libcerror;..\..\libcthreads;..\..\libcdata;..\..\libcnotify;..\..\libfdatetime;..\..\libfguid;..\..\libfwnt;..\..\libuna"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;HAVE_LOCAL_LIBCERROR;HAVE_LOCAL_LIBCTHREADS;HAVE_LOCAL_LIBCDATA;HAVE_LOCAL_LIBCNOTIFY;HAVE_LOCAL_LIBFDATETIME;HAVE_LOCAL_LIBFGUID;HAVE_LOCAL_LIBFWNT;HAVE_LOCAL_LIBUNA;LIBFWEVT_DLL_EXPORT"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="true"
 				RuntimeLibrary="3"
@@ -178,6 +178,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libfwevt\libfwevt_data_segment.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libfwevt\libfwevt_date_time.c"
 				>
 			</File>
@@ -191,6 +195,14 @@
 			</File>
 			<File
 				RelativePath="..\..\libfwevt\libfwevt_event.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libfwevt\libfwevt_floating_point.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libfwevt\libfwevt_integer.c"
 				>
 			</File>
 			<File
@@ -272,6 +284,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libfwevt\libfwevt_data_segment.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libfwevt\libfwevt_date_time.h"
 				>
 			</File>
@@ -296,6 +312,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libfwevt\libfwevt_floating_point.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libfwevt\libfwevt_integer.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libfwevt\libfwevt_keyword.h"
 				>
 			</File>
@@ -316,11 +340,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libfwevt\libfwevt_libfdatetime.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libfwevt\libfwevt_libfguid.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libfwevt\libfwevt_libfvalue.h"
+				RelativePath="..\..\libfwevt\libfwevt_libfwnt.h"
 				>
 			</File>
 			<File

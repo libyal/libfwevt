@@ -130,6 +130,7 @@ stamp-h[1-9]
 /setup.cfg
 /tests/*.exe
 /tests/fwevt_test_channel
+/tests/fwevt_test_data_segment
 /tests/fwevt_test_date_time
 /tests/fwevt_test_error
 /tests/fwevt_test_event
@@ -159,5 +160,5 @@ stamp-h[1-9]
 /libcthreads
 /libfdatetime
 /libfguid
-/libfvalue
+/libfwnt
 /libuna

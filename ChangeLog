@@ -1,13 +1,17 @@
 TODO
 * add pyfwevt_xml_document, pyfwevt_xml_tag and pyfwevt_xml_value
+* add support for hexadecimal integers in data_as_integer functions
+* improve integer XML value formatting
+* add codepage support
 
 * remove deprecated API functions
+** libfwevt_template_get_data - Remove the need to create a copy of the template data at worst only have a copy of the BinXML
+** libfwevt_xml_tag_get_utf8_value_size and libfwevt_xml_tag_get_utf8_value
+** libfwevt_xml_tag_get_utf16_value_size and libfwevt_xml_tag_get_utf16_value
+** libfwevt_xml_value_get_utf8_string_size and libfwevt_xml_value_copy_to_utf8_string
+** libfwevt_xml_value_get_utf16_string_size and libfwevt_xml_value_copy_to_utf16_string
 
-* Replace libfvalue by native functions
-** Check use of libfwevt_xml_tag_get_value
-
-* Remove the need to create a copy of the template data at worst only have a copy of the BinXML
-** remove libfwevt_template_get_data
+* refactor: move value to XML string from XML tag into XML value
 
 * Rename _read() functions to _read_data()
 ** libfwevt_manifest_read

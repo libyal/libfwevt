@@ -7,7 +7,7 @@ AM_CPPFLAGS = \
 	@LIBCNOTIFY_CPPFLAGS@ \
 	@LIBFDATETIME_CPPFLAGS@ \
 	@LIBFGUID_CPPFLAGS@ \
-	@LIBFVALUE_CPPFLAGS@ \
+	@LIBFWNT_CPPFLAGS@ \
 	@LIBUNA_CPPFLAGS@ \
 	@PTHREAD_CPPFLAGS@ \
 	@LIBFWEVT_DLL_EXPORT@
@@ -18,17 +18,21 @@ libfwevt_la_SOURCES = \
 	fwevt_template.h \
 	libfwevt.c \
 	libfwevt_channel.c libfwevt_channel.h \
+	libfwevt_data_segment.c libfwevt_data_segment.h \
 	libfwevt_date_time.c libfwevt_date_time.h \
 	libfwevt_debug.c libfwevt_debug.h \
 	libfwevt_definitions.h \
 	libfwevt_extern.h \
 	libfwevt_error.c libfwevt_error.h \
 	libfwevt_event.c libfwevt_event.h \
+	libfwevt_floating_point.c libfwevt_floating_point.h \
+	libfwevt_integer.c libfwevt_integer.h \
 	libfwevt_libcdata.h \
 	libfwevt_libcerror.h \
 	libfwevt_libcnotify.h \
+	libfwevt_libfdatetime.h \
 	libfwevt_libfguid.h \
-	libfwevt_libfvalue.h \
+	libfwevt_libfwnt.h \
 	libfwevt_libuna.h \
 	libfwevt_keyword.c libfwevt_keyword.h \
 	libfwevt_level.c libfwevt_level.h \
@@ -57,7 +61,7 @@ libfwevt_la_LIBADD = \
 	@LIBUNA_LIBADD@ \
 	@LIBFDATETIME_LIBADD@ \
 	@LIBFGUID_LIBADD@ \
-	@LIBFVALUE_LIBADD@ \
+	@LIBFWNT_LIBADD@ \
 	@PTHREAD_LIBADD@
 
 libfwevt_la_LDFLAGS = -no-undefined -version-info 1:0:0

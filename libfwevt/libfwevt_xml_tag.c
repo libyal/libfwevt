@@ -442,12 +442,12 @@ on_error:
  */
 int libfwevt_xml_tag_set_value_type(
      libfwevt_xml_tag_t *xml_tag,
-     int value_type,
+     uint8_t value_type,
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
 	static char *function                         = "libfwevt_xml_tag_set_value_type";
-	int current_value_type                        = 0;
+	uint8_t current_value_type                    = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -510,47 +510,6 @@ int libfwevt_xml_tag_set_value_type(
 	return( 1 );
 }
 
-/* Sets the value format flags
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_tag_set_value_format_flags(
-     libfwevt_xml_tag_t *xml_tag,
-     uint32_t format_flags,
-     libcerror_error_t **error )
-{
-	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
-	static char *function                         = "libfwevt_xml_tag_set_value_format_flags";
-
-	if( xml_tag == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid XML tag.",
-		 function );
-
-		return( -1 );
-	}
-	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
-
-	if( libfwevt_xml_value_set_format_flags(
-	     internal_xml_tag->value,
-	     format_flags,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-		 "%s: unable to set value format flags.",
-		 function );
-
-		return( -1 );
-	}
-	return( 1 );
-}
-
 /* Sets the value data
  * Returns 1 if successful or -1 on error
  */
@@ -558,11 +517,11 @@ int libfwevt_xml_tag_set_value_data(
      libfwevt_xml_tag_t *xml_tag,
      const uint8_t *data,
      size_t data_size,
-     int encoding,
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
 	static char *function                         = "libfwevt_xml_tag_set_value_data";
+	int data_segment_index                        = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -577,19 +536,18 @@ int libfwevt_xml_tag_set_value_data(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfwevt_xml_value_set_data(
+	if( libfwevt_xml_value_append_data_segment(
 	     internal_xml_tag->value,
 	     data,
 	     data_size,
-	     encoding,
-	     LIBFVALUE_VALUE_DATA_FLAG_NON_MANAGED,
+	     &data_segment_index,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-		 "%s: unable to set value data.",
+		 "%s: unable to append data segment.",
 		 function );
 
 		return( -1 );
@@ -597,15 +555,14 @@ int libfwevt_xml_tag_set_value_data(
 	return( 1 );
 }
 
-/* Appends the value data
+/* Appends value data
  * Returns 1 if successful or -1 on error
  */
 int libfwevt_xml_tag_append_value_data(
      libfwevt_xml_tag_t *xml_tag,
      const uint8_t *data,
      size_t data_size,
-     int encoding,
-     int *value_entry_index,
+     int *data_segment_index,
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
@@ -624,12 +581,11 @@ int libfwevt_xml_tag_append_value_data(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfwevt_xml_value_append_data(
+	if( libfwevt_xml_value_append_data_segment(
 	     internal_xml_tag->value,
-	     value_entry_index,
 	     data,
 	     data_size,
-	     encoding,
+	     data_segment_index,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -642,55 +598,6 @@ int libfwevt_xml_tag_append_value_data(
 		return( -1 );
 	}
 	return( 1 );
-}
-
-/* Sets the value strings array
- * Returns the number of bytes read if successful or -1 on error
- */
-ssize_t libfwevt_xml_tag_set_value_strings_array(
-         libfwevt_xml_tag_t *xml_tag,
-         const uint8_t *strings_array_data,
-         size_t strings_array_data_size,
-         int encoding,
-         libcerror_error_t **error )
-{
-	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
-	static char *function                         = "libfwevt_xml_tag_set_value_strings_array";
-	ssize_t read_count                            = 0;
-
-	if( xml_tag == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid XML tag.",
-		 function );
-
-		return( -1 );
-	}
-	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
-
-	read_count = libfwevt_xml_value_type_set_data_string(
-		      internal_xml_tag->value,
-		      strings_array_data,
-		      strings_array_data_size,
-		      encoding,
-		      LIBFVALUE_VALUE_DATA_FLAG_NON_MANAGED,
-		      error );
-
-	if( read_count == -1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-		 "%s: unable to set value data.",
-		 function );
-
-		return( -1 );
-	}
-	return( read_count );
 }
 
 /* Appends an element
@@ -976,7 +883,7 @@ int libfwevt_xml_tag_get_utf8_value_size(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfwevt_xml_value_get_utf8_string_size(
+	if( libfwevt_xml_value_get_data_as_utf8_string_size(
 	     internal_xml_tag->value,
 	     utf8_string_size,
 	     error ) != 1 )
@@ -1018,7 +925,7 @@ int libfwevt_xml_tag_get_utf8_value(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfwevt_xml_value_copy_to_utf8_string(
+	if( libfwevt_xml_value_get_data_as_utf8_string(
 	     internal_xml_tag->value,
 	     utf8_string,
 	     utf8_string_size,
@@ -1060,7 +967,7 @@ int libfwevt_xml_tag_get_utf16_value_size(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfwevt_xml_value_get_utf16_string_size(
+	if( libfwevt_xml_value_get_data_as_utf16_string_size(
 	     internal_xml_tag->value,
 	     utf16_string_size,
 	     error ) != 1 )
@@ -1102,7 +1009,7 @@ int libfwevt_xml_tag_get_utf16_value(
 	}
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
-	if( libfwevt_xml_value_copy_to_utf16_string(
+	if( libfwevt_xml_value_get_data_as_utf16_string(
 	     internal_xml_tag->value,
 	     utf16_string,
 	     utf16_string_size,
@@ -2177,10 +2084,9 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_size(
 	size_t safe_utf8_string_size = 0;
 	size_t value_string_index    = 0;
 	size_t value_string_size     = 0;
-	int number_of_value_entries  = 0;
-	int result                   = 0;
-	int value_entry_index        = 0;
-	int value_type               = 0;
+	uint8_t value_type           = 0;
+	int data_segment_index       = 0;
+	int number_of_data_segments  = 0;
 
 	if( internal_xml_tag == NULL )
 	{
@@ -2218,64 +2124,62 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_size(
 
 		goto on_error;
 	}
-	if( libfwevt_xml_value_get_number_of_value_entries(
+	if( libfwevt_xml_value_get_number_of_data_segments(
 	     internal_xml_tag->value,
-	     &number_of_value_entries,
+	     &number_of_data_segments,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve element value number of value entries.",
+		 "%s: unable to retrieve element value number of data segments.",
 		 function );
 
 		goto on_error;
 	}
-	for( value_entry_index = 0;
-	     value_entry_index < number_of_value_entries;
-	     value_entry_index++ )
+	for( data_segment_index = 0;
+	     data_segment_index < number_of_data_segments;
+	     data_segment_index++ )
 	{
-		result = libfwevt_xml_value_get_utf8_string_size_with_index(
-			  internal_xml_tag->value,
-			  value_entry_index,
-			  &value_string_size,
-			  error );
-
-		if( result == -1 )
+		if( libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
+		     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+		     data_segment_index,
+		     &value_string_size,
+		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve UTF-8 string size of element value entry: %d.",
+			 "%s: unable to retrieve UTF-8 string size of element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
-		if( ( result == 0 )
-		 && ( number_of_value_entries != 1 ) )
+		if( ( value_string_size == 0 )
+		 && ( number_of_data_segments != 1 ) )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: missing element value entry: %d.",
+			 "%s: missing element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
-		if( result != 0 )
+		if( value_string_size != 0 )
 		{
-			if( ( number_of_value_entries == 1 )
+			if( ( number_of_data_segments == 1 )
 			 && ( value_string_size == 2 ) )
 			{
 				value_string_index = 0;
 
-				if( libfwevt_xml_value_copy_to_utf8_string_with_index(
-				     internal_xml_tag->value,
+				if( libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
+				     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
 				     0,
 				     static_value_string,
 				     2,
@@ -2298,7 +2202,7 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_size(
 					value_string_size -= 1;
 				}
 			}
-			else if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+			else if( ( value_type & 0x7f ) == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 			{
 				if( ( value_string_size == 0 )
 				 || ( value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
@@ -2328,9 +2232,9 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_size(
 				}
 				value_string_index = 0;
 
-				if( libfwevt_xml_value_copy_to_utf8_string_with_index(
-				     internal_xml_tag->value,
-				     value_entry_index,
+				if( libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
+				     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+				     data_segment_index,
 				     value_string,
 				     value_string_size,
 				     &value_string_index,
@@ -2342,7 +2246,7 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_size(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy element value: %d to UTF-8 string.",
 					 function,
-					 value_entry_index );
+					 data_segment_index );
 
 					goto on_error;
 				}
@@ -2424,10 +2328,9 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 	size_t string_index         = 0;
 	size_t value_string_index   = 0;
 	size_t value_string_size    = 0;
-	int number_of_value_entries = 0;
-	int result                  = 0;
-	int value_entry_index       = 0;
-	int value_type              = 0;
+	uint8_t value_type          = 0;
+	int data_segment_index      = 0;
+	int number_of_data_segments = 0;
 
 	if( internal_xml_tag == NULL )
 	{
@@ -2489,59 +2392,57 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 
 		goto on_error;
 	}
-	if( libfwevt_xml_value_get_number_of_value_entries(
+	if( libfwevt_xml_value_get_number_of_data_segments(
 	     internal_xml_tag->value,
-	     &number_of_value_entries,
+	     &number_of_data_segments,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve element value number of value entries.",
+		 "%s: unable to retrieve element value number of data segments.",
 		 function );
 
 		goto on_error;
 	}
-	for( value_entry_index = 0;
-	     value_entry_index < number_of_value_entries;
-	     value_entry_index++ )
+	for( data_segment_index = 0;
+	     data_segment_index < number_of_data_segments;
+	     data_segment_index++ )
 	{
-		result = libfwevt_xml_value_get_utf8_string_size_with_index(
-			  internal_xml_tag->value,
-			  value_entry_index,
-			  &value_string_size,
-			  error );
-
-		if( result == -1 )
+		if( libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
+		     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+		     data_segment_index,
+		     &value_string_size,
+		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve UTF-8 string size of element value entry: %d.",
+			 "%s: unable to retrieve UTF-8 string size of element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
-		if( ( result == 0 )
-		 && ( number_of_value_entries != 1 ) )
+		if( ( value_string_size == 0 )
+		 && ( number_of_data_segments != 1 ) )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: missing element value entry: %d.",
+			 "%s: missing element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
-		if( ( result != 0 )
+		if( ( value_string_size != 0 )
 		 && ( value_string_size > 1 ) )
 		{
-			if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+			if( ( value_type & 0x7f ) == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 			{
 				if( ( value_string_size == 0 )
 				 || ( value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint8_t ) ) ) )
@@ -2571,9 +2472,9 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 				}
 				value_string_index = 0;
 
-				if( libfwevt_xml_value_copy_to_utf8_string_with_index(
-				     internal_xml_tag->value,
-				     value_entry_index,
+				if( libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
+				     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+				     data_segment_index,
 				     value_string,
 				     value_string_size,
 				     &value_string_index,
@@ -2585,7 +2486,7 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy element value: %d to UTF-8 string.",
 					 function,
-					 value_entry_index );
+					 data_segment_index );
 
 					goto on_error;
 				}
@@ -2728,9 +2629,9 @@ int libfwevt_xml_tag_get_utf8_xml_value_string_with_index(
 			}
 			else
 			{
-				if( libfwevt_xml_value_copy_to_utf8_string_with_index(
-				     internal_xml_tag->value,
-				     value_entry_index,
+				if( libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
+				     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+				     data_segment_index,
 				     utf8_string,
 				     utf8_string_size,
 				     &string_index,
@@ -2797,7 +2698,6 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 	int element_index                                       = 0;
 	int number_of_attributes                                = 0;
 	int number_of_elements                                  = 0;
-	int value_type                                          = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -2939,23 +2839,8 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 				 */
 				safe_utf8_string_size += attribute_name_size + 2;
 
-				if( libfwevt_xml_value_get_type(
+				if( libfwevt_xml_value_get_data_as_utf8_string_size(
 				     internal_attribute_xml_tag->value,
-				     &value_type,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-					 "%s: unable to retrieve attribute value type.",
-					 function );
-
-					return( -1 );
-				}
-				if( libfwevt_xml_value_get_utf8_string_size_with_index(
-				     internal_attribute_xml_tag->value,
-				     0,
 				     &string_size,
 				     error ) != 1 )
 				{
@@ -3074,9 +2959,8 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 	}
 	else if( internal_xml_tag->type == LIBFWEVT_XML_TAG_TYPE_CDATA )
 	{
-		if( libfwevt_xml_value_get_utf8_string_size_with_index(
+		if( libfwevt_xml_value_get_data_as_utf8_string_size(
 		     internal_xml_tag->value,
-		     0,
 		     &string_size,
 		     error ) != 1 )
 		{
@@ -3120,9 +3004,8 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
 		 */
 		safe_utf8_string_size += element_name_size;
 
-		if( libfwevt_xml_value_get_utf8_string_size_with_index(
+		if( libfwevt_xml_value_get_data_as_utf8_string_size(
 		     internal_xml_tag->value,
-		     0,
 		     &string_size,
 		     error ) != 1 )
 		{
@@ -3176,7 +3059,6 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 	int indentation_iterator                                = 0;
 	int number_of_attributes                                = 0;
 	int number_of_elements                                  = 0;
-	int value_type                                          = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -3378,23 +3260,8 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 				utf8_string[ string_index++ ] = (uint8_t) '=';
 				utf8_string[ string_index++ ] = (uint8_t) '"';
 
-				if( libfwevt_xml_value_get_type(
+				if( libfwevt_xml_value_get_data_as_utf8_string_with_index(
 				     internal_attribute_xml_tag->value,
-				     &value_type,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-					 "%s: unable to retrieve attribute value type.",
-					 function );
-
-					return( -1 );
-				}
-				if( libfwevt_xml_value_copy_to_utf8_string_with_index(
-				     internal_attribute_xml_tag->value,
-				     0,
 				     utf8_string,
 				     utf8_string_size,
 				     &string_index,
@@ -3682,9 +3549,8 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 		utf8_string[ string_index++ ] = (uint8_t) 'A';
 		utf8_string[ string_index++ ] = (uint8_t) '[';
 
-		if( libfwevt_xml_value_copy_to_utf8_string_with_index(
+		if( libfwevt_xml_value_get_data_as_utf8_string_with_index(
 		     internal_xml_tag->value,
-		     0,
 		     utf8_string,
 		     utf8_string_size,
 		     &string_index,
@@ -3763,9 +3629,8 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
 		}
 		utf8_string[ string_index++ ] = (uint8_t) ' ';
 
-		if( libfwevt_xml_value_copy_to_utf8_string_with_index(
+		if( libfwevt_xml_value_get_data_as_utf8_string_with_index(
 		     internal_xml_tag->value,
-		     0,
 		     utf8_string,
 		     utf8_string_size,
 		     &string_index,
@@ -3819,10 +3684,9 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_size(
 	size_t safe_utf16_string_size = 0;
 	size_t value_string_index     = 0;
 	size_t value_string_size      = 0;
-	int number_of_value_entries   = 0;
-	int result                    = 0;
-	int value_entry_index         = 0;
-	int value_type                = 0;
+	uint8_t value_type            = 0;
+	int data_segment_index        = 0;
+	int number_of_data_segments   = 0;
 
 	if( internal_xml_tag == NULL )
 	{
@@ -3860,64 +3724,62 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_size(
 
 		goto on_error;
 	}
-	if( libfwevt_xml_value_get_number_of_value_entries(
+	if( libfwevt_xml_value_get_number_of_data_segments(
 	     internal_xml_tag->value,
-	     &number_of_value_entries,
+	     &number_of_data_segments,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve element value number of value entries.",
+		 "%s: unable to retrieve element value number of data segments.",
 		 function );
 
 		goto on_error;
 	}
-	for( value_entry_index = 0;
-	     value_entry_index < number_of_value_entries;
-	     value_entry_index++ )
+	for( data_segment_index = 0;
+	     data_segment_index < number_of_data_segments;
+	     data_segment_index++ )
 	{
-		result = libfwevt_xml_value_get_utf16_string_size_with_index(
-			  internal_xml_tag->value,
-			  value_entry_index,
-			  &value_string_size,
-			  error );
-
-		if( result == -1 )
+		if( libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
+		     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+		     data_segment_index,
+		     &value_string_size,
+		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve UTF-16 string size of element value entry: %d.",
+			 "%s: unable to retrieve UTF-16 string size of element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
-		if( ( result == 0 )
-		 && ( number_of_value_entries != 1 ) )
+		if( ( value_string_size == 0 )
+		 && ( number_of_data_segments != 1 ) )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: missing element value entry: %d.",
+			 "%s: missing element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
-		if( result != 0 )
+		if( value_string_size != 0 )
 		{
-			if( ( number_of_value_entries == 1 )
+			if( ( number_of_data_segments == 1 )
 			 && ( value_string_size == 2 ) )
 			{
 				value_string_index = 0;
 
-				if( libfwevt_xml_value_copy_to_utf16_string_with_index(
-				     internal_xml_tag->value,
+				if( libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
+				     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
 				     0,
 				     static_value_string,
 				     2,
@@ -3940,7 +3802,7 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_size(
 					value_string_size -= 1;
 				}
 			}
-			else if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+			else if( ( value_type & 0x7f ) == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 			{
 				if( ( value_string_size == 0 )
 				 || ( value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint16_t ) ) ) )
@@ -3955,7 +3817,7 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_size(
 					goto on_error;
 				}
 				value_string = (uint16_t *) memory_allocate(
-				                             sizeof( uint16_t ) * value_string_size );
+				                            sizeof( uint16_t ) * value_string_size );
 
 				if( value_string == NULL )
 				{
@@ -3970,9 +3832,9 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_size(
 				}
 				value_string_index = 0;
 
-				if( libfwevt_xml_value_copy_to_utf16_string_with_index(
-				     internal_xml_tag->value,
-				     value_entry_index,
+				if( libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
+				     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+				     data_segment_index,
 				     value_string,
 				     value_string_size,
 				     &value_string_index,
@@ -3984,12 +3846,12 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_size(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy element value: %d to UTF-16 string.",
 					 function,
-					 value_entry_index );
+					 data_segment_index );
 
 					goto on_error;
 				}
 				for( value_string_index = 0;
-				     value_string_index < value_string_size;
+				     value_string_index < ( value_string_size - 1 );
 				     value_string_index++ )
 				{
 					switch( value_string[ value_string_index ] )
@@ -4066,10 +3928,9 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 	size_t string_index         = 0;
 	size_t value_string_index   = 0;
 	size_t value_string_size    = 0;
-	int number_of_value_entries = 0;
-	int result                  = 0;
-	int value_entry_index       = 0;
-	int value_type              = 0;
+	uint8_t value_type          = 0;
+	int data_segment_index      = 0;
+	int number_of_data_segments = 0;
 
 	if( internal_xml_tag == NULL )
 	{
@@ -4131,59 +3992,57 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 
 		goto on_error;
 	}
-	if( libfwevt_xml_value_get_number_of_value_entries(
+	if( libfwevt_xml_value_get_number_of_data_segments(
 	     internal_xml_tag->value,
-	     &number_of_value_entries,
+	     &number_of_data_segments,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve element value number of value entries.",
+		 "%s: unable to retrieve element value number of data segments.",
 		 function );
 
 		goto on_error;
 	}
-	for( value_entry_index = 0;
-	     value_entry_index < number_of_value_entries;
-	     value_entry_index++ )
+	for( data_segment_index = 0;
+	     data_segment_index < number_of_data_segments;
+	     data_segment_index++ )
 	{
-		result = libfwevt_xml_value_get_utf16_string_size_with_index(
-			  internal_xml_tag->value,
-			  value_entry_index,
-			  &value_string_size,
-			  error );
-
-		if( result == -1 )
+		if( libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
+		     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+		     data_segment_index,
+		     &value_string_size,
+		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve UTF-16 string size of element value entry: %d.",
+			 "%s: unable to retrieve UTF-16 string size of element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
-		if( ( result == 0 )
-		 && ( number_of_value_entries != 1 ) )
+		if( ( value_string_size == 0 )
+		 && ( number_of_data_segments != 1 ) )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: missing element value entry: %d.",
+			 "%s: missing element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
-		if( ( result != 0 )
+		if( ( value_string_size != 0 )
 		 && ( value_string_size > 1 ) )
 		{
-			if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+			if( ( value_type & 0x7f ) == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 			{
 				if( ( value_string_size == 0 )
 				 || ( value_string_size > ( MEMORY_MAXIMUM_ALLOCATION_SIZE / sizeof( uint16_t ) ) ) )
@@ -4213,9 +4072,9 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 				}
 				value_string_index = 0;
 
-				if( libfwevt_xml_value_copy_to_utf16_string_with_index(
-				     internal_xml_tag->value,
-				     value_entry_index,
+				if( libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
+				     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+				     data_segment_index,
 				     value_string,
 				     value_string_size,
 				     &value_string_index,
@@ -4227,7 +4086,7 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy element value: %d to UTF-16 string.",
 					 function,
-					 value_entry_index );
+					 data_segment_index );
 
 					goto on_error;
 				}
@@ -4370,9 +4229,9 @@ int libfwevt_xml_tag_get_utf16_xml_value_string_with_index(
 			}
 			else
 			{
-				if( libfwevt_xml_value_copy_to_utf16_string_with_index(
-				     internal_xml_tag->value,
-				     value_entry_index,
+				if( libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
+				     (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+				     data_segment_index,
 				     utf16_string,
 				     utf16_string_size,
 				     &string_index,
@@ -4439,7 +4298,6 @@ int libfwevt_xml_tag_get_utf16_xml_string_size(
 	int element_index                                       = 0;
 	int number_of_attributes                                = 0;
 	int number_of_elements                                  = 0;
-	int value_type                                          = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -4512,7 +4370,7 @@ int libfwevt_xml_tag_get_utf16_xml_string_size(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve size of UTF-16 string of element name.",
+			 "%s: unable to retrieve UTF-16 string size of element name.",
 			 function );
 
 			return( -1 );
@@ -4581,23 +4439,8 @@ int libfwevt_xml_tag_get_utf16_xml_string_size(
 				 */
 				safe_utf16_string_size += attribute_name_size + 2;
 
-				if( libfwevt_xml_value_get_type(
+				if( libfwevt_xml_value_get_data_as_utf16_string_size(
 				     internal_attribute_xml_tag->value,
-				     &value_type,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-					 "%s: unable to retrieve attribute value type.",
-					 function );
-
-					return( -1 );
-				}
-				if( libfwevt_xml_value_get_utf16_string_size_with_index(
-				     internal_attribute_xml_tag->value,
-				     0,
 				     &string_size,
 				     error ) != 1 )
 				{
@@ -4716,9 +4559,8 @@ int libfwevt_xml_tag_get_utf16_xml_string_size(
 	}
 	else if( internal_xml_tag->type == LIBFWEVT_XML_TAG_TYPE_CDATA )
 	{
-		if( libfwevt_xml_value_get_utf16_string_size_with_index(
+		if( libfwevt_xml_value_get_data_as_utf16_string_size(
 		     internal_xml_tag->value,
-		     0,
 		     &string_size,
 		     error ) != 1 )
 		{
@@ -4762,9 +4604,8 @@ int libfwevt_xml_tag_get_utf16_xml_string_size(
 		 */
 		safe_utf16_string_size += element_name_size;
 
-		if( libfwevt_xml_value_get_utf16_string_size_with_index(
+		if( libfwevt_xml_value_get_data_as_utf16_string_size(
 		     internal_xml_tag->value,
-		     0,
 		     &string_size,
 		     error ) != 1 )
 		{
@@ -4818,7 +4659,6 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 	int indentation_iterator                                = 0;
 	int number_of_attributes                                = 0;
 	int number_of_elements                                  = 0;
-	int value_type                                          = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -5020,23 +4860,8 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 				utf16_string[ string_index++ ] = (uint16_t) '=';
 				utf16_string[ string_index++ ] = (uint16_t) '"';
 
-				if( libfwevt_xml_value_get_type(
+				if( libfwevt_xml_value_get_data_as_utf16_string_with_index(
 				     internal_attribute_xml_tag->value,
-				     &value_type,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-					 "%s: unable to retrieve attribute value type.",
-					 function );
-
-					return( -1 );
-				}
-				if( libfwevt_xml_value_copy_to_utf16_string_with_index(
-				     internal_attribute_xml_tag->value,
-				     0,
 				     utf16_string,
 				     utf16_string_size,
 				     &string_index,
@@ -5324,9 +5149,8 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 		utf16_string[ string_index++ ] = (uint16_t) 'A';
 		utf16_string[ string_index++ ] = (uint16_t) '[';
 
-		if( libfwevt_xml_value_copy_to_utf16_string_with_index(
+		if( libfwevt_xml_value_get_data_as_utf16_string_with_index(
 		     internal_xml_tag->value,
-		     0,
 		     utf16_string,
 		     utf16_string_size,
 		     &string_index,
@@ -5405,9 +5229,8 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
 		}
 		utf16_string[ string_index++ ] = (uint16_t) ' ';
 
-		if( libfwevt_xml_value_copy_to_utf16_string_with_index(
+		if( libfwevt_xml_value_get_data_as_utf16_string_with_index(
 		     internal_xml_tag->value,
-		     0,
 		     utf16_string,
 		     utf16_string_size,
 		     &string_index,
@@ -5544,8 +5367,8 @@ int libfwevt_xml_tag_debug_print_name_string(
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-		 "%s: unable to set name string.",
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve name string.",
 		 function );
 
 		goto on_error;
@@ -5579,10 +5402,10 @@ int libfwevt_xml_tag_debug_print_value_string(
 	static char *function            = "libfwevt_xml_tag_debug_print_value_string";
 	size_t value_string_index        = 0;
 	size_t value_string_size         = 0;
-	int number_of_value_entries      = 0;
+	uint8_t value_type               = 0;
+	int data_segment_index           = 0;
+	int number_of_data_segments      = 0;
 	int result                       = 0;
-	int value_entry_index            = 0;
-	int value_type                   = 0;
 
 	if( internal_xml_tag == NULL )
 	{
@@ -5609,65 +5432,65 @@ int libfwevt_xml_tag_debug_print_value_string(
 
 		goto on_error;
 	}
-	if( libfwevt_xml_value_get_number_of_value_entries(
+	if( libfwevt_xml_value_get_number_of_data_segments(
 	     internal_xml_tag->value,
-	     &number_of_value_entries,
+	     &number_of_data_segments,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve element value number of value entries.",
+		 "%s: unable to retrieve element value number of data segments.",
 		 function );
 
 		goto on_error;
 	}
-	for( value_entry_index = 0;
-	     value_entry_index < number_of_value_entries;
-	     value_entry_index++ )
+	for( data_segment_index = 0;
+	     data_segment_index < number_of_data_segments;
+	     data_segment_index++ )
 	{
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-		result = libfwevt_xml_value_get_utf16_string_size_with_index(
-			  internal_xml_tag->value,
-			  value_entry_index,
+		result = libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
+		          (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+			  data_segment_index,
 			  &value_string_size,
 			  error );
 #else
-		result = libfwevt_xml_value_get_utf8_string_size_with_index(
-			  internal_xml_tag->value,
-			  value_entry_index,
+		result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
+		          (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+			  data_segment_index,
 			  &value_string_size,
 			  error );
 #endif
-		if( result == -1 )
+		if( result != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve string size of element value entry: %d.",
+			 "%s: unable to retrieve string size of element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
 		if( ( result == 0 )
-		 && ( number_of_value_entries != 1 ) )
+		 && ( number_of_data_segments != 1 ) )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: missing element value entry: %d.",
+			 "%s: missing element data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
 		if( result != 0 )
 		{
-			if( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+			if( ( value_type & 0x7f ) == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 			{
 				value_string = system_string_allocate(
 				                value_string_size );
@@ -5686,17 +5509,17 @@ int libfwevt_xml_tag_debug_print_value_string(
 				value_string_index = 0;
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-				result = libfwevt_xml_value_copy_to_utf16_string_with_index(
-				          internal_xml_tag->value,
-				          value_entry_index,
+				result = libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
+				          (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+				          data_segment_index,
 				          (uint16_t *) value_string,
 				          value_string_size,
 				          &value_string_index,
 				          error );
 #else
-				result = libfwevt_xml_value_copy_to_utf8_string_with_index(
-				          internal_xml_tag->value,
-				          value_entry_index,
+				result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
+				          (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
+				          data_segment_index,
 				          (uint8_t *) value_string,
 				          value_string_size,
 				          &value_string_index,
@@ -5710,7 +5533,7 @@ int libfwevt_xml_tag_debug_print_value_string(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy element value: %d to string.",
 					 function,
-					 value_entry_index );
+					 data_segment_index );
 
 					goto on_error;
 				}
@@ -5774,10 +5597,9 @@ int libfwevt_xml_tag_debug_print_value_string(
 			}
 			else
 			{
-				if( libfwevt_debug_print_xml_value(
+				if( libfwevt_debug_print_xml_value_with_index(
 				     internal_xml_tag->value,
-				     value_entry_index,
-				     0,
+				     data_segment_index,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -5821,7 +5643,6 @@ int libfwevt_xml_tag_debug_print(
 	int indentation_iterator                                = 0;
 	int number_of_attributes                                = 0;
 	int number_of_elements                                  = 0;
-	int value_type                                          = 0;
 
 	if( xml_tag == NULL )
 	{
@@ -5942,23 +5763,8 @@ int libfwevt_xml_tag_debug_print(
 				libcnotify_printf(
 				 "=\"" );
 
-				if( libfwevt_xml_value_get_type(
+				if( libfwevt_debug_print_xml_value_with_index(
 				     internal_attribute_xml_tag->value,
-				     &value_type,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-					 "%s: unable to retrieve attribute value type.",
-					 function );
-
-					return( -1 );
-				}
-				if( libfwevt_debug_print_xml_value(
-				     internal_attribute_xml_tag->value,
-				     0,
 				     0,
 				     error ) != 1 )
 				{
@@ -6108,9 +5914,8 @@ int libfwevt_xml_tag_debug_print(
 		libcnotify_printf(
 		 "![CDATA[" );
 
-		if( libfwevt_debug_print_xml_value(
+		if( libfwevt_debug_print_xml_value_with_index(
 		     internal_xml_tag->value,
-		     0,
 		     0,
 		     error ) != 1 )
 		{
@@ -6147,9 +5952,8 @@ int libfwevt_xml_tag_debug_print(
 		libcnotify_printf(
 		 " " );
 
-		if( libfwevt_debug_print_xml_value(
+		if( libfwevt_debug_print_xml_value_with_index(
 		     internal_xml_tag->value,
-		     0,
 		     0,
 		     error ) != 1 )
 		{
@@ -6225,7 +6029,7 @@ int libfwevt_xml_tag_name_debug_print(
  */
 int libfwevt_xml_tag_value_debug_print(
      libfwevt_xml_tag_t *xml_tag,
-     int value_entry_index,
+     int data_segment_index,
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
@@ -6248,10 +6052,9 @@ int libfwevt_xml_tag_value_debug_print(
 	 "%s: value\t\t\t\t: ",
 	 function );
 
-	if( libfwevt_debug_print_xml_value(
+	if( libfwevt_debug_print_xml_value_with_index(
 	     internal_xml_tag->value,
-	     value_entry_index,
-	     0,
+	     data_segment_index,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

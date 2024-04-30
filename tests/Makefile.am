@@ -7,7 +7,7 @@ AM_CPPFLAGS = \
 	@LIBCNOTIFY_CPPFLAGS@ \
 	@LIBFDATETIME_CPPFLAGS@ \
 	@LIBFGUID_CPPFLAGS@ \
-	@LIBFVALUE_CPPFLAGS@ \
+	@LIBFWNT_CPPFLAGS@ \
 	@LIBUNA_CPPFLAGS@ \
 	@PTHREAD_CPPFLAGS@ \
 	@LIBFWEVT_DLL_IMPORT@
@@ -36,6 +36,7 @@ EXTRA_DIST = \
 
 check_PROGRAMS = \
 	fwevt_test_channel \
+	fwevt_test_data_segment \
 	fwevt_test_date_time \
 	fwevt_test_error \
 	fwevt_test_event \
@@ -65,6 +66,18 @@ fwevt_test_channel_SOURCES = \
 	fwevt_test_unused.h
 
 fwevt_test_channel_LDADD = \
+	../libfwevt/libfwevt.la \
+	@LIBCERROR_LIBADD@
+
+fwevt_test_data_segment_SOURCES = \
+	fwevt_test_data_segment.c \
+	fwevt_test_libcerror.h \
+	fwevt_test_libfwevt.h \
+	fwevt_test_macros.h \
+	fwevt_test_memory.c fwevt_test_memory.h \
+	fwevt_test_unused.h
+
+fwevt_test_data_segment_LDADD = \
 	../libfwevt/libfwevt.la \
 	@LIBCERROR_LIBADD@
 
@@ -243,7 +256,6 @@ fwevt_test_xml_document_LDADD = \
 
 fwevt_test_xml_tag_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libfvalue.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_libuna.h \
 	fwevt_test_macros.h \
@@ -281,7 +293,6 @@ fwevt_test_xml_token_LDADD = \
 
 fwevt_test_xml_value_SOURCES = \
 	fwevt_test_libcerror.h \
-	fwevt_test_libfvalue.h \
 	fwevt_test_libfwevt.h \
 	fwevt_test_libuna.h \
 	fwevt_test_macros.h \

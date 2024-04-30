@@ -93,35 +93,21 @@ int libfwevt_xml_tag_set_name_data(
 
 int libfwevt_xml_tag_set_value_type(
      libfwevt_xml_tag_t *xml_tag,
-     int value_type,
-     libcerror_error_t **error );
-
-int libfwevt_xml_tag_set_value_format_flags(
-     libfwevt_xml_tag_t *xml_tag,
-     uint32_t format_flags,
+     uint8_t value_type,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_set_value_data(
      libfwevt_xml_tag_t *xml_tag,
      const uint8_t *data,
      size_t data_size,
-     int encoding,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_append_value_data(
      libfwevt_xml_tag_t *xml_tag,
      const uint8_t *data,
      size_t data_size,
-     int encoding,
-     int *value_entry_index,
+     int *data_segment_index,
      libcerror_error_t **error );
-
-ssize_t libfwevt_xml_tag_set_value_strings_array(
-         libfwevt_xml_tag_t *xml_tag,
-         const uint8_t *strings_array_data,
-         size_t strings_array_data_size,
-         int encoding,
-         libcerror_error_t **error );
 
 int libfwevt_xml_tag_append_attribute(
      libfwevt_xml_tag_t *xml_tag,

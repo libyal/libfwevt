@@ -27,11 +27,11 @@
 
 #include "libfwevt_debug.h"
 #include "libfwevt_definitions.h"
+#include "libfwevt_integer.h"
 #include "libfwevt_libcdata.h"
 #include "libfwevt_libcerror.h"
 #include "libfwevt_libcnotify.h"
 #include "libfwevt_libfguid.h"
-#include "libfwevt_libfvalue.h"
 #include "libfwevt_types.h"
 #include "libfwevt_xml_document.h"
 #include "libfwevt_xml_template_value.h"
@@ -1162,7 +1162,7 @@ int libfwevt_xml_document_read_cdata_section(
 #endif
 	if( libfwevt_xml_tag_set_value_type(
 	     xml_tag,
-	     LIBFVALUE_VALUE_TYPE_STRING_UTF16,
+	     LIBFWEVT_VALUE_TYPE_STRING_UTF16,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1178,7 +1178,6 @@ int libfwevt_xml_document_read_cdata_section(
 	     xml_tag,
 	     &( binary_data[ binary_data_offset ] ),
 	     value_data_size,
-	     LIBFVALUE_CODEPAGE_UTF16_LITTLE_ENDIAN,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1371,11 +1370,9 @@ int libfwevt_xml_document_read_character_reference(
 #endif
 	xml_token->size = 3;
 
-	if( libfvalue_string_size_from_integer(
-	     &character_value_string_size,
+	if( libfwevt_integer_as_unsigned_decimal_get_string_size(
 	     (uint64_t) character_value,
-	     16,
-	     0,
+	     &character_value_string_size,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1417,13 +1414,11 @@ int libfwevt_xml_document_read_character_reference(
 	character_value_string[ character_value_string_index++ ] = (uint16_t) '&';
 	character_value_string[ character_value_string_index++ ] = (uint16_t) '#';
 
-	if( libfvalue_utf16_string_with_index_copy_from_integer(
+	if( libfwevt_integer_as_unsigned_decimal_copy_to_utf16_string_with_index(
+	     (uint64_t) character_value,
 	     character_value_string,
 	     character_value_string_size,
 	     &character_value_string_index,
-	     (uint64_t) character_value,
-	     16,
-	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1440,7 +1435,7 @@ int libfwevt_xml_document_read_character_reference(
 
 	if( libfwevt_xml_tag_set_value_type(
 	     xml_tag,
-	     LIBFVALUE_VALUE_TYPE_STRING_UTF16,
+	     LIBFWEVT_VALUE_TYPE_STRING_UTF16,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1501,7 +1496,6 @@ int libfwevt_xml_document_read_character_reference(
 	     xml_tag,
 	     character_value_utf16_stream,
 	     character_value_utf16_stream_size,
-	     LIBFVALUE_CODEPAGE_UTF16_LITTLE_ENDIAN,
 	     &value_entry_index,
 	     error ) != 1 )
 	{
@@ -2871,7 +2865,7 @@ int libfwevt_xml_document_read_entity_reference(
 	}
 	if( libfwevt_xml_tag_set_value_type(
 	     xml_tag,
-	     LIBFVALUE_VALUE_TYPE_STRING_UTF16,
+	     LIBFWEVT_VALUE_TYPE_STRING_UTF16,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -2977,7 +2971,6 @@ int libfwevt_xml_document_read_entity_reference(
 	     xml_tag,
 	     entity_value_utf16_stream,
 	     4,
-	     LIBFVALUE_CODEPAGE_UTF16_LITTLE_ENDIAN,
 	     &value_entry_index,
 	     error ) != 1 )
 	{
@@ -4183,7 +4176,7 @@ int libfwevt_xml_document_read_pi_data(
 #endif
 	if( libfwevt_xml_tag_set_value_type(
 	     xml_tag,
-	     LIBFVALUE_VALUE_TYPE_STRING_UTF16,
+	     LIBFWEVT_VALUE_TYPE_STRING_UTF16,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -4199,7 +4192,6 @@ int libfwevt_xml_document_read_pi_data(
 	     xml_tag,
 	     &( binary_data[ binary_data_offset ] ),
 	     value_data_size,
-	     LIBFVALUE_CODEPAGE_UTF16_LITTLE_ENDIAN,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -5561,10 +5553,8 @@ int libfwevt_xml_document_read_value(
 	static char *function            = "libfwevt_xml_document_read_value";
 	size_t value_data_size           = 0;
 	size_t xml_document_data_size    = 0;
-	uint8_t xml_value_type           = 0;
-	int value_encoding               = 0;
+	uint8_t value_type               = 0;
 	int value_entry_index            = 0;
-	int value_type                   = 0;
 
 	if( internal_xml_document == NULL )
 	{
@@ -5675,7 +5665,7 @@ int libfwevt_xml_document_read_value(
 		 0 );
 	}
 #endif
-	xml_value_type = xml_document_data[ 1 ];
+	value_type = xml_document_data[ 1 ];
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -5688,9 +5678,9 @@ int libfwevt_xml_document_read_value(
 		libcnotify_printf(
 		 "%s: value type\t\t\t\t: 0x%02" PRIx8 " (",
 		 function,
-		 xml_value_type );
+		 value_type );
 		libfwevt_debug_print_value_type(
-		 xml_value_type );
+		 value_type );
 		libcnotify_printf(
 		 ")\n" );
 	}
@@ -5698,7 +5688,7 @@ int libfwevt_xml_document_read_value(
 	xml_token->size     = 4;
 	binary_data_offset += 4;
 
-	switch( xml_value_type )
+	switch( value_type )
 	{
 		case LIBFWEVT_VALUE_TYPE_STRING_UTF16:
 			byte_stream_copy_to_uint16_little_endian(
@@ -5715,9 +5705,6 @@ int libfwevt_xml_document_read_value(
 			}
 #endif
 			value_data_size *= 2;
-
-			value_encoding = LIBFVALUE_CODEPAGE_UTF16_LITTLE_ENDIAN;
-			value_type     = LIBFVALUE_VALUE_TYPE_STRING_UTF16;
 
 			break;
 
@@ -5779,7 +5766,6 @@ int libfwevt_xml_document_read_value(
 	     xml_tag,
 	     &( binary_data[ binary_data_offset ] ),
 	     value_data_size,
-	     value_encoding,
 	     &value_entry_index,
 	     error ) != 1 )
 	{
@@ -5841,15 +5827,12 @@ int libfwevt_xml_document_substitute_template_value(
 	static char *function                         = "libfwevt_xml_document_substitute_template_value";
 	size_t binary_data_offset                     = 0;
 	size_t safe_template_value_offset             = 0;
+	size_t template_value_data_offset             = 0;
 	size_t template_value_data_size               = 0;
 	size_t template_value_size                    = 0;
-	ssize_t read_count                            = 0;
-	uint32_t value_format_flags                   = 0;
 	uint16_t substitution_value_data_size         = 0;
 	uint8_t substitution_value_type               = 0;
 	uint8_t template_value_flags                  = 0;
-	int value_encoding                            = 0;
-	int value_type                                = 0;
 
 	if( internal_xml_document == NULL )
 	{
@@ -6176,147 +6159,88 @@ int libfwevt_xml_document_substitute_template_value(
 		{
 			case LIBFWEVT_VALUE_TYPE_STRING_UTF16:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_UTF16:
-				value_encoding = LIBFVALUE_CODEPAGE_UTF16_LITTLE_ENDIAN;
-				value_type     = LIBFVALUE_VALUE_TYPE_STRING_UTF16;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_STRING_BYTE_STREAM:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_BYTE_STREAM:
-				value_encoding = ascii_codepage;
-				value_type     = LIBFVALUE_VALUE_TYPE_STRING_BYTE_STREAM;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_INTEGER_8BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_INTEGER_8BIT:
 				template_value_size = 1;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_SIGNED;
-				value_type          = LIBFVALUE_VALUE_TYPE_INTEGER_8BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_8BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_UNSIGNED_INTEGER_8BIT:
 				template_value_size = 1;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_UNSIGNED;
-				value_type          = LIBFVALUE_VALUE_TYPE_UNSIGNED_INTEGER_8BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_INTEGER_16BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_INTEGER_16BIT:
 				template_value_size = 2;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_SIGNED;
-				value_type          = LIBFVALUE_VALUE_TYPE_INTEGER_16BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_16BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_UNSIGNED_INTEGER_16BIT:
 				template_value_size = 2;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_UNSIGNED;
-				value_type          = LIBFVALUE_VALUE_TYPE_UNSIGNED_INTEGER_16BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_INTEGER_32BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_INTEGER_32BIT:
 				template_value_size = 4;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_SIGNED;
-				value_type          = LIBFVALUE_VALUE_TYPE_INTEGER_32BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_UNSIGNED_INTEGER_32BIT:
 				template_value_size = 4;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_UNSIGNED;
-				value_type          = LIBFVALUE_VALUE_TYPE_UNSIGNED_INTEGER_32BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_HEXADECIMAL_INTEGER_32BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_HEXADECIMAL_INTEGER_32BIT:
 				template_value_size = 4;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_HEXADECIMAL;
-				value_type          = LIBFVALUE_VALUE_TYPE_UNSIGNED_INTEGER_32BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_INTEGER_64BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_INTEGER_64BIT:
 				template_value_size = 8;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_SIGNED;
-				value_type          = LIBFVALUE_VALUE_TYPE_INTEGER_64BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_64BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_UNSIGNED_INTEGER_64BIT:
 				template_value_size = 8;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_UNSIGNED;
-				value_type          = LIBFVALUE_VALUE_TYPE_UNSIGNED_INTEGER_64BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_HEXADECIMAL_INTEGER_64BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_HEXADECIMAL_INTEGER_64BIT:
 				template_value_size = 8;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_HEXADECIMAL;
-				value_type          = LIBFVALUE_VALUE_TYPE_UNSIGNED_INTEGER_64BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_FLOATING_POINT_32BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_FLOATING_POINT_32BIT:
 				template_value_size = 4;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_FLOATING_POINT_FORMAT_TYPE_DECIMAL;
-				value_type          = LIBFVALUE_VALUE_TYPE_FLOATING_POINT_32BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_FLOATING_POINT_64BIT:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_FLOATING_POINT_64BIT:
 				template_value_size = 8;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_FLOATING_POINT_FORMAT_TYPE_DECIMAL;
-				value_type          = LIBFVALUE_VALUE_TYPE_FLOATING_POINT_64BIT;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_BOOLEAN:
 				template_value_size = 4;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_INTEGER_FORMAT_TYPE_BOOLEAN;
-				value_type          = LIBFVALUE_VALUE_TYPE_BOOLEAN;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_BINARY_DATA:
-				value_format_flags = LIBFVALUE_BINARY_DATA_FORMAT_TYPE_BASE16
-				                   | LIBFVALUE_BINARY_DATA_FORMAT_FLAG_CASE_UPPER;
-				value_type         = LIBFVALUE_VALUE_TYPE_BINARY_DATA;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_GUID:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_GUID:
 				template_value_size = 16;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = LIBFVALUE_GUID_FORMAT_FLAG_USE_UPPER_CASE | LIBFVALUE_GUID_FORMAT_FLAG_USE_SURROUNDING_BRACES;
-				value_type          = LIBFVALUE_VALUE_TYPE_GUID;
 				break;
 
 /* TODO how to deal with array types ? */
 			case LIBFWEVT_VALUE_TYPE_SIZE:
-				value_encoding     = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags = LIBFVALUE_INTEGER_FORMAT_TYPE_DECIMAL_UNSIGNED;
-
-				if( substitution_value_data_size == 4 )
-				{
-					value_type = LIBFVALUE_VALUE_TYPE_UNSIGNED_INTEGER_32BIT;
-				}
-				else if( substitution_value_data_size == 8 )
-				{
-					value_type = LIBFVALUE_VALUE_TYPE_UNSIGNED_INTEGER_64BIT;
-				}
-				else
+				if( ( substitution_value_data_size != 4 )
+				 && ( substitution_value_data_size != 8 ) )
 				{
 					libcerror_error_set(
 					 error,
@@ -6333,22 +6257,14 @@ int libfwevt_xml_document_substitute_template_value(
 			case LIBFWEVT_VALUE_TYPE_FILETIME:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_FILETIME:
 				template_value_size = 8;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = (uint32_t) ( LIBFVALUE_DATE_TIME_FORMAT_TYPE_ISO8601 | LIBFVALUE_DATE_TIME_FORMAT_FLAG_DATE_TIME_NANO_SECONDS | LIBFVALUE_DATE_TIME_FORMAT_FLAG_TIMEZONE_INDICATOR );
-				value_type          = LIBFVALUE_VALUE_TYPE_FILETIME;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_SYSTEMTIME:
 			case LIBFWEVT_VALUE_TYPE_ARRAY_OF_SYSTEMTIME:
 				template_value_size = 16;
-				value_encoding      = LIBFVALUE_ENDIAN_LITTLE;
-				value_format_flags  = (uint32_t) ( LIBFVALUE_DATE_TIME_FORMAT_TYPE_ISO8601 | LIBFVALUE_DATE_TIME_FORMAT_FLAG_DATE_TIME_MILLI_SECONDS | LIBFVALUE_DATE_TIME_FORMAT_FLAG_TIMEZONE_INDICATOR );
-				value_type          = LIBFVALUE_VALUE_TYPE_SYSTEMTIME;
 				break;
 
 			case LIBFWEVT_VALUE_TYPE_NT_SECURITY_IDENTIFIER:
-				value_encoding = LIBFVALUE_ENDIAN_LITTLE;
-				value_type     = LIBFVALUE_VALUE_TYPE_NT_SECURITY_IDENTIFIER;
 				break;
 
 			default:
@@ -6364,7 +6280,7 @@ int libfwevt_xml_document_substitute_template_value(
 		}
 		if( libfwevt_xml_tag_set_value_type(
 		     xml_tag,
-		     value_type,
+		     substitution_value_type,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -6375,23 +6291,6 @@ int libfwevt_xml_document_substitute_template_value(
 			 function );
 
 			goto on_error;
-		}
-		if( value_format_flags != 0 )
-		{
-			if( libfwevt_xml_tag_set_value_format_flags(
-			     xml_tag,
-			     value_format_flags,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-				 "%s: unable to set value format flags.",
-				 function );
-
-				goto on_error;
-			}
 		}
 		if( ( substitution_value_type & LIBFWEVT_VALUE_TYPE_ARRAY ) != 0 )
 		{
@@ -6413,14 +6312,48 @@ int libfwevt_xml_document_substitute_template_value(
 				template_value_data      = &( binary_data[ binary_data_offset + safe_template_value_offset ] );
 				template_value_data_size = substitution_value_data_size - (uint16_t) safe_template_value_offset;
 			}
-			/* An empty XML tag should be created if template_value_data_size == 0
-			 */
 			if( template_value_data_size > 0 )
 			{
-				if( ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_BYTE_STREAM )
-				 || ( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_UTF16 ) )
+#if defined( HAVE_DEBUG_OUTPUT )
+				if( libcnotify_verbose != 0 )
 				{
-					if( ( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+					libcnotify_printf(
+					 "%s: template value data:\n",
+					 function );
+					libcnotify_print_data(
+					 template_value_data,
+					 template_value_data_size,
+					 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
+				}
+#endif
+				if( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_BYTE_STREAM )
+				{
+					if( template_value_data_size < 1 )
+					{
+						libcerror_error_set(
+						 error,
+						 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+						 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+						 "%s: invalid byte string template value data size value out of bounds.",
+						 function );
+
+						goto on_error;
+					}
+					while( template_value_data_offset < template_value_data_size ) 
+					{
+						if( template_value_data[ template_value_data_offset ] == 0 )
+						{
+							template_value_data_offset += 1;
+
+							break;
+						}
+						template_value_data_offset += 1;
+					}
+					template_value_data_size = template_value_data_offset;
+				}
+				else if( substitution_value_type == LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_UTF16 )
+				{
+					if( ( template_value_data_size < 2 )
 					 && ( ( template_value_data_size % 2 ) != 0 ) )
 					{
 						libcerror_error_set(
@@ -6432,25 +6365,18 @@ int libfwevt_xml_document_substitute_template_value(
 
 						goto on_error;
 					}
-					read_count = libfwevt_xml_tag_set_value_strings_array(
-						      xml_tag,
-						      template_value_data,
-						      template_value_data_size,
-						      value_encoding,
-						      error );
-
-					if( read_count == -1 )
+					while( template_value_data_offset < template_value_data_size ) 
 					{
-						libcerror_error_set(
-						 error,
-						 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-						 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-						 "%s: unable to set value data.",
-						 function );
+						if( ( template_value_data[ template_value_data_offset ] == 0 )
+						 && ( template_value_data[ template_value_data_offset + 1 ] == 0 ) )
+						{
+							template_value_data_offset += 2;
 
-						goto on_error;
+							break;
+						}
+						template_value_data_offset += 2;
 					}
-					safe_template_value_offset += read_count;
+					template_value_data_size = template_value_data_offset;
 				}
 				else
 				{
@@ -6465,24 +6391,30 @@ int libfwevt_xml_document_substitute_template_value(
 
 						goto on_error;
 					}
-					if( libfwevt_xml_tag_set_value_data(
-					     xml_tag,
-					     template_value_data,
-					     template_value_size,
-					     value_encoding,
-					     error ) != 1 )
-					{
-						libcerror_error_set(
-						 error,
-						 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-						 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-						 "%s: unable to set value data.",
-						 function );
-
-						goto on_error;
-					}
-					safe_template_value_offset += template_value_size;
+					template_value_data_size = template_value_size;
 				}
+			}
+			/* An empty XML tag should be created if template_value_data_size == 0
+			 */
+/* TODO create empty XML tag if template value data is an empty string */
+			if( template_value_data_size > 0 )
+			{
+				if( libfwevt_xml_tag_set_value_data(
+				     xml_tag,
+				     template_value_data,
+				     template_value_data_size,
+				     error ) != 1 )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+					 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+					 "%s: unable to set value data.",
+					 function );
+
+					goto on_error;
+				}
+				safe_template_value_offset += template_value_data_size;
 			}
 			if( safe_template_value_offset == substitution_value_data_size )
 			{
@@ -6503,7 +6435,7 @@ int libfwevt_xml_document_substitute_template_value(
 
 				goto on_error;
 			}
-			else if( ( value_type == LIBFVALUE_VALUE_TYPE_STRING_UTF16 )
+			else if( ( substitution_value_type == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 			      && ( ( substitution_value_data_size % 2 ) != 0 ) )
 			{
 				libcerror_error_set(
@@ -6519,7 +6451,6 @@ int libfwevt_xml_document_substitute_template_value(
 			     xml_tag,
 			     &( binary_data[ binary_data_offset ] ),
 			     (size_t) substitution_value_data_size,
-			     value_encoding,
 			     error ) != 1 )
 			{
 				libcerror_error_set(

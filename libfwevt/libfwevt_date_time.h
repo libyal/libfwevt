@@ -1,5 +1,5 @@
 /*
- * Date and time values functions
+ * Date and time functions
  *
  * Copyright (C) 2011-2024, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVT_DATE_TIME_VALUES_H )
-#define _LIBFWEVT_DATE_TIME_VALUES_H
+#if !defined( _LIBFWEVT_DATE_TIME_H )
+#define _LIBFWEVT_DATE_TIME_H
 
 #include <common.h>
 #include <types.h>
@@ -31,15 +31,15 @@
 extern "C" {
 #endif
 
-int libfwevt_utf8_string_copy_to_filetime(
-     const uint8_t *utf8_string,
-     size_t utf8_string_size,
+int libfwevt_filetime_copy_from_utf16_stream(
      uint64_t *filetime,
+     const uint8_t *utf16_stream,
+     size_t utf16_stream_size,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _LIBFWEVT_DATE_TIME_VALUES_H ) */
+#endif /* !defined( _LIBFWEVT_DATE_TIME_H ) */
 

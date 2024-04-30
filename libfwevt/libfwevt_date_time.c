@@ -1,5 +1,5 @@
 /*
- * Date and time values functions
+ * Date and time functions
  *
  * Copyright (C) 2011-2024, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -33,16 +33,17 @@
 #endif
 #endif
 
-/* Copies an ISO 8601 UTF-8 formatted string to a FILETIME value
+/* Copies an ISO 8601 UTF-16 stream to a FILETIME value
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_utf8_string_copy_to_filetime(
-     const uint8_t *utf8_string,
-     size_t utf8_string_size,
+int libfwevt_filetime_copy_from_utf16_stream(
      uint64_t *filetime,
+     const uint8_t *utf16_stream,
+     size_t utf16_stream_size,
      libcerror_error_t **error )
 {
-	static char *function       = "libfwevt_utf8_string_copy_to_filetime";
+	static char *function       = "libfwevt_filetime_copy_from_utf16_stream";
+	size_t utf16_stream_offset  = 0;
 	uint64_t safe_filetime      = 0;
 	uint32_t fraction_of_second = 0;
 	uint16_t current_year       = 0;
@@ -54,50 +55,58 @@ int libfwevt_utf8_string_copy_to_filetime(
 	uint8_t month               = 0;
 	uint8_t is_leap_year        = 0;
 	uint8_t seconds             = 0;
-	size_t utf8_string_index    = 0;
 
-	if( utf8_string == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid UTF-8 string.",
-		 function );
-
-		return( -1 );
-	}
-	if( ( utf8_string_size < 31 )
-	 || ( utf8_string_size > (size_t) SSIZE_MAX ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid UTF-8 string size value out of bounds.",
-		 function );
-
-		return( -1 );
-	}
 	if( filetime == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid FILETIME value.",
+		 "%s: invalid FILETIME.",
 		 function );
 
 		return( -1 );
 	}
-	if( ( utf8_string[ 4 ] != (uint8_t) '-' )
-	 || ( utf8_string[ 7 ] != (uint8_t) '-' )
-	 || ( utf8_string[ 10 ] != (uint8_t) 'T' )
-	 || ( utf8_string[ 13 ] != (uint8_t) ':' )
-	 || ( utf8_string[ 16 ] != (uint8_t) ':' )
-	 || ( utf8_string[ 19 ] != (uint8_t) '.' )
-	 || ( utf8_string[ 29 ] != (uint8_t) 'Z' )
-	 || ( utf8_string[ 30 ] != (uint8_t) 0 ) )
+	if( utf16_stream == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid UTF-16 stream.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( utf16_stream_size < 62 )
+	 || ( utf16_stream_size > (size_t) SSIZE_MAX )
+	 || ( ( utf16_stream_size % 2 ) != 0 ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+		 "%s: unsupported UTF-16 stream size.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( utf16_stream[ 8 ] != (uint8_t) '-' )
+	 || ( utf16_stream[ 9 ] != 0 )
+	 || ( utf16_stream[ 14 ] != (uint8_t) '-' )
+	 || ( utf16_stream[ 15 ] != 0 )
+	 || ( utf16_stream[ 20 ] != (uint8_t) 'T' )
+	 || ( utf16_stream[ 21 ] != 0 )
+	 || ( utf16_stream[ 26 ] != (uint8_t) ':' )
+	 || ( utf16_stream[ 27 ] != 0 )
+	 || ( utf16_stream[ 32 ] != (uint8_t) ':' )
+	 || ( utf16_stream[ 33 ] != 0 )
+	 || ( utf16_stream[ 38 ] != (uint8_t) '.' )
+	 || ( utf16_stream[ 39 ] != 0 )
+	 || ( utf16_stream[ 58 ] != (uint8_t) 'Z' )
+	 || ( utf16_stream[ 59 ] != 0 )
+	 || ( utf16_stream[ 60 ] != 0 )
+	 || ( utf16_stream[ 61 ] != 0 ) )
 	{
 		libcerror_error_set(
 		 error,
@@ -108,12 +117,12 @@ int libfwevt_utf8_string_copy_to_filetime(
 
 		return( -1 );
 	}
-	for( utf8_string_index = 0;
-	     utf8_string_index < 4;
-	     utf8_string_index++ )
+	for( utf16_stream_offset = 0;
+	     utf16_stream_offset < 8;
+	     utf16_stream_offset += 2 )
 	{
-		if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
-		 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+		if( ( utf16_stream[ utf16_stream_offset ] < (uint8_t) '0' )
+		 || ( utf16_stream[ utf16_stream_offset ] > (uint8_t) '9' ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -125,14 +134,15 @@ int libfwevt_utf8_string_copy_to_filetime(
 			return( -1 );
 		}
 		year *= 10;
-		year += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+		year += utf16_stream[ utf16_stream_offset ] - (uint8_t) '0';
 	}
-	for( utf8_string_index = 5;
-	     utf8_string_index < 7;
-	     utf8_string_index++ )
+	for( utf16_stream_offset = 10;
+	     utf16_stream_offset < 14;
+	     utf16_stream_offset += 2 )
 	{
-		if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
-		 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+		if( ( utf16_stream[ utf16_stream_offset ] < (uint8_t) '0' )
+		 || ( utf16_stream[ utf16_stream_offset ] > (uint8_t) '9' )
+		 || ( utf16_stream[ utf16_stream_offset + 1 ] != 0 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -144,14 +154,15 @@ int libfwevt_utf8_string_copy_to_filetime(
 			return( -1 );
 		}
 		month *= 10;
-		month += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+		month += utf16_stream[ utf16_stream_offset ] - (uint8_t) '0';
 	}
-	for( utf8_string_index = 8;
-	     utf8_string_index < 10;
-	     utf8_string_index++ )
+	for( utf16_stream_offset = 16;
+	     utf16_stream_offset < 20;
+	     utf16_stream_offset += 2 )
 	{
-		if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
-		 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+		if( ( utf16_stream[ utf16_stream_offset ] < (uint8_t) '0' )
+		 || ( utf16_stream[ utf16_stream_offset ] > (uint8_t) '9' )
+		 || ( utf16_stream[ utf16_stream_offset + 1 ] != 0 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -163,14 +174,15 @@ int libfwevt_utf8_string_copy_to_filetime(
 			return( -1 );
 		}
 		day_of_month *= 10;
-		day_of_month += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+		day_of_month += utf16_stream[ utf16_stream_offset ] - (uint8_t) '0';
 	}
-	for( utf8_string_index = 11;
-	     utf8_string_index < 13;
-	     utf8_string_index++ )
+	for( utf16_stream_offset = 22;
+	     utf16_stream_offset < 26;
+	     utf16_stream_offset += 2 )
 	{
-		if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
-		 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+		if( ( utf16_stream[ utf16_stream_offset ] < (uint8_t) '0' )
+		 || ( utf16_stream[ utf16_stream_offset ] > (uint8_t) '9' )
+		 || ( utf16_stream[ utf16_stream_offset + 1 ] != 0 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -182,14 +194,15 @@ int libfwevt_utf8_string_copy_to_filetime(
 			return( -1 );
 		}
 		hours *= 10;
-		hours += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+		hours += utf16_stream[ utf16_stream_offset ] - (uint8_t) '0';
 	}
-	for( utf8_string_index = 14;
-	     utf8_string_index < 16;
-	     utf8_string_index++ )
+	for( utf16_stream_offset = 28;
+	     utf16_stream_offset < 32;
+	     utf16_stream_offset += 2 )
 	{
-		if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
-		 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+		if( ( utf16_stream[ utf16_stream_offset ] < (uint8_t) '0' )
+		 || ( utf16_stream[ utf16_stream_offset ] > (uint8_t) '9' )
+		 || ( utf16_stream[ utf16_stream_offset + 1 ] != 0 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -201,14 +214,15 @@ int libfwevt_utf8_string_copy_to_filetime(
 			return( -1 );
 		}
 		minutes *= 10;
-		minutes += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+		minutes += utf16_stream[ utf16_stream_offset ] - (uint8_t) '0';
 	}
-	for( utf8_string_index = 17;
-	     utf8_string_index < 19;
-	     utf8_string_index++ )
+	for( utf16_stream_offset = 34;
+	     utf16_stream_offset < 38;
+	     utf16_stream_offset += 2 )
 	{
-		if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
-		 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+		if( ( utf16_stream[ utf16_stream_offset ] < (uint8_t) '0' )
+		 || ( utf16_stream[ utf16_stream_offset ] > (uint8_t) '9' )
+		 || ( utf16_stream[ utf16_stream_offset + 1 ] != 0 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -220,14 +234,15 @@ int libfwevt_utf8_string_copy_to_filetime(
 			return( -1 );
 		}
 		seconds *= 10;
-		seconds += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+		seconds += utf16_stream[ utf16_stream_offset ] - (uint8_t) '0';
 	}
-	for( utf8_string_index = 20;
-	     utf8_string_index < 29;
-	     utf8_string_index++ )
+	for( utf16_stream_offset = 40;
+	     utf16_stream_offset < 58;
+	     utf16_stream_offset += 2 )
 	{
-		if( ( utf8_string[ utf8_string_index ] < (uint8_t) '0' )
-		 || ( utf8_string[ utf8_string_index ] > (uint8_t) '9' ) )
+		if( ( utf16_stream[ utf16_stream_offset ] < (uint8_t) '0' )
+		 || ( utf16_stream[ utf16_stream_offset ] > (uint8_t) '9' )
+		 || ( utf16_stream[ utf16_stream_offset + 1 ] != 0 ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -239,7 +254,7 @@ int libfwevt_utf8_string_copy_to_filetime(
 			return( -1 );
 		}
 		fraction_of_second *= 10;
-		fraction_of_second += utf8_string[ utf8_string_index ] - (uint8_t) '0';
+		fraction_of_second += utf16_stream[ utf16_stream_offset ] - (uint8_t) '0';
 	}
 	if( year < 1600 )
 	{

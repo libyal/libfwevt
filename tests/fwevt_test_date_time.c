@@ -35,20 +35,32 @@
 
 #include "../libfwevt/libfwevt_date_time.h"
 
-/* Tests the libfwevt_utf8_string_copy_to_filetime function
+/* Tests the libfwevt_filetime_copy_from_utf16_stream function
  * Returns 1 if successful or 0 if not
  */
-int fwevt_test_utf8_string_copy_to_filetime(
+int fwevt_test_filetime_copy_from_utf16_stream(
      void )
 {
+	uint8_t utf16_stream1[ 62 ] = {
+		'1', 0, '6', 0, '0', 0, '1', 0, '-', 0, '0', 0, '1', 0, '-', 0,
+	       	'0', 0, '1', 0, 'T', 0, '0', 0, '0', 0, ':', 0, '0', 0, '0', 0,
+	       	':', 0, '0', 0, '0', 0, '.', 0, '0', 0, '0', 0, '0', 0, '0', 0,
+	       	'0', 0, '0', 0, '0', 0, '0', 0, '0', 0, 'Z', 0, 0, 0 };
+
+	uint8_t utf16_stream2[ 62 ] = {
+		'2', 0, '0', 0, '2', 0, '2', 0, '-', 0, '0', 0, '7', 0, '-', 0,
+	       	'0', 0, '6', 0, 'T', 0, '1', 0, '2', 0, ':', 0, '2', 0, '4', 0,
+	       	':', 0, '4', 0, '0', 0, '.', 0, '6', 0, '0', 0, '8', 0, '1', 0,
+	       	'1', 0, '5', 0, '5', 0, '0', 0, '0', 0, 'Z', 0, 0, 0 };
+
 	libcerror_error_t *error = NULL;
 	uint64_t filetime        = 0;
 	int result               = 0;
 
-	result = libfwevt_utf8_string_copy_to_filetime(
-	          (uint8_t *) "1601-01-01T00:00:00.000000000Z",
-	          31,
+	result = libfwevt_filetime_copy_from_utf16_stream(
 	          &filetime,
+	          utf16_stream1,
+	          62,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -65,10 +77,10 @@ int fwevt_test_utf8_string_copy_to_filetime(
 	 "error",
 	 error );
 
-	result = libfwevt_utf8_string_copy_to_filetime(
-	          (uint8_t *) "2022-07-06T12:24:40.608115500Z",
-	          31,
+	result = libfwevt_filetime_copy_from_utf16_stream(
 	          &filetime,
+	          utf16_stream2,
+	          62,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -112,8 +124,8 @@ int main(
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
 	FWEVT_TEST_RUN(
-	 "libfwevt_utf8_string_copy_to_filetime",
-	 fwevt_test_utf8_string_copy_to_filetime );
+	 "libfwevt_filetime_copy_from_utf16_stream",
+	 fwevt_test_filetime_copy_from_utf16_stream );
 
 	return( EXIT_SUCCESS );
 

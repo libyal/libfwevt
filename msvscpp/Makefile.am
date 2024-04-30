@@ -1,5 +1,6 @@
 MSVSCPP_FILES = \
 	fwevt_test_channel/fwevt_test_channel.vcproj \
+	fwevt_test_data_segment/fwevt_test_data_segment.vcproj \
 	fwevt_test_date_time/fwevt_test_date_time.vcproj \
 	fwevt_test_error/fwevt_test_error.vcproj \
 	fwevt_test_event/fwevt_test_event.vcproj \
@@ -25,8 +26,8 @@ MSVSCPP_FILES = \
 	libcthreads/libcthreads.vcproj \
 	libfdatetime/libfdatetime.vcproj \
 	libfguid/libfguid.vcproj \
-	libfvalue/libfvalue.vcproj \
 	libfwevt/libfwevt.vcproj \
+	libfwnt/libfwnt.vcproj \
 	libuna/libuna.vcproj \
 	pyfwevt/pyfwevt.vcproj \
 	libfwevt.sln
