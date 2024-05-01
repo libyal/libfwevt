@@ -4197,244 +4197,6 @@ on_error:
 	return( -1 );
 }
 
-/* Debug prints the XML value
- * Returns 1 if successful or -1 on error
- */
-int libfwevt_xml_tag_debug_print_value_string(
-     libfwevt_internal_xml_tag_t *internal_xml_tag,
-     libcerror_error_t **error )
-{
-	system_character_t *value_string = NULL;
-	static char *function            = "libfwevt_xml_tag_debug_print_value_string";
-	size_t value_string_index        = 0;
-	size_t value_string_size         = 0;
-	uint8_t value_type               = 0;
-	int data_segment_index           = 0;
-	int number_of_data_segments      = 0;
-	int result                       = 0;
-
-	if( internal_xml_tag == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid XML tag.",
-		 function );
-
-		return( -1 );
-	}
-	if( libfwevt_xml_value_get_type(
-	     internal_xml_tag->value,
-	     &value_type,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve element value type.",
-		 function );
-
-		goto on_error;
-	}
-	if( libfwevt_xml_value_get_number_of_data_segments(
-	     internal_xml_tag->value,
-	     &number_of_data_segments,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve element value number of data segments.",
-		 function );
-
-		goto on_error;
-	}
-	for( data_segment_index = 0;
-	     data_segment_index < number_of_data_segments;
-	     data_segment_index++ )
-	{
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-		result = libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
-		          (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
-			  data_segment_index,
-			  &value_string_size,
-			  0,
-			  error );
-#else
-		result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
-		          (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
-			  data_segment_index,
-			  &value_string_size,
-			  0,
-			  error );
-#endif
-		if( result != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve string size of element data segment: %d.",
-			 function,
-			 data_segment_index );
-
-			goto on_error;
-		}
-		if( ( result == 0 )
-		 && ( number_of_data_segments != 1 ) )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: missing element data segment: %d.",
-			 function,
-			 data_segment_index );
-
-			goto on_error;
-		}
-		if( result != 0 )
-		{
-			if( ( value_type & 0x7f ) == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
-			{
-				value_string = system_string_allocate(
-				                value_string_size );
-
-				if( value_string == NULL )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_MEMORY,
-					 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-					 "%s: unable to create value string.",
-					 function );
-
-					goto on_error;
-				}
-				value_string_index = 0;
-
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-				result = libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
-				          (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
-				          data_segment_index,
-				          (uint16_t *) value_string,
-				          value_string_size,
-				          &value_string_index,
-				          0,
-				          error );
-#else
-				result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
-				          (libfwevt_internal_xml_value_t *) internal_xml_tag->value,
-				          data_segment_index,
-				          (uint8_t *) value_string,
-				          value_string_size,
-				          &value_string_index,
-				          0,
-				          error );
-#endif
-				if( result != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-					 "%s: unable to copy element value: %d to string.",
-					 function,
-					 data_segment_index );
-
-					goto on_error;
-				}
-				for( value_string_index = 0;
-				     value_string_index < ( value_string_size - 1 );
-				     value_string_index++ )
-				{
-					switch( value_string[ value_string_index ] )
-					{
-						/* Replace & by &amp; */
-						case (uint8_t) '&':
-							libcnotify_printf(
-							 "&amp;" );
-
-							break;
-
-						/* Replace < by &lt; */
-						case (uint8_t) '<':
-							libcnotify_printf(
-							 "&lt;" );
-
-							break;
-
-						/* Replace > by &gt; */
-						case (uint8_t) '>':
-							libcnotify_printf(
-							 "&gt;" );
-
-							break;
-
-						/* Replace ' by &apos; */
-/* TODO disabled for now since Event Viewer does not uses it
-						case (uint8_t) '\'':
-							libcnotify_printf(
-							 "&apos;" );
-
-							break;
-*/
-
-						/* Replace " by &quot; */
-/* TODO disabled for now since Event Viewer does not uses it
-						case (uint8_t) '"':
-							libcnotify_printf(
-							 "&quot;" );
-
-							break;
-*/
-
-						default:
-			                                libcnotify_printf(
-			                                 "%" PRIc_SYSTEM "",
-			                                 value_string[ value_string_index ] );
-
-							break;
-					}
-				}
-				memory_free(
-				 value_string );
-
-				value_string = NULL;
-			}
-			else
-			{
-				if( libfwevt_debug_print_xml_value_with_index(
-				     internal_xml_tag->value,
-				     data_segment_index,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-					 "%s: unable to print value.",
-					 function );
-
-					goto on_error;
-				}
-			}
-		}
-	}
-	return( 1 );
-
-on_error:
-	if( value_string != NULL )
-	{
-		memory_free(
-		 value_string );
-	}
-	return( -1 );
-}
-
 /* Debug prints the XML tag
  * Returns 1 if successful or -1 on error
  */
@@ -4573,7 +4335,7 @@ int libfwevt_xml_tag_debug_print(
 				libcnotify_printf(
 				 "=\"" );
 
-				if( libfwevt_debug_print_xml_value_with_index(
+				if( libfwevt_xml_value_debug_print(
 				     internal_attribute_xml_tag->value,
 				     0,
 				     error ) != 1 )
@@ -4613,8 +4375,9 @@ int libfwevt_xml_tag_debug_print(
 				libcnotify_printf(
 				 ">" );
 
-				if( libfwevt_xml_tag_debug_print_value_string(
-				     internal_xml_tag,
+				if( libfwevt_xml_value_debug_print(
+				     internal_xml_tag->value,
+				     1,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -4725,7 +4488,7 @@ int libfwevt_xml_tag_debug_print(
 		libcnotify_printf(
 		 "![CDATA[" );
 
-		if( libfwevt_debug_print_xml_value_with_index(
+		if( libfwevt_xml_value_debug_print(
 		     internal_xml_tag->value,
 		     0,
 		     error ) != 1 )
@@ -4763,7 +4526,7 @@ int libfwevt_xml_tag_debug_print(
 		libcnotify_printf(
 		 " " );
 
-		if( libfwevt_debug_print_xml_value_with_index(
+		if( libfwevt_xml_value_debug_print(
 		     internal_xml_tag->value,
 		     0,
 		     error ) != 1 )
@@ -4838,13 +4601,14 @@ int libfwevt_xml_tag_name_debug_print(
 /* Debug prints the XML tag value
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_xml_tag_value_debug_print(
+int libfwevt_xml_tag_debug_print_value_data_segment(
      libfwevt_xml_tag_t *xml_tag,
      int data_segment_index,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
 	libfwevt_internal_xml_tag_t *internal_xml_tag = NULL;
-	static char *function                         = "libfwevt_xml_tag_value_debug_print";
+	static char *function                         = "libfwevt_xml_tag_debug_print_value_data_segment";
 
 	if( xml_tag == NULL )
 	{
@@ -4860,12 +4624,13 @@ int libfwevt_xml_tag_value_debug_print(
 	internal_xml_tag = (libfwevt_internal_xml_tag_t *) xml_tag;
 
 	libcnotify_printf(
-	 "%s: value\t\t\t\t: ",
+	 "%s: value\t\t\t: ",
 	 function );
 
-	if( libfwevt_debug_print_xml_value_with_index(
+	if( libfwevt_xml_value_debug_print_data_segment(
 	     internal_xml_tag->value,
 	     data_segment_index,
+	     escape_characters,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

@@ -1,4 +1,4 @@
-.Dd April 28, 2024
+.Dd May  1, 2024
 .Dt libfwevt 3
 .Os libfwevt
 .Sh NAME
@@ -244,6 +244,8 @@ XML value functions
 .Fn libfwevt_value_get_data_as_32bit_integer "libfwevt_xml_value_t *xml_value" "uint32_t *value_32bit" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_value_get_data_as_64bit_integer "libfwevt_xml_value_t *xml_value" "uint64_t *value_64bit" "libfwevt_error_t **error"
+.Ft int
+.Fn libfwevt_value_get_data_as_filetime "libfwevt_xml_value_t *xml_value" "uint64_t *filetime" "libfwevt_error_t **error"
 .Ft int
 .Fn libfwevt_xml_value_get_data_as_utf8_string_size "libfwevt_xml_value_t *xml_value" "size_t *utf8_string_size" "libfwevt_error_t **error"
 .Ft int

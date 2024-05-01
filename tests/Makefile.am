@@ -40,6 +40,7 @@ check_PROGRAMS = \
 	fwevt_test_date_time \
 	fwevt_test_error \
 	fwevt_test_event \
+	fwevt_test_floating_point \
 	fwevt_test_integer \
 	fwevt_test_keyword \
 	fwevt_test_level \
@@ -111,6 +112,17 @@ fwevt_test_event_SOURCES = \
 	fwevt_test_unused.h
 
 fwevt_test_event_LDADD = \
+	../libfwevt/libfwevt.la \
+	@LIBCERROR_LIBADD@
+
+fwevt_test_floating_point_SOURCES = \
+	fwevt_test_floating_point.c \
+	fwevt_test_libcerror.h \
+	fwevt_test_libfwevt.h \
+	fwevt_test_macros.h \
+	fwevt_test_unused.h
+
+fwevt_test_floating_point_LDADD = \
 	../libfwevt/libfwevt.la \
 	@LIBCERROR_LIBADD@
 

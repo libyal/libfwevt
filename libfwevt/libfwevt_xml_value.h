@@ -241,9 +241,15 @@ int libfwevt_xml_value_get_data_as_utf16_string(
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
-int libfwevt_debug_print_xml_value_with_index(
+int libfwevt_xml_value_debug_print(
+     libfwevt_xml_value_t *xml_value,
+     uint8_t escape_characters,
+     libcerror_error_t **error );
+
+int libfwevt_xml_value_debug_print_data_segment(
      libfwevt_xml_value_t *xml_value,
      int data_segment_index,
+     uint8_t escape_characters,
      libcerror_error_t **error );
 
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */

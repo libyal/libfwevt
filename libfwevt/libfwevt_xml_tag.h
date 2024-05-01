@@ -280,10 +280,6 @@ int libfwevt_xml_tag_debug_print_name_string(
      libfwevt_internal_xml_tag_t *internal_xml_tag,
      libcerror_error_t **error );
 
-int libfwevt_xml_tag_debug_print_value_string(
-     libfwevt_internal_xml_tag_t *internal_xml_tag,
-     libcerror_error_t **error );
-
 int libfwevt_xml_tag_debug_print(
      libfwevt_xml_tag_t *xml_tag,
      int xml_tag_level,
@@ -293,9 +289,10 @@ int libfwevt_xml_tag_name_debug_print(
      libfwevt_xml_tag_t *xml_tag,
      libcerror_error_t **error );
 
-int libfwevt_xml_tag_value_debug_print(
+int libfwevt_xml_tag_debug_print_value_data_segment(
      libfwevt_xml_tag_t *xml_tag,
-     int value_entry_index,
+     int data_segment_index,
+     uint8_t escape_characters,
      libcerror_error_t **error );
 
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */

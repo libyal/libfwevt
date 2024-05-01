@@ -837,7 +837,6 @@ int libfwevt_value_get_data_as_8bit_integer(
 	libfwevt_data_segment_t *data_segment             = NULL;
 	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
 	static char *function                             = "libfwevt_value_get_data_as_8bit_integer";
-	uint64_t integer_value                            = 0;
 
 	if( xml_value == NULL )
 	{
@@ -865,14 +864,20 @@ int libfwevt_value_get_data_as_8bit_integer(
 	}
 	if( ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_8BIT )
 	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_8BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_16BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_16BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_32BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_64BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_64BIT )
 	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_STRING_UTF16 ) )
 	{
 		return( 0 );
 	}
-	if( libcdata_array_get_entry_by_index(
-	     internal_xml_value->data_segments,
+	if( libfwevt_internal_xml_value_get_data_segment_with_cached_value(
+	     internal_xml_value,
 	     0,
-	     (intptr_t **) &data_segment,
+	     &data_segment,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -898,7 +903,7 @@ int libfwevt_value_get_data_as_8bit_integer(
 	if( internal_xml_value->value_type == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 	{
 		if( libfwevt_integer_copy_from_utf16_stream(
-		     &integer_value,
+		     &( data_segment->value_64bit ),
 		     data_segment->data,
 		     data_segment->data_size,
 		     error ) != 1 )
@@ -907,50 +912,25 @@ int libfwevt_value_get_data_as_8bit_integer(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-			 "%s: unable to retrieve integer value from data segment: 0.",
+			 "%s: unable to determine integer value from UTF-16 string data segment: 0.",
 			 function );
 
 			return( -1 );
 		}
-		if( integer_value > (uint64_t) UINT8_MAX )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid data segment: 0 - integer value out of bounds.",
-			 function );
-
-			return( -1 );
-		}
+		data_segment->cached_value_type = internal_xml_value->value_type;
 	}
-	else
+	if( data_segment->value_64bit > (uint64_t) UINT8_MAX )
 	{
-		if( data_segment->data == NULL )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: invalid data segment: 0 - missing data.",
-			 function );
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data segment: 0 - integer value out of bounds.",
+		 function );
 
-			return( -1 );
-		}
-		if( data_segment->data_size != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: invalid data segment: 0 - unsupported data size.",
-			 function );
-
-			return( -1 );
-		}
-		integer_value = data_segment->data[ 0 ];
+		return( -1 );
 	}
-	*value_8bit = (uint8_t) integer_value;
+	*value_8bit = (uint8_t) data_segment->value_64bit;
 
 	return( 1 );
 }
@@ -966,7 +946,6 @@ int libfwevt_value_get_data_as_32bit_integer(
 	libfwevt_data_segment_t *data_segment             = NULL;
 	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
 	static char *function                             = "libfwevt_value_get_data_as_32bit_integer";
-	uint64_t integer_value                            = 0;
 
 	if( xml_value == NULL )
 	{
@@ -992,16 +971,22 @@ int libfwevt_value_get_data_as_32bit_integer(
 
 		return( -1 );
 	}
-	if( ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_32BIT )
+	if( ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_8BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_8BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_16BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_16BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_32BIT )
 	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_64BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_64BIT )
 	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_STRING_UTF16 ) )
 	{
 		return( 0 );
 	}
-	if( libcdata_array_get_entry_by_index(
-	     internal_xml_value->data_segments,
+	if( libfwevt_internal_xml_value_get_data_segment_with_cached_value(
+	     internal_xml_value,
 	     0,
-	     (intptr_t **) &data_segment,
+	     &data_segment,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1027,7 +1012,7 @@ int libfwevt_value_get_data_as_32bit_integer(
 	if( internal_xml_value->value_type == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 	{
 		if( libfwevt_integer_copy_from_utf16_stream(
-		     &integer_value,
+		     &( data_segment->value_64bit ),
 		     data_segment->data,
 		     data_segment->data_size,
 		     error ) != 1 )
@@ -1036,52 +1021,25 @@ int libfwevt_value_get_data_as_32bit_integer(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-			 "%s: unable to retrieve integer value from data segment: 0.",
+			 "%s: unable to determine integer value from UTF-16 string data segment: 0.",
 			 function );
 
 			return( -1 );
 		}
-		if( integer_value > (uint64_t) UINT32_MAX )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid data segment: 0 - integer value out of bounds.",
-			 function );
-
-			return( -1 );
-		}
+		data_segment->cached_value_type = internal_xml_value->value_type;
 	}
-	else
+	if( data_segment->value_64bit > (uint64_t) UINT32_MAX )
 	{
-		if( data_segment->data == NULL )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: invalid data segment: 0 - missing data.",
-			 function );
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data segment: 0 - integer value out of bounds.",
+		 function );
 
-			return( -1 );
-		}
-		if( data_segment->data_size != 4 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: invalid data segment: 0 - unsupported data size.",
-			 function );
-
-			return( -1 );
-		}
-		byte_stream_copy_to_uint32_little_endian(
-		 data_segment->data,
-		 integer_value );
+		return( -1 );
 	}
-	*value_32bit = (uint32_t) integer_value;
+	*value_32bit = (uint32_t) data_segment->value_64bit;
 
 	return( 1 );
 }
@@ -1097,7 +1055,6 @@ int libfwevt_value_get_data_as_64bit_integer(
 	libfwevt_data_segment_t *data_segment             = NULL;
 	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
 	static char *function                             = "libfwevt_value_get_data_as_64bit_integer";
-	uint64_t integer_value                            = 0;
 
 	if( xml_value == NULL )
 	{
@@ -1123,16 +1080,22 @@ int libfwevt_value_get_data_as_64bit_integer(
 
 		return( -1 );
 	}
-	if( ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_64BIT )
+	if( ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_8BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_8BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_16BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_16BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_32BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT )
+	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_INTEGER_64BIT )
 	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_64BIT )
 	 && ( internal_xml_value->value_type != LIBFWEVT_VALUE_TYPE_STRING_UTF16 ) )
 	{
 		return( 0 );
 	}
-	if( libcdata_array_get_entry_by_index(
-	     internal_xml_value->data_segments,
+	if( libfwevt_internal_xml_value_get_data_segment_with_cached_value(
+	     internal_xml_value,
 	     0,
-	     (intptr_t **) &data_segment,
+	     &data_segment,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1158,7 +1121,7 @@ int libfwevt_value_get_data_as_64bit_integer(
 	if( internal_xml_value->value_type == LIBFWEVT_VALUE_TYPE_STRING_UTF16 )
 	{
 		if( libfwevt_integer_copy_from_utf16_stream(
-		     &integer_value,
+		     &( data_segment->value_64bit ),
 		     data_segment->data,
 		     data_segment->data_size,
 		     error ) != 1 )
@@ -1167,41 +1130,14 @@ int libfwevt_value_get_data_as_64bit_integer(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-			 "%s: unable to retrieve integer value from data segment: 0.",
+			 "%s: unable to determine integer value from UTF-16 string data segment: 0.",
 			 function );
 
 			return( -1 );
 		}
+		data_segment->cached_value_type = internal_xml_value->value_type;
 	}
-	else
-	{
-		if( data_segment->data == NULL )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: invalid data segment: 0 - missing data.",
-			 function );
-
-			return( -1 );
-		}
-		if( data_segment->data_size != 8 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: invalid data segment: 0 - unsupported data size.",
-			 function );
-
-			return( -1 );
-		}
-		byte_stream_copy_to_uint64_little_endian(
-		 data_segment->data,
-		 integer_value );
-	}
-	*value_64bit = integer_value;
+	*value_64bit = data_segment->value_64bit;
 
 	return( 1 );
 }
@@ -3252,17 +3188,17 @@ int libfwevt_xml_value_get_data_as_utf16_string(
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
-/* Prints the value of a specific data segment
+/* Prints the value
  * Returns 1 if successful or -1 on error
  */
-int libfwevt_debug_print_xml_value_with_index(
+int libfwevt_xml_value_debug_print(
      libfwevt_xml_value_t *xml_value,
-     int data_segment_index,
+     uint8_t escape_characters,
      libcerror_error_t **error )
 {
 	system_character_t *value_string                  = NULL;
 	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_debug_print_xml_value_with_index";
+	static char *function                             = "libfwevt_xml_value_debug_print";
 	size_t value_string_index                         = 0;
 	size_t value_string_size                          = 0;
 	int result                                        = 0;
@@ -3281,18 +3217,16 @@ int libfwevt_debug_print_xml_value_with_index(
 	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	result = libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
+	result = libfwevt_internal_xml_value_get_data_as_utf16_string_size(
 		  internal_xml_value,
-		  data_segment_index,
 		  &value_string_size,
-		  0,
+		  escape_characters,
 		  error );
 #else
-	result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
+	result = libfwevt_internal_xml_value_get_data_as_utf8_string_size(
 		  internal_xml_value,
-		  data_segment_index,
 		  &value_string_size,
-		  0,
+		  escape_characters,
 		  error );
 #endif
 	if( result != 1 )
@@ -3334,22 +3268,20 @@ int libfwevt_debug_print_xml_value_with_index(
 			goto on_error;
 		}
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-		result = libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
+		result = libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
 			  internal_xml_value,
-			  data_segment_index,
 			  (libuna_utf16_character_t *) value_string,
 			  value_string_size,
 			  &value_string_index,
-			  0,
+			  escape_characters,
 			  error );
 #else
-		result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
+		result = libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
 			  internal_xml_value,
-			  data_segment_index,
 			  (libuna_utf8_character_t *) value_string,
 			  value_string_size,
 			  &value_string_index,
-			  0,
+			  escape_characters,
 			  error );
 #endif
 		if( result != 1 )
@@ -3360,6 +3292,138 @@ int libfwevt_debug_print_xml_value_with_index(
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
 			 "%s: unable to retrieve value string.",
 			 function );
+
+			goto on_error;
+		}
+		libcnotify_printf(
+		 "%" PRIs_SYSTEM "",
+		 value_string );
+
+		memory_free(
+		 value_string );
+	}
+	return( 1 );
+
+on_error:
+	if( value_string != NULL )
+	{
+		memory_free(
+		 value_string );
+	}
+	return( -1 );
+}
+
+/* Prints the value of a specific data segment
+ * Returns 1 if successful or -1 on error
+ */
+int libfwevt_xml_value_debug_print_data_segment(
+     libfwevt_xml_value_t *xml_value,
+     int data_segment_index,
+     uint8_t escape_characters,
+     libcerror_error_t **error )
+{
+	system_character_t *value_string                  = NULL;
+	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
+	static char *function                             = "libfwevt_xml_value_debug_print_data_segment";
+	size_t value_string_index                         = 0;
+	size_t value_string_size                          = 0;
+	int result                                        = 0;
+
+	if( xml_value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid XML value.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
+
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	result = libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
+		  internal_xml_value,
+		  data_segment_index,
+		  &value_string_size,
+		  escape_characters,
+		  error );
+#else
+	result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
+		  internal_xml_value,
+		  data_segment_index,
+		  &value_string_size,
+		  escape_characters,
+		  error );
+#endif
+	if( result != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to determine size of value string of data segment: %d.",
+		 function,
+		 data_segment_index );
+
+		goto on_error;
+	}
+	if( value_string_size > 0 )
+	{
+		if( value_string_size > (size_t) ( SSIZE_MAX / sizeof( system_character_t ) ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+			 "%s: invalid name string size value exceeds maximum.",
+			 function );
+
+			goto on_error;
+		}
+		value_string = system_string_allocate(
+		                value_string_size );
+
+		if( value_string == NULL )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_MEMORY,
+			 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
+			 "%s: unable to create value string.",
+			 function );
+
+			goto on_error;
+		}
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+		result = libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
+			  internal_xml_value,
+			  data_segment_index,
+			  (libuna_utf16_character_t *) value_string,
+			  value_string_size,
+			  &value_string_index,
+		          escape_characters,
+			  error );
+#else
+		result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
+			  internal_xml_value,
+			  data_segment_index,
+			  (libuna_utf8_character_t *) value_string,
+			  value_string_size,
+			  &value_string_index,
+		          escape_characters,
+			  error );
+#endif
+		if( result != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+			 "%s: unable to retrieve value string of data segment: %d.",
+			 function,
+			 data_segment_index );
 
 			goto on_error;
 		}

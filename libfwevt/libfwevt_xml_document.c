@@ -1192,8 +1192,9 @@ int libfwevt_xml_document_read_cdata_section(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
-		if( libfwevt_xml_tag_value_debug_print(
+		if( libfwevt_xml_tag_debug_print_value_data_segment(
 		     xml_tag,
+		     0,
 		     0,
 		     error ) != 1 )
 		{
@@ -1201,7 +1202,7 @@ int libfwevt_xml_document_read_cdata_section(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-			 "%s: unable to print value.",
+			 "%s: unable to print value data segment: 0.",
 			 function );
 
 			return( -1 );
@@ -1236,7 +1237,7 @@ int libfwevt_xml_document_read_character_reference(
 	size_t character_value_utf16_stream_size  = 0;
 	size_t xml_document_data_size             = 0;
 	uint16_t character_value                  = 0;
-	int value_entry_index                     = 0;
+	int data_segment_index                    = 0;
 
 	if( internal_xml_document == NULL )
 	{
@@ -1496,7 +1497,7 @@ int libfwevt_xml_document_read_character_reference(
 	     xml_tag,
 	     character_value_utf16_stream,
 	     character_value_utf16_stream_size,
-	     &value_entry_index,
+	     &data_segment_index,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1516,18 +1517,19 @@ int libfwevt_xml_document_read_character_reference(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
-		if( libfwevt_xml_tag_value_debug_print(
+		if( libfwevt_xml_tag_debug_print_value_data_segment(
 		     xml_tag,
-		     value_entry_index,
+		     data_segment_index,
+		     0,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-			 "%s: unable to print value: %d.",
+			 "%s: unable to print value data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
@@ -2569,7 +2571,7 @@ int libfwevt_xml_document_read_entity_reference(
 	uint32_t entity_name_offset        = 0;
 	uint32_t entity_name_size          = 0;
 	uint8_t entity_name_match          = 0;
-	int value_entry_index              = 0;
+	int data_segment_index             = 0;
 
 	if( internal_xml_document == NULL )
 	{
@@ -2971,7 +2973,7 @@ int libfwevt_xml_document_read_entity_reference(
 	     xml_tag,
 	     entity_value_utf16_stream,
 	     4,
-	     &value_entry_index,
+	     &data_segment_index,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -2991,18 +2993,19 @@ int libfwevt_xml_document_read_entity_reference(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
-		if( libfwevt_xml_tag_value_debug_print(
+		if( libfwevt_xml_tag_debug_print_value_data_segment(
 		     xml_tag,
-		     value_entry_index,
+		     data_segment_index,
+		     0,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-			 "%s: unable to print value: %d.",
+			 "%s: unable to print value data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			goto on_error;
 		}
@@ -4206,8 +4209,9 @@ int libfwevt_xml_document_read_pi_data(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
-		if( libfwevt_xml_tag_value_debug_print(
+		if( libfwevt_xml_tag_debug_print_value_data_segment(
 		     xml_tag,
+		     0,
 		     0,
 		     error ) != 1 )
 		{
@@ -4215,7 +4219,7 @@ int libfwevt_xml_document_read_pi_data(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-			 "%s: unable to print value.",
+			 "%s: unable to print value data segment: 0.",
 			 function );
 
 			return( -1 );
@@ -5554,7 +5558,7 @@ int libfwevt_xml_document_read_value(
 	size_t value_data_size           = 0;
 	size_t xml_document_data_size    = 0;
 	uint8_t value_type               = 0;
-	int value_entry_index            = 0;
+	int data_segment_index           = 0;
 
 	if( internal_xml_document == NULL )
 	{
@@ -5766,7 +5770,7 @@ int libfwevt_xml_document_read_value(
 	     xml_tag,
 	     &( binary_data[ binary_data_offset ] ),
 	     value_data_size,
-	     &value_entry_index,
+	     &data_segment_index,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -5781,18 +5785,19 @@ int libfwevt_xml_document_read_value(
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
-		if( libfwevt_xml_tag_value_debug_print(
+		if( libfwevt_xml_tag_debug_print_value_data_segment(
 		     xml_tag,
-		     value_entry_index,
+		     data_segment_index,
+		     0,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-			 "%s: unable to print value: %d.",
+			 "%s: unable to print value data segment: %d.",
 			 function,
-			 value_entry_index );
+			 data_segment_index );
 
 			return( -1 );
 		}
@@ -6480,8 +6485,9 @@ int libfwevt_xml_document_substitute_template_value(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
-			if( libfwevt_xml_tag_value_debug_print(
+			if( libfwevt_xml_tag_debug_print_value_data_segment(
 			     xml_tag,
+			     0,
 			     0,
 			     error ) != 1 )
 			{
@@ -6489,7 +6495,7 @@ int libfwevt_xml_document_substitute_template_value(
 				 error,
 				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 				 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
-				 "%s: unable to print value.",
+				 "%s: unable to print value data segment: 0.",
 				 function );
 
 				goto on_error;

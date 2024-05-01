@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBFWEVTF_LIBFWNT_H )
-#define _LIBFWEVTF_LIBFWNT_H
+#if !defined( _LIBFWEVT_LIBFWNT_H )
+#define _LIBFWEVT_LIBFWNT_H
 
 #include <common.h>
 
@@ -54,5 +54,5 @@
 
 #endif /* defined( HAVE_LOCAL_LIBFWNT ) */
 
-#endif /* !defined( _LIBFWEVTF_LIBFWNT_H ) */
+#endif /* !defined( _LIBFWEVT_LIBFWNT_H ) */
 

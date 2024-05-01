@@ -137,20 +137,20 @@ int libfwevt_utf8_xml_string_size_from_utf16_stream(
 		{
 			/* Replace & by &amp; */
 			case (libuna_unicode_character_t) '&':
-				safe_utf8_string_size += 4;
+				safe_utf8_string_size += 5;
 				break;
 
 			/* Replace < by &lt; and > by &gt; */
 			case (libuna_unicode_character_t) '<':
 			case (libuna_unicode_character_t) '>':
-				safe_utf8_string_size += 3;
+				safe_utf8_string_size += 4;
 				break;
 
 			/* Replace ' by &apos; and " by &quot; */
 /* TODO disabled for now since Event Viewer does not uses it
 			case (libuna_unicode_character_t) '\'':
 			case (libuna_unicode_character_t) '"':
-				safe_utf8_string_size += 5;
+				safe_utf8_string_size += 6;
 				break;
 */
 
@@ -615,20 +615,20 @@ int libfwevt_utf16_xml_string_size_from_utf16_stream(
 		{
 			/* Replace & by &amp; */
 			case (libuna_unicode_character_t) '&':
-				safe_utf16_string_size += 4;
+				safe_utf16_string_size += 5;
 				break;
 
 			/* Replace < by &lt; and > by &gt; */
 			case (libuna_unicode_character_t) '<':
 			case (libuna_unicode_character_t) '>':
-				safe_utf16_string_size += 3;
+				safe_utf16_string_size += 4;
 				break;
 
 			/* Replace ' by &apos; and " by &quot; */
 /* TODO disabled for now since Event Viewer does not uses it
 			case (libuna_unicode_character_t) '\'':
 			case (libuna_unicode_character_t) '"':
-				safe_utf16_string_size += 5;
+				safe_utf16_string_size += 6;
 				break;
 */
 
