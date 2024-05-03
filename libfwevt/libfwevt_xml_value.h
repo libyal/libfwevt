@@ -130,6 +130,7 @@ int libfwevt_value_get_data_as_filetime(
 int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
      libfwevt_internal_xml_value_t *internal_xml_value,
      int data_segment_index,
+     libfwevt_data_segment_t *data_segment,
      size_t *utf8_string_size,
      uint8_t escape_characters,
      libcerror_error_t **error );
@@ -137,6 +138,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
 int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
      libfwevt_internal_xml_value_t *internal_xml_value,
      int data_segment_index,
+     libfwevt_data_segment_t *data_segment,
      uint8_t *utf8_string,
      size_t utf8_string_size,
      size_t *utf8_string_index,
@@ -186,6 +188,7 @@ int libfwevt_xml_value_get_data_as_utf8_string(
 int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
      libfwevt_internal_xml_value_t *internal_xml_value,
      int data_segment_index,
+     libfwevt_data_segment_t *data_segment,
      size_t *utf16_string_size,
      uint8_t escape_characters,
      libcerror_error_t **error );
@@ -193,6 +196,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
 int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
      libfwevt_internal_xml_value_t *internal_xml_value,
      int data_segment_index,
+     libfwevt_data_segment_t *data_segment,
      uint16_t *utf16_string,
      size_t utf16_string_size,
      size_t *utf16_string_index,
