@@ -828,7 +828,7 @@ int libfwevt_xml_value_copy_data(
 }
 
 /* Retrieves the value data as a 8-bit integer value
- * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value cannot be retrieved or -1 on error
  */
 int libfwevt_value_get_data_as_8bit_integer(
      libfwevt_xml_value_t *xml_value,
@@ -937,7 +937,7 @@ int libfwevt_value_get_data_as_8bit_integer(
 }
 
 /* Retrieves the value data as a 32-bit integer value
- * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value cannot be retrieved or -1 on error
  */
 int libfwevt_value_get_data_as_32bit_integer(
      libfwevt_xml_value_t *xml_value,
@@ -1046,7 +1046,7 @@ int libfwevt_value_get_data_as_32bit_integer(
 }
 
 /* Retrieves the value data as a 64-bit integer value
- * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value cannot be retrieved or -1 on error
  */
 int libfwevt_value_get_data_as_64bit_integer(
      libfwevt_xml_value_t *xml_value,
@@ -1144,7 +1144,7 @@ int libfwevt_value_get_data_as_64bit_integer(
 }
 
 /* Retrieves the value data as a 64-bit FILETIME value
- * Returns 1 if successful, 0 if value not be retrieved or -1 on error
+ * Returns 1 if successful, 0 if value cannot be retrieved or -1 on error
  */
 int libfwevt_value_get_data_as_filetime(
      libfwevt_xml_value_t *xml_value,
