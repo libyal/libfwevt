@@ -1,6 +1,6 @@
 dnl Checks for required headers and functions
 dnl
-dnl Version: 20220119
+dnl Version: 20240501
 
 dnl Function to detect if libfwevt dependencies are available
 AC_DEFUN([AX_LIBFWEVT_CHECK_LOCAL],
