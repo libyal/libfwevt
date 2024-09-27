@@ -2125,8 +2125,7 @@ int libfwevt_xml_value_get_utf8_string_size(
      size_t *utf8_string_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_utf8_string_size";
+	static char *function = "libfwevt_xml_value_get_utf8_string_size";
 
 	if( xml_value == NULL )
 	{
@@ -2139,10 +2138,8 @@ int libfwevt_xml_value_get_utf8_string_size(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( libfwevt_internal_xml_value_get_data_as_utf8_string_size(
-	     internal_xml_value,
+	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf8_string_size,
 	     0,
 	     error ) != 1 )
@@ -2197,8 +2194,7 @@ int libfwevt_xml_value_get_data_as_utf8_string_size(
      size_t *utf8_string_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_data_as_utf8_string_size";
+	static char *function = "libfwevt_xml_value_get_data_as_utf8_string_size";
 
 	if( xml_value == NULL )
 	{
@@ -2211,10 +2207,8 @@ int libfwevt_xml_value_get_data_as_utf8_string_size(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( libfwevt_internal_xml_value_get_data_as_utf8_string_size(
-	     internal_xml_value,
+	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf8_string_size,
 	     0,
 	     error ) != 1 )
@@ -2241,9 +2235,8 @@ int libfwevt_xml_value_get_data_as_utf8_string(
      size_t utf8_string_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_data_as_utf8_string";
-	size_t utf8_string_index                          = 0;
+	static char *function    = "libfwevt_xml_value_get_data_as_utf8_string";
+	size_t utf8_string_index = 0;
 
 	if( xml_value == NULL )
 	{
@@ -2256,10 +2249,8 @@ int libfwevt_xml_value_get_data_as_utf8_string(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
-	     internal_xml_value,
+	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf8_string,
 	     utf8_string_size,
 	     &utf8_string_index,
@@ -3174,8 +3165,7 @@ int libfwevt_xml_value_get_utf16_string_size(
      size_t *utf16_string_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_utf16_string_size";
+	static char *function = "libfwevt_xml_value_get_utf16_string_size";
 
 	if( xml_value == NULL )
 	{
@@ -3188,10 +3178,8 @@ int libfwevt_xml_value_get_utf16_string_size(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( libfwevt_internal_xml_value_get_data_as_utf16_string_size(
-	     internal_xml_value,
+	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf16_string_size,
 	     0,
 	     error ) != 1 )
@@ -3246,8 +3234,7 @@ int libfwevt_xml_value_get_data_as_utf16_string_size(
      size_t *utf16_string_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_data_as_utf16_string_size";
+	static char *function = "libfwevt_xml_value_get_data_as_utf16_string_size";
 
 	if( xml_value == NULL )
 	{
@@ -3260,10 +3247,8 @@ int libfwevt_xml_value_get_data_as_utf16_string_size(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( libfwevt_internal_xml_value_get_data_as_utf16_string_size(
-	     internal_xml_value,
+	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf16_string_size,
 	     0,
 	     error ) != 1 )
@@ -3290,9 +3275,8 @@ int libfwevt_xml_value_get_data_as_utf16_string(
      size_t utf16_string_size,
      libcerror_error_t **error )
 {
-	libfwevt_internal_xml_value_t *internal_xml_value = NULL;
-	static char *function                             = "libfwevt_xml_value_get_data_as_utf16_string";
-	size_t utf16_string_index                         = 0;
+	static char *function     = "libfwevt_xml_value_get_data_as_utf16_string";
+	size_t utf16_string_index = 0;
 
 	if( xml_value == NULL )
 	{
@@ -3305,10 +3289,8 @@ int libfwevt_xml_value_get_data_as_utf16_string(
 
 		return( -1 );
 	}
-	internal_xml_value = (libfwevt_internal_xml_value_t *) xml_value;
-
 	if( libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
-	     internal_xml_value,
+	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf16_string,
 	     utf16_string_size,
 	     &utf16_string_index,
