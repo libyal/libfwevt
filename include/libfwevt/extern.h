@@ -31,14 +31,17 @@
  */
 #if defined( LIBFWEVT_DLL_EXPORT )
 #define LIBFWEVT_EXTERN __declspec(dllexport)
+#define LIBFWEVT_EXTERN_VARIABLE extern __declspec(dllexport)
 
 #elif defined( LIBFWEVT_DLL_IMPORT )
-#define LIBFWEVT_EXTERN extern __declspec(dllimport)
+#define LIBFWEVT_EXTERN __declspec(dllimport)
+#define LIBFWEVT_EXTERN_VARIABLE extern __declspec(dllimport)
 
 #else
 #define LIBFWEVT_EXTERN extern
+#define LIBFWEVT_EXTERN_VARIABLE extern
 
-#endif
+#endif /* defined( LIBFWEVT_DLL_EXPORT ) */
 
 #endif /* !defined( _LIBFWEVT_EXTERN_H ) */
 
