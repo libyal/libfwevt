@@ -173,8 +173,11 @@ int libfwevt_map_read_data(
      size_t data_offset,
      libcerror_error_t **error )
 {
-	fwevt_template_map_t *wevt_map = NULL;
 	static char *function          = "libfwevt_map_read_data";
+
+#if defined( HAVE_DEBUG_OUTPUT )
+	fwevt_template_map_t *wevt_map = NULL;
+#endif
 
 	if( map == NULL )
 	{
@@ -232,11 +235,11 @@ int libfwevt_map_read_data(
 
 		return( -1 );
 	}
-	wevt_map = (fwevt_template_map_t *) &( data[ data_offset ] );
-
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		wevt_map = (fwevt_template_map_t *) &( data[ data_offset ] );
+
 		libcnotify_printf(
 		 "%s: map data:\n",
 		 function );

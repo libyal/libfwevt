@@ -334,17 +334,12 @@ int libfwevt_opcode_read_data(
 			 "%s: data size\t\t\t\t\t: %" PRIu32 "\n",
 			 function,
 			 opcode_data_size );
-		}
-#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
-		if( opcode_data_size >= 4 )
-		{
-			opcode_data_offset += 4;
-			opcode_data_size   -= 4;
-
-#if defined( HAVE_DEBUG_OUTPUT )
-			if( libcnotify_verbose != 0 )
+			if( opcode_data_size >= 4 )
 			{
+				opcode_data_offset += 4;
+				opcode_data_size   -= 4;
+
 				if( libfwevt_debug_print_utf16_string_value(
 				     function,
 				     "name\t\t\t\t\t\t",
@@ -363,8 +358,8 @@ int libfwevt_opcode_read_data(
 					return( -1 );
 				}
 			}
-#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 		}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )

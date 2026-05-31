@@ -2443,14 +2443,11 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
 			{
 				format_flags = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE;
 
-				if( _BYTE_STREAM_HOST_IS_ENDIAN_BIG )
-				{
-					format_flags |= LIBUNA_BASE16_VARIANT_ENCODING_UTF16_BIG_ENDIAN;
-				}
-				else if( _BYTE_STREAM_HOST_IS_ENDIAN_LITTLE )
-				{
-					format_flags |= LIBUNA_BASE16_VARIANT_ENCODING_UTF16_LITTLE_ENDIAN;
-				}
+#if _BYTE_STREAM_HOST_BYTE_ORDER == _BYTE_STREAM_ENDIAN_BIG
+				format_flags |= LIBUNA_BASE16_VARIANT_ENCODING_UTF16_BIG_ENDIAN;
+#else
+				format_flags |= LIBUNA_BASE16_VARIANT_ENCODING_UTF16_LITTLE_ENDIAN;
+#endif
 				result = libuna_base16_stream_size_from_byte_stream(
 				          data_segment->data,
 				          data_segment->data_size,
@@ -2785,14 +2782,11 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
 			base16_stream_index = *utf16_string_index * 2;
 			format_flags        = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE;
 
-			if( _BYTE_STREAM_HOST_IS_ENDIAN_BIG )
-			{
-				format_flags |= LIBUNA_BASE16_VARIANT_ENCODING_UTF16_BIG_ENDIAN;
-			}
-			else if( _BYTE_STREAM_HOST_IS_ENDIAN_LITTLE )
-			{
-				format_flags |= LIBUNA_BASE16_VARIANT_ENCODING_UTF16_LITTLE_ENDIAN;
-			}
+#if _BYTE_STREAM_HOST_BYTE_ORDER == _BYTE_STREAM_ENDIAN_BIG
+			format_flags |= LIBUNA_BASE16_VARIANT_ENCODING_UTF16_BIG_ENDIAN;
+#else
+			format_flags |= LIBUNA_BASE16_VARIANT_ENCODING_UTF16_LITTLE_ENDIAN;
+#endif
 			result = libuna_base16_stream_with_index_copy_from_byte_stream(
 			          (uint8_t *) utf16_string,
 			          utf16_string_size * 2,

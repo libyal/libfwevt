@@ -4441,7 +4441,9 @@ int libfwevt_xml_document_read_pi_target(
 		}
 #endif
 		xml_token->size           = 4;
+/* TODO
 		xml_document_data_offset += 4;
+*/
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -5132,7 +5134,9 @@ int libfwevt_xml_document_read_template_instance(
 
 			goto on_error;
 		}
+/* TODO
 		template_definition_data_size -= (uint32_t) ( template_data_size - 24 );
+*/
 	}
 /* TODO check if template_definition_data_size is 0 */
 
