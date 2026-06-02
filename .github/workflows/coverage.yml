@@ -47,7 +47,7 @@ jobs:
       env:
         CHERE_INVOKING: 1
       run: |
-        tests/runtests.sh
+        tests/runtests.sh CHECK_WITH_STDERR=1
     - name: Generate coverage data
       shell: bash --login -e -o pipefail -o igncr {0}
       working-directory: ${{ github.workspace }}
@@ -79,6 +79,7 @@ jobs:
     - uses: actions/checkout@v6
     - name: Install build dependencies
       run: |
+        sudo apt -y update
         sudo apt -y install curl autoconf automake autopoint build-essential git libtool pkg-config
     - name: Download test data
       run: |
@@ -119,7 +120,7 @@ jobs:
       with:
         msystem: MINGW64
         update: true
-        install: autoconf automake curl gettext gettext-devel git libtool make mingw-w64-x86_64-gcc mingw-w64-x86_64-python3 pkg-config
+        install: autoconf automake curl git libtool make mingw-w64-x86_64-gcc mingw-w64-x86_64-gettext-runtime mingw-w64-x86_64-gettext-tools mingw-w64-x86_64-python3 pkg-config
     - name: Download test data
       shell: msys2 {0}
       run: |
@@ -136,7 +137,7 @@ jobs:
     - name: Run tests
       shell: msys2 {0}
       run: |
-        tests/runtests.sh
+        tests/runtests.sh CHECK_WITH_STDERR=1
     - name: Generate coverage data
       shell: msys2 {0}
       run: |

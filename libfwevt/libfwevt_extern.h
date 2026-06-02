@@ -24,6 +24,19 @@
 
 #include <common.h>
 
+#if !defined( __CYGWIN__ ) && !defined( _WIN32 ) && defined( __has_attribute )
+#if __has_attribute( visibility )
+#define LIBFWEVT_INTERNAL	__attribute__((visibility("hidden"))) extern
+
+#else
+#define LIBFWEVT_INTERNAL	extern
+
+#endif /* __has_attribute( visibility ) */
+#else
+#define LIBFWEVT_INTERNAL	extern
+
+#endif /* !defined( __CYGWIN__ ) && !defined( _WIN32 ) && defined( __has_attribute ) */
+
 /* Define HAVE_LOCAL_LIBFWEVT for local use of libfwevt
  */
 #if !defined( HAVE_LOCAL_LIBFWEVT )
@@ -32,7 +45,7 @@
 
 #else
 #define LIBFWEVT_EXTERN		/* extern */
-#define LIBFWEVT_EXTERN_VARIABLE	extern
+#define LIBFWEVT_EXTERN_VARIABLE	LIBFWEVT_INTERNAL
 
 #endif /* !defined( HAVE_LOCAL_LIBFWEVT ) */
 
