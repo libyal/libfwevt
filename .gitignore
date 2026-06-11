@@ -1,6 +1,6 @@
 # Files to ignore by git
 #
-# Version: 20251129
+# Version: 20260604
 
 # Generic auto-generated build files
 *~
@@ -128,7 +128,12 @@ stamp-h[1-9]
 /libfwevt/libfwevt.rc
 /libfwevt/libfwevt_definitions.h
 /pyproject.toml
+/tests/*.dir
 /tests/*.exe
+/tests/*.log
+/tests/*.tmp
+/tests/atconfig
+/tests/atlocal
 /tests/fwevt_test_channel
 /tests/fwevt_test_data_segment
 /tests/fwevt_test_date_time
@@ -153,6 +158,10 @@ stamp-h[1-9]
 /tests/fwevt_test_xml_token
 /tests/fwevt_test_xml_value
 /tests/notify_stream.log
+/tests/package.m4
+/tests/test_library
+/tests/test_manpages
+/tests/test_python_module
 /tests/tmp*
 
 # Local library dependencies specific files

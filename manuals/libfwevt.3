@@ -1,6 +1,6 @@
-.Dd May  1, 2024
-.Dt libfwevt 3
-.Os libfwevt
+.Dd June 11, 2026
+.Dt LIBFWEVT 3
+.Os
 .Sh NAME
 .Nm libfwevt.h
 .Nd Library to support the Windows XML Event Log (EVTX) data types
@@ -8,271 +8,933 @@
 .In libfwevt.h
 .Pp
 Support functions
+.nf
 .Ft const char *
-.Fn libfwevt_get_version "void"
+.Fo libfwevt_get_version
+.Fa "void"
+.Fc
+.fi
 .Pp
 Notify functions
+.nf
 .Ft void
-.Fn libfwevt_notify_set_verbose "int verbose"
+.Fo libfwevt_notify_set_verbose
+.Fa "int verbose"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_notify_set_stream "FILE *stream" "libfwevt_error_t **error"
+.Fo libfwevt_notify_set_stream
+.Fa "FILE *stream"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_notify_stream_open "const char *filename" "libfwevt_error_t **error"
+.Fo libfwevt_notify_stream_open
+.Fa "const char *filename"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_notify_stream_close "libfwevt_error_t **error"
+.Fo libfwevt_notify_stream_close
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Error functions
+.nf
 .Ft void
-.Fn libfwevt_error_free "libfwevt_error_t **error"
+.Fo libfwevt_error_free
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_error_fprint "libfwevt_error_t *error" "FILE *stream"
+.Fo libfwevt_error_fprint
+.Fa "libfwevt_error_t *error"
+.Fa "FILE *stream"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_error_sprint "libfwevt_error_t *error" "char *string" "size_t size"
+.Fo libfwevt_error_sprint
+.Fa "libfwevt_error_t *error"
+.Fa "char *string"
+.Fa "size_t size"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_error_backtrace_fprint "libfwevt_error_t *error" "FILE *stream"
+.Fo libfwevt_error_backtrace_fprint
+.Fa "libfwevt_error_t *error"
+.Fa "FILE *stream"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_error_backtrace_sprint "libfwevt_error_t *error" "char *string" "size_t size"
+.Fo libfwevt_error_backtrace_sprint
+.Fa "libfwevt_error_t *error"
+.Fa "char *string"
+.Fa "size_t size"
+.Fc
+.fi
 .Pp
 Channel functions
+.nf
 .Ft int
-.Fn libfwevt_channel_free "libfwevt_channel_t **channel" "libfwevt_error_t **error"
+.Fo libfwevt_channel_free
+.Fa "libfwevt_channel_t **channel"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_channel_get_identifier "libfwevt_channel_t *channel" "uint32_t *identifier" "libfwevt_error_t **error"
+.Fo libfwevt_channel_get_identifier
+.Fa "libfwevt_channel_t *channel"
+.Fa "uint32_t *identifier"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_channel_get_utf8_name_size "libfwevt_channel_t *channel" "size_t *utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_channel_get_utf8_name_size
+.Fa "libfwevt_channel_t *channel"
+.Fa "size_t *utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_channel_get_utf8_name "libfwevt_channel_t *channel" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_channel_get_utf8_name
+.Fa "libfwevt_channel_t *channel"
+.Fa "uint8_t *utf8_string"
+.Fa "size_t utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_channel_get_utf16_name_size "libfwevt_channel_t *channel" "size_t *utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_channel_get_utf16_name_size
+.Fa "libfwevt_channel_t *channel"
+.Fa "size_t *utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_channel_get_utf16_name "libfwevt_channel_t *channel" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_channel_get_utf16_name
+.Fa "libfwevt_channel_t *channel"
+.Fa "uint16_t *utf16_string"
+.Fa "size_t utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Event functions
+.nf
 .Ft int
-.Fn libfwevt_event_free "libfwevt_event_t **event" "libfwevt_error_t **error"
+.Fo libfwevt_event_free
+.Fa "libfwevt_event_t **event"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_event_get_identifier "libfwevt_event_t *event" "uint32_t *identifier" "libfwevt_error_t **error"
+.Fo libfwevt_event_get_identifier
+.Fa "libfwevt_event_t *event"
+.Fa "uint32_t *identifier"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_event_get_version "libfwevt_event_t *event" "uint8_t *version" "libfwevt_error_t **error"
+.Fo libfwevt_event_get_version
+.Fa "libfwevt_event_t *event"
+.Fa "uint8_t *version"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_event_get_message_identifier "libfwevt_event_t *event" "uint32_t *message_identifier" "libfwevt_error_t **error"
+.Fo libfwevt_event_get_message_identifier
+.Fa "libfwevt_event_t *event"
+.Fa "uint32_t *message_identifier"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_event_get_template_offset "libfwevt_event_t *event" "uint32_t *template_offset" "libfwevt_error_t **error"
+.Fo libfwevt_event_get_template_offset
+.Fa "libfwevt_event_t *event"
+.Fa "uint32_t *template_offset"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Keyword functions
+.nf
 .Ft int
-.Fn libfwevt_keyword_free "libfwevt_keyword_t **keyword" "libfwevt_error_t **error"
+.Fo libfwevt_keyword_free
+.Fa "libfwevt_keyword_t **keyword"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Level functions
+.nf
 .Ft int
-.Fn libfwevt_level_free "libfwevt_level_t **level" "libfwevt_error_t **error"
+.Fo libfwevt_level_free
+.Fa "libfwevt_level_t **level"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Manifest functions
+.nf
 .Ft int
-.Fn libfwevt_manifest_initialize "libfwevt_manifest_t **manifest" "libfwevt_error_t **error"
+.Fo libfwevt_manifest_initialize
+.Fa "libfwevt_manifest_t **manifest"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_manifest_free "libfwevt_manifest_t **manifest" "libfwevt_error_t **error"
+.Fo libfwevt_manifest_free
+.Fa "libfwevt_manifest_t **manifest"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_manifest_read "libfwevt_manifest_t *manifest" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
+.Fo libfwevt_manifest_read
+.Fa "libfwevt_manifest_t *manifest"
+.Fa "const uint8_t *data"
+.Fa "size_t data_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_manifest_get_number_of_providers "libfwevt_manifest_t *manifest" "int *number_of_providers" "libfwevt_error_t **error"
+.Fo libfwevt_manifest_get_number_of_providers
+.Fa "libfwevt_manifest_t *manifest"
+.Fa "int *number_of_providers"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_manifest_get_provider_by_index "libfwevt_manifest_t *manifest" "int provider_index" "libfwevt_provider_t **provider" "libfwevt_error_t **error"
+.Fo libfwevt_manifest_get_provider_by_index
+.Fa "libfwevt_manifest_t *manifest"
+.Fa "int provider_index"
+.Fa "libfwevt_provider_t **provider"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_manifest_get_provider_by_identifier "libfwevt_manifest_t *manifest" "const uint8_t *provider_identifier" "size_t provider_identifier_size" "libfwevt_provider_t **provider" "libfwevt_error_t **error"
+.Fo libfwevt_manifest_get_provider_by_identifier
+.Fa "libfwevt_manifest_t *manifest"
+.Fa "const uint8_t *provider_identifier"
+.Fa "size_t provider_identifier_size"
+.Fa "libfwevt_provider_t **provider"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Map functions
+.nf
 .Ft int
-.Fn libfwevt_map_free "libfwevt_map_t **map" "libfwevt_error_t **error"
+.Fo libfwevt_map_free
+.Fa "libfwevt_map_t **map"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Opcode functions
+.nf
 .Ft int
-.Fn libfwevt_opcode_free "libfwevt_opcode_t **opcode" "libfwevt_error_t **error"
+.Fo libfwevt_opcode_free
+.Fa "libfwevt_opcode_t **opcode"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Provider functions
+.nf
 .Ft int
-.Fn libfwevt_provider_free "libfwevt_provider_t **provider" "libfwevt_error_t **error"
+.Fo libfwevt_provider_free
+.Fa "libfwevt_provider_t **provider"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_identifier "libfwevt_provider_t *provider" "uint8_t *guid_data" "size_t guid_data_size" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_identifier
+.Fa "libfwevt_provider_t *provider"
+.Fa "uint8_t *guid_data"
+.Fa "size_t guid_data_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_number_of_channels "libfwevt_provider_t *provider" "int *number_of_channels" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_number_of_channels
+.Fa "libfwevt_provider_t *provider"
+.Fa "int *number_of_channels"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_channel_by_index "libfwevt_provider_t *provider" "int channel_index" "libfwevt_channel_t **channel" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_channel_by_index
+.Fa "libfwevt_provider_t *provider"
+.Fa "int channel_index"
+.Fa "libfwevt_channel_t **channel"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_number_of_events "libfwevt_provider_t *provider" "int *number_of_events" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_number_of_events
+.Fa "libfwevt_provider_t *provider"
+.Fa "int *number_of_events"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_event_by_index "libfwevt_provider_t *provider" "int event_index" "libfwevt_event_t **event" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_event_by_index
+.Fa "libfwevt_provider_t *provider"
+.Fa "int event_index"
+.Fa "libfwevt_event_t **event"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_event_by_identifier "libfwevt_provider_t *provider" "uint32_t event_identifier" "libfwevt_event_t **event" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_event_by_identifier
+.Fa "libfwevt_provider_t *provider"
+.Fa "uint32_t event_identifier"
+.Fa "libfwevt_event_t **event"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_number_of_keywords "libfwevt_provider_t *provider" "int *number_of_keywords" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_number_of_keywords
+.Fa "libfwevt_provider_t *provider"
+.Fa "int *number_of_keywords"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_keyword_by_index "libfwevt_provider_t *provider" "int keyword_index" "libfwevt_keyword_t **keyword" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_keyword_by_index
+.Fa "libfwevt_provider_t *provider"
+.Fa "int keyword_index"
+.Fa "libfwevt_keyword_t **keyword"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_number_of_levels "libfwevt_provider_t *provider" "int *number_of_levels" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_number_of_levels
+.Fa "libfwevt_provider_t *provider"
+.Fa "int *number_of_levels"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_level_by_index "libfwevt_provider_t *provider" "int level_index" "libfwevt_level_t **level" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_level_by_index
+.Fa "libfwevt_provider_t *provider"
+.Fa "int level_index"
+.Fa "libfwevt_level_t **level"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_number_of_maps "libfwevt_provider_t *provider" "int *number_of_maps" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_number_of_maps
+.Fa "libfwevt_provider_t *provider"
+.Fa "int *number_of_maps"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_map_by_index "libfwevt_provider_t *provider" "int map_index" "libfwevt_map_t **map" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_map_by_index
+.Fa "libfwevt_provider_t *provider"
+.Fa "int map_index"
+.Fa "libfwevt_map_t **map"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_number_of_opcodes "libfwevt_provider_t *provider" "int *number_of_opcodes" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_number_of_opcodes
+.Fa "libfwevt_provider_t *provider"
+.Fa "int *number_of_opcodes"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_opcode_by_index "libfwevt_provider_t *provider" "int opcode_index" "libfwevt_opcode_t **opcode" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_opcode_by_index
+.Fa "libfwevt_provider_t *provider"
+.Fa "int opcode_index"
+.Fa "libfwevt_opcode_t **opcode"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_number_of_tasks "libfwevt_provider_t *provider" "int *number_of_tasks" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_number_of_tasks
+.Fa "libfwevt_provider_t *provider"
+.Fa "int *number_of_tasks"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_task_by_index "libfwevt_provider_t *provider" "int task_index" "libfwevt_task_t **task" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_task_by_index
+.Fa "libfwevt_provider_t *provider"
+.Fa "int task_index"
+.Fa "libfwevt_task_t **task"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_number_of_templates "libfwevt_provider_t *provider" "int *number_of_templates" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_number_of_templates
+.Fa "libfwevt_provider_t *provider"
+.Fa "int *number_of_templates"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_template_by_index "libfwevt_provider_t *provider" "int template_index" "libfwevt_template_t **wevt_template" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_template_by_index
+.Fa "libfwevt_provider_t *provider"
+.Fa "int template_index"
+.Fa "libfwevt_template_t **wevt_template"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_provider_get_template_by_offset "libfwevt_provider_t *provider" "uint32_t offset" "libfwevt_template_t **wevt_template" "libfwevt_error_t **error"
+.Fo libfwevt_provider_get_template_by_offset
+.Fa "libfwevt_provider_t *provider"
+.Fa "uint32_t offset"
+.Fa "libfwevt_template_t **wevt_template"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Task functions
+.nf
 .Ft int
-.Fn libfwevt_task_free "libfwevt_task_t **task" "libfwevt_error_t **error"
+.Fo libfwevt_task_free
+.Fa "libfwevt_task_t **task"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Template functions
+.nf
 .Ft int
-.Fn libfwevt_template_initialize "libfwevt_template_t **wevt_template" "libfwevt_error_t **error"
+.Fo libfwevt_template_initialize
+.Fa "libfwevt_template_t **wevt_template"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_free "libfwevt_template_t **wevt_template" "libfwevt_error_t **error"
+.Fo libfwevt_template_free
+.Fa "libfwevt_template_t **wevt_template"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_read "libfwevt_template_t *wevt_template" "const uint8_t *data" "size_t data_size" "size_t data_offset" "libfwevt_error_t **error"
+.Fo libfwevt_template_read
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "const uint8_t *data"
+.Fa "size_t data_size"
+.Fa "size_t data_offset"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_read_xml_document "libfwevt_template_t *wevt_template" "libfwevt_xml_document_t *xml_document" "libfwevt_error_t **error"
+.Fo libfwevt_template_read_xml_document
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "libfwevt_xml_document_t *xml_document"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_set_ascii_codepage "libfwevt_template_t *wevt_template" "int ascii_codepage" "libfwevt_error_t **error"
+.Fo libfwevt_template_set_ascii_codepage
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "int ascii_codepage"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_set_data "libfwevt_template_t *wevt_template" "const uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
+.Fo libfwevt_template_set_data
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "const uint8_t *data"
+.Fa "size_t data_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_get_offset "libfwevt_template_t *wevt_template" "uint32_t *offset" "libfwevt_error_t **error"
+.Fo libfwevt_template_get_offset
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "uint32_t *offset"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_set_offset "libfwevt_template_t *wevt_template" "uint32_t offset" "libfwevt_error_t **error"
+.Fo libfwevt_template_set_offset
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "uint32_t offset"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_get_size "libfwevt_template_t *wevt_template" "uint32_t *size" "libfwevt_error_t **error"
+.Fo libfwevt_template_get_size
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "uint32_t *size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_get_identifier "libfwevt_template_t *wevt_template" "uint8_t *guid_data" "size_t guid_data_size" "libfwevt_error_t **error"
+.Fo libfwevt_template_get_identifier
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "uint8_t *guid_data"
+.Fa "size_t guid_data_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_get_number_of_items "libfwevt_template_t *wevt_template" "int *number_of_items" "libfwevt_error_t **error"
+.Fo libfwevt_template_get_number_of_items
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "int *number_of_items"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_get_item_by_index "libfwevt_template_t *wevt_template" "int item_index" "libfwevt_template_item_t **item" "libfwevt_error_t **error"
+.Fo libfwevt_template_get_item_by_index
+.Fa "libfwevt_template_t *wevt_template"
+.Fa "int item_index"
+.Fa "libfwevt_template_item_t **item"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 Template item functions
+.nf
 .Ft int
-.Fn libfwevt_template_item_free "libfwevt_template_item_t **template_item" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_free
+.Fa "libfwevt_template_item_t **template_item"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_item_get_input_data_type "libfwevt_template_item_t *template_item" "uint8_t *input_data_type" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_get_input_data_type
+.Fa "libfwevt_template_item_t *template_item"
+.Fa "uint8_t *input_data_type"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_item_get_output_data_type "libfwevt_template_item_t *template_item" "uint8_t *output_data_type" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_get_output_data_type
+.Fa "libfwevt_template_item_t *template_item"
+.Fa "uint8_t *output_data_type"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_item_get_number_of_values "libfwevt_template_item_t *template_item" "uint16_t *number_of_values" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_get_number_of_values
+.Fa "libfwevt_template_item_t *template_item"
+.Fa "uint16_t *number_of_values"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_item_get_value_data_size "libfwevt_template_item_t *template_item" "uint16_t *value_data_size" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_get_value_data_size
+.Fa "libfwevt_template_item_t *template_item"
+.Fa "uint16_t *value_data_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_item_get_utf8_name_size "libfwevt_template_item_t *template_item" "size_t *utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_get_utf8_name_size
+.Fa "libfwevt_template_item_t *template_item"
+.Fa "size_t *utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_item_get_utf8_name "libfwevt_template_item_t *template_item" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_get_utf8_name
+.Fa "libfwevt_template_item_t *template_item"
+.Fa "uint8_t *utf8_string"
+.Fa "size_t utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_item_get_utf16_name_size "libfwevt_template_item_t *template_item" "size_t *utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_get_utf16_name_size
+.Fa "libfwevt_template_item_t *template_item"
+.Fa "size_t *utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_template_item_get_utf16_name "libfwevt_template_item_t *template_item" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_template_item_get_utf16_name
+.Fa "libfwevt_template_item_t *template_item"
+.Fa "uint16_t *utf16_string"
+.Fa "size_t utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 XML document functions
+.nf
 .Ft int
-.Fn libfwevt_xml_document_initialize "libfwevt_xml_document_t **xml_document" "libfwevt_error_t **error"
+.Fo libfwevt_xml_document_initialize
+.Fa "libfwevt_xml_document_t **xml_document"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_document_free "libfwevt_xml_document_t **xml_document" "libfwevt_error_t **error"
+.Fo libfwevt_xml_document_free
+.Fa "libfwevt_xml_document_t **xml_document"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_document_get_root_xml_tag "libfwevt_xml_document_t *xml_document" "libfwevt_xml_tag_t **root_xml_tag" "libfwevt_error_t **error"
+.Fo libfwevt_xml_document_get_root_xml_tag
+.Fa "libfwevt_xml_document_t *xml_document"
+.Fa "libfwevt_xml_tag_t **root_xml_tag"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_document_read "libfwevt_xml_document_t *xml_document" "const uint8_t *binary_data" "size_t binary_data_size" "size_t binary_data_offset" "int ascii_codepage" "uint8_t flags" "libfwevt_error_t **error"
+.Fo libfwevt_xml_document_read
+.Fa "libfwevt_xml_document_t *xml_document"
+.Fa "const uint8_t *binary_data"
+.Fa "size_t binary_data_size"
+.Fa "size_t binary_data_offset"
+.Fa "int ascii_codepage"
+.Fa "uint8_t flags"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_document_get_utf8_xml_string_size "libfwevt_xml_document_t *xml_document" "size_t *utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_document_get_utf8_xml_string_size
+.Fa "libfwevt_xml_document_t *xml_document"
+.Fa "size_t *utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_document_get_utf8_xml_string "libfwevt_xml_document_t *xml_document" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_document_get_utf8_xml_string
+.Fa "libfwevt_xml_document_t *xml_document"
+.Fa "uint8_t *utf8_string"
+.Fa "size_t utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_document_get_utf16_xml_string_size "libfwevt_xml_document_t *xml_document" "size_t *utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_document_get_utf16_xml_string_size
+.Fa "libfwevt_xml_document_t *xml_document"
+.Fa "size_t *utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_document_get_utf16_xml_string "libfwevt_xml_document_t *xml_document" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_document_get_utf16_xml_string
+.Fa "libfwevt_xml_document_t *xml_document"
+.Fa "uint16_t *utf16_string"
+.Fa "size_t utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 XML tag functions
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_free "libfwevt_xml_tag_t **xml_tag" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_free
+.Fa "libfwevt_xml_tag_t **xml_tag"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_utf8_name_size "libfwevt_xml_tag_t *xml_tag" "size_t *utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_utf8_name_size
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "size_t *utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_utf8_name "libfwevt_xml_tag_t *xml_tag" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_utf8_name
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "uint8_t *utf8_string"
+.Fa "size_t utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_utf16_name_size "libfwevt_xml_tag_t *xml_tag" "size_t *utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_utf16_name_size
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "size_t *utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_utf16_name "libfwevt_xml_tag_t *xml_tag" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_utf16_name
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "uint16_t *utf16_string"
+.Fa "size_t utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_value "libfwevt_xml_tag_t *xml_tag" "libfwevt_xml_value_t **xml_value" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_value
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "libfwevt_xml_value_t **xml_value"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_number_of_attributes "libfwevt_xml_tag_t *xml_tag" "int *number_of_attributes" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_number_of_attributes
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "int *number_of_attributes"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_attribute_by_index "libfwevt_xml_tag_t *xml_tag" "int attribute_index" "libfwevt_xml_tag_t **attribute_xml_tag" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_attribute_by_index
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "int attribute_index"
+.Fa "libfwevt_xml_tag_t **attribute_xml_tag"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_attribute_by_utf8_name "libfwevt_xml_tag_t *xml_tag" "const uint8_t *utf8_string" "size_t utf8_string_length" "libfwevt_xml_tag_t **attribute_xml_tag" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_attribute_by_utf8_name
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "const uint8_t *utf8_string"
+.Fa "size_t utf8_string_length"
+.Fa "libfwevt_xml_tag_t **attribute_xml_tag"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_attribute_by_utf16_name "libfwevt_xml_tag_t *xml_tag" "const uint16_t *utf16_string" "size_t utf16_string_length" "libfwevt_xml_tag_t **attribute_xml_tag" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_attribute_by_utf16_name
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "const uint16_t *utf16_string"
+.Fa "size_t utf16_string_length"
+.Fa "libfwevt_xml_tag_t **attribute_xml_tag"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_number_of_elements "libfwevt_xml_tag_t *xml_tag" "int *number_of_elements" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_number_of_elements
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "int *number_of_elements"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_element_by_index "libfwevt_xml_tag_t *xml_tag" "int element_index" "libfwevt_xml_tag_t **element_xml_tag" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_element_by_index
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "int element_index"
+.Fa "libfwevt_xml_tag_t **element_xml_tag"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_element_by_utf8_name "libfwevt_xml_tag_t *xml_tag" "const uint8_t *utf8_string" "size_t utf8_string_length" "libfwevt_xml_tag_t **element_xml_tag" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_element_by_utf8_name
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "const uint8_t *utf8_string"
+.Fa "size_t utf8_string_length"
+.Fa "libfwevt_xml_tag_t **element_xml_tag"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_element_by_utf16_name "libfwevt_xml_tag_t *xml_tag" "const uint16_t *utf16_string" "size_t utf16_string_length" "libfwevt_xml_tag_t **element_xml_tag" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_element_by_utf16_name
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "const uint16_t *utf16_string"
+.Fa "size_t utf16_string_length"
+.Fa "libfwevt_xml_tag_t **element_xml_tag"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_tag_get_flags "libfwevt_xml_tag_t *xml_tag" "uint8_t *flags" "libfwevt_error_t **error"
+.Fo libfwevt_xml_tag_get_flags
+.Fa "libfwevt_xml_tag_t *xml_tag"
+.Fa "uint8_t *flags"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Pp
 XML value functions
+.nf
 .Ft int
-.Fn libfwevt_xml_value_free "libfwevt_xml_value_t **xml_value" "libfwevt_error_t **error"
+.Fo libfwevt_xml_value_free
+.Fa "libfwevt_xml_value_t **xml_value"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_value_get_data_size "libfwevt_xml_value_t *xml_value" "size_t *data_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_value_get_data_size
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "size_t *data_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_value_copy_data "libfwevt_xml_value_t *xml_value" "uint8_t *data" "size_t data_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_value_copy_data
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "uint8_t *data"
+.Fa "size_t data_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_value_get_data_as_8bit_integer "libfwevt_xml_value_t *xml_value" "uint8_t *value_8bit" "libfwevt_error_t **error"
+.Fo libfwevt_value_get_data_as_8bit_integer
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "uint8_t *value_8bit"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_value_get_data_as_32bit_integer "libfwevt_xml_value_t *xml_value" "uint32_t *value_32bit" "libfwevt_error_t **error"
+.Fo libfwevt_value_get_data_as_32bit_integer
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "uint32_t *value_32bit"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_value_get_data_as_64bit_integer "libfwevt_xml_value_t *xml_value" "uint64_t *value_64bit" "libfwevt_error_t **error"
+.Fo libfwevt_value_get_data_as_64bit_integer
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "uint64_t *value_64bit"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_value_get_data_as_filetime "libfwevt_xml_value_t *xml_value" "uint64_t *filetime" "libfwevt_error_t **error"
+.Fo libfwevt_value_get_data_as_filetime
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "uint64_t *filetime"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_value_get_data_as_utf8_string_size "libfwevt_xml_value_t *xml_value" "size_t *utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_value_get_data_as_utf8_string_size
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "size_t *utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_value_get_data_as_utf8_string "libfwevt_xml_value_t *xml_value" "uint8_t *utf8_string" "size_t utf8_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_value_get_data_as_utf8_string
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "uint8_t *utf8_string"
+.Fa "size_t utf8_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_value_get_data_as_utf16_string_size "libfwevt_xml_value_t *xml_value" "size_t *utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_value_get_data_as_utf16_string_size
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "size_t *utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
+.nf
 .Ft int
-.Fn libfwevt_xml_value_get_data_as_utf16_string "libfwevt_xml_value_t *xml_value" "uint16_t *utf16_string" "size_t utf16_string_size" "libfwevt_error_t **error"
+.Fo libfwevt_xml_value_get_data_as_utf16_string
+.Fa "libfwevt_xml_value_t *xml_value"
+.Fa "uint16_t *utf16_string"
+.Fa "size_t utf16_string_size"
+.Fa "libfwevt_error_t **error"
+.Fc
+.fi
 .Sh DESCRIPTION
 The
 .Fn libfwevt_get_version
 function is used to retrieve the library version.
 .Sh RETURN VALUES
-Most of the functions return NULL or \-1 on error, dependent on the return type.
-For the actual return values see "libfwevt.h".
+Most of the functions return NULL or \-1 on error, dependent on the return \
+type.
+For the actual return values see
+.In libfwevt.h .
 .Sh ENVIRONMENT
 None
 .Sh FILES
 None
+.Sh SEE ALSO
+.In libfwevt.h
+.Sh AUTHORS
+.An Joachim Metz <joachim.metz@gmail.com>
 .Sh BUGS
-Please report bugs of any kind on the project issue tracker: https://github.com/libyal/libfwevt/issues
-.Sh AUTHOR
-These man pages are generated from "libfwevt.h".
+Please report bugs of any kind on the project issue tracker: \
+https://github.com/libyal/libfwevt/issues
 .Sh COPYRIGHT
 Copyright (C) 2011-2026, Joachim Metz <joachim.metz@gmail.com>.
 .sp
 This is free software; see the source for copying conditions.
-There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-.Sh SEE ALSO
-the libfwevt.h include file
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A \
+PARTICULAR PURPOSE.

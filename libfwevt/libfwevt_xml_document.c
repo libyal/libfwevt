@@ -3377,7 +3377,7 @@ int libfwevt_xml_document_read_fragment_header(
 
 /* TODO check values */
 	xml_token->size = 4;
-	
+
 	return( 1 );
 }
 
@@ -5808,7 +5808,7 @@ int libfwevt_xml_document_read_value(
 	}
 #endif
 	xml_token->size += value_data_size;
-	
+
 	return( 1 );
 }
 
@@ -6348,7 +6348,7 @@ int libfwevt_xml_document_substitute_template_value(
 
 						goto on_error;
 					}
-					while( template_value_data_offset < template_value_data_size ) 
+					while( template_value_data_offset < template_value_data_size )
 					{
 						if( template_value_data[ template_value_data_offset ] == 0 )
 						{
@@ -6374,7 +6374,7 @@ int libfwevt_xml_document_substitute_template_value(
 
 						goto on_error;
 					}
-					while( template_value_data_offset < template_value_data_size ) 
+					while( template_value_data_offset < template_value_data_size )
 					{
 						if( ( template_value_data[ template_value_data_offset ] == 0 )
 						 && ( template_value_data[ template_value_data_offset + 1 ] == 0 ) )
