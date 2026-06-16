@@ -133,6 +133,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
      libfwevt_data_segment_t *data_segment,
      size_t *utf8_string_size,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
@@ -143,12 +144,14 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
      size_t utf8_string_size,
      size_t *utf8_string_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_internal_xml_value_get_data_as_utf8_string_size(
      libfwevt_internal_xml_value_t *internal_xml_value,
      size_t *utf8_string_size,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
@@ -157,6 +160,7 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
      size_t utf8_string_size,
      size_t *utf8_string_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
@@ -191,6 +195,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
      libfwevt_data_segment_t *data_segment,
      size_t *utf16_string_size,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
@@ -201,12 +206,14 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
      size_t utf16_string_size,
      size_t *utf16_string_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_internal_xml_value_get_data_as_utf16_string_size(
      libfwevt_internal_xml_value_t *internal_xml_value,
      size_t *utf16_string_size,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
@@ -215,6 +222,7 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
      size_t utf16_string_size,
      size_t *utf16_string_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 LIBFWEVT_EXTERN \
@@ -248,12 +256,14 @@ int libfwevt_xml_value_get_data_as_utf16_string(
 int libfwevt_xml_value_debug_print(
      libfwevt_xml_value_t *xml_value,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_value_debug_print_data_segment(
      libfwevt_xml_value_t *xml_value,
      int data_segment_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */

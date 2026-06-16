@@ -2860,6 +2860,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_size(
 	          xml_tag,
 	          0,
 	          &utf8_xml_string_size,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2882,6 +2883,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_size(
 	          NULL,
 	          0,
 	          &utf8_xml_string_size,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2900,6 +2902,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_size(
 	          xml_tag,
 	          0,
 	          NULL,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2949,6 +2952,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_with_index(
 	          utf8_string,
 	          32,
 	          &utf8_string_index,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -2985,6 +2989,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_with_index(
 	          utf8_string,
 	          32,
 	          &utf8_string_index,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3005,6 +3010,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_with_index(
 	          NULL,
 	          32,
 	          &utf8_string_index,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3025,6 +3031,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_with_index(
 	          utf8_string,
 	          (size_t) SSIZE_MAX + 1,
 	          &utf8_string_index,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3045,6 +3052,7 @@ int fwevt_test_xml_tag_get_utf8_xml_string_with_index(
 	          utf8_string,
 	          32,
 	          NULL,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3086,6 +3094,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_size(
 	          xml_tag,
 	          0,
 	          &utf16_xml_string_size,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3108,6 +3117,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_size(
 	          NULL,
 	          0,
 	          &utf16_xml_string_size,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3126,6 +3136,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_size(
 	          xml_tag,
 	          0,
 	          NULL,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3175,6 +3186,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_with_index(
 	          utf16_string,
 	          32,
 	          &utf16_string_index,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3211,6 +3223,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_with_index(
 	          utf16_string,
 	          32,
 	          &utf16_string_index,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3231,6 +3244,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_with_index(
 	          NULL,
 	          32,
 	          &utf16_string_index,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3251,6 +3265,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_with_index(
 	          utf16_string,
 	          (size_t) SSIZE_MAX + 1,
 	          &utf16_string_index,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -3271,6 +3286,7 @@ int fwevt_test_xml_tag_get_utf16_xml_string_with_index(
 	          utf16_string,
 	          32,
 	          NULL,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(

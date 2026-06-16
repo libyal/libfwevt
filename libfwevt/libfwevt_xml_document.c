@@ -32,7 +32,9 @@
 #include "libfwevt_libcerror.h"
 #include "libfwevt_libcnotify.h"
 #include "libfwevt_libfguid.h"
+#include "libfwevt_libuna.h"
 #include "libfwevt_types.h"
+#include "libfwevt_unused.h"
 #include "libfwevt_xml_document.h"
 #include "libfwevt_xml_template_value.h"
 #include "libfwevt_xml_tag.h"
@@ -813,6 +815,7 @@ int libfwevt_xml_document_read_attribute(
 				     binary_data_size,
 				     binary_data_offset + xml_document_data_offset,
 				     attribute_xml_tag,
+				     ascii_codepage,
 				     error ) != 1 )
 				{
 					libcerror_error_set(
@@ -978,12 +981,15 @@ int libfwevt_xml_document_read_cdata_section(
      size_t binary_data_size,
      size_t binary_data_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage LIBFWEVT_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	const uint8_t *xml_document_data = NULL;
 	static char *function            = "libfwevt_xml_document_read_cdata_section";
 	size_t value_data_size           = 0;
 	size_t xml_document_data_size    = 0;
+
+	LIBFWEVT_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( internal_xml_document == NULL )
 	{
@@ -1196,6 +1202,7 @@ int libfwevt_xml_document_read_cdata_section(
 		     xml_tag,
 		     0,
 		     0,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -1208,7 +1215,8 @@ int libfwevt_xml_document_read_cdata_section(
 			return( -1 );
 		}
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	xml_token->size += value_data_size;
 
 	return( 1 );
@@ -1224,6 +1232,7 @@ int libfwevt_xml_document_read_character_reference(
      size_t binary_data_size,
      size_t binary_data_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage LIBFWEVT_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	libfwevt_xml_tag_t *character_xml_tag     = NULL;
@@ -1238,6 +1247,8 @@ int libfwevt_xml_document_read_character_reference(
 	size_t xml_document_data_size             = 0;
 	uint16_t character_value                  = 0;
 	int data_segment_index                    = 0;
+
+	LIBFWEVT_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( internal_xml_document == NULL )
 	{
@@ -1521,6 +1532,7 @@ int libfwevt_xml_document_read_character_reference(
 		     xml_tag,
 		     data_segment_index,
 		     0,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -1534,7 +1546,8 @@ int libfwevt_xml_document_read_character_reference(
 			goto on_error;
 		}
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( libfwevt_internal_xml_tag_free(
 	     (libfwevt_internal_xml_tag_t **) &character_xml_tag,
 	     error ) != 1 )
@@ -2215,6 +2228,7 @@ int libfwevt_xml_document_read_element(
 						     binary_data_size,
 						     binary_data_offset + xml_document_data_offset,
 						     element_xml_tag,
+						     ascii_codepage,
 						     error ) != 1 )
 						{
 							libcerror_error_set(
@@ -2248,6 +2262,7 @@ int libfwevt_xml_document_read_element(
 						     binary_data_offset + xml_document_data_offset,
 						     flags,
 						     element_xml_tag,
+						     ascii_codepage,
 						     error ) != 1 )
 						{
 							libcerror_error_set(
@@ -2280,6 +2295,7 @@ int libfwevt_xml_document_read_element(
 						     binary_data_size,
 						     binary_data_offset + xml_document_data_offset,
 						     element_xml_tag,
+						     ascii_codepage,
 						     error ) != 1 )
 						{
 							libcerror_error_set(
@@ -2313,6 +2329,7 @@ int libfwevt_xml_document_read_element(
 						     binary_data_offset + xml_document_data_offset,
 						     flags,
 						     element_xml_tag,
+						     ascii_codepage,
 						     error ) != 1 )
 						{
 							libcerror_error_set(
@@ -2345,6 +2362,7 @@ int libfwevt_xml_document_read_element(
 						     binary_data_size,
 						     binary_data_offset + xml_document_data_offset,
 						     element_xml_tag,
+						     ascii_codepage,
 						     error ) != 1 )
 						{
 							libcerror_error_set(
@@ -2556,6 +2574,7 @@ int libfwevt_xml_document_read_entity_reference(
      size_t binary_data_offset,
      uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage LIBFWEVT_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	libfwevt_xml_tag_t *entity_xml_tag = NULL;
@@ -2572,6 +2591,8 @@ int libfwevt_xml_document_read_entity_reference(
 	uint32_t entity_name_size          = 0;
 	uint8_t entity_name_match          = 0;
 	int data_segment_index             = 0;
+
+	LIBFWEVT_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( internal_xml_document == NULL )
 	{
@@ -2997,6 +3018,7 @@ int libfwevt_xml_document_read_entity_reference(
 		     xml_tag,
 		     data_segment_index,
 		     0,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -4009,12 +4031,15 @@ int libfwevt_xml_document_read_pi_data(
      size_t binary_data_size,
      size_t binary_data_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage LIBFWEVT_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	const uint8_t *xml_document_data = NULL;
 	static char *function            = "libfwevt_xml_document_read_pi_data";
 	size_t value_data_size           = 0;
 	size_t xml_document_data_size    = 0;
+
+	LIBFWEVT_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( internal_xml_document == NULL )
 	{
@@ -4213,6 +4238,7 @@ int libfwevt_xml_document_read_pi_data(
 		     xml_tag,
 		     0,
 		     0,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -4225,7 +4251,8 @@ int libfwevt_xml_document_read_pi_data(
 			return( -1 );
 		}
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	xml_token->size += value_data_size;
 
 	return( 1 );
@@ -4242,6 +4269,7 @@ int libfwevt_xml_document_read_pi_target(
      size_t binary_data_offset,
      uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	libfwevt_xml_tag_t *pi_xml_tag      = NULL;
@@ -4554,6 +4582,7 @@ int libfwevt_xml_document_read_pi_target(
 	     binary_data_size,
 	     binary_data_offset + xml_document_data_offset,
 	     pi_xml_tag,
+	     ascii_codepage,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -5555,6 +5584,7 @@ int libfwevt_xml_document_read_value(
      size_t binary_data_size,
      size_t binary_data_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage LIBFWEVT_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	const uint8_t *xml_document_data = NULL;
@@ -5563,6 +5593,8 @@ int libfwevt_xml_document_read_value(
 	size_t xml_document_data_size    = 0;
 	uint8_t value_type               = 0;
 	int data_segment_index           = 0;
+
+	LIBFWEVT_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( internal_xml_document == NULL )
 	{
@@ -5793,6 +5825,7 @@ int libfwevt_xml_document_read_value(
 		     xml_tag,
 		     data_segment_index,
 		     0,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -5806,7 +5839,8 @@ int libfwevt_xml_document_read_value(
 			return( -1 );
 		}
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	xml_token->size += value_data_size;
 
 	return( 1 );
@@ -6493,6 +6527,7 @@ int libfwevt_xml_document_substitute_template_value(
 			     xml_tag,
 			     0,
 			     0,
+			     ascii_codepage,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -6545,10 +6580,12 @@ int libfwevt_xml_document_get_utf8_xml_string_size(
 	}
 	internal_xml_document = (libfwevt_internal_xml_document_t *) xml_document;
 
+/* TODO pass codepage */
 	if( libfwevt_xml_tag_get_utf8_xml_string_size(
 	     internal_xml_document->root_xml_tag,
 	     0,
 	     utf8_string_size,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -6589,12 +6626,14 @@ int libfwevt_xml_document_get_utf8_xml_string(
 	}
 	internal_xml_document = (libfwevt_internal_xml_document_t *) xml_document;
 
+/* TODO pass codepage */
 	if( libfwevt_xml_tag_get_utf8_xml_string_with_index(
 	     internal_xml_document->root_xml_tag,
 	     0,
 	     utf8_string,
 	     utf8_string_size,
 	     &utf8_string_index,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -6633,10 +6672,12 @@ int libfwevt_xml_document_get_utf16_xml_string_size(
 	}
 	internal_xml_document = (libfwevt_internal_xml_document_t *) xml_document;
 
+/* TODO pass codepage */
 	if( libfwevt_xml_tag_get_utf16_xml_string_size(
 	     internal_xml_document->root_xml_tag,
 	     0,
 	     utf16_string_size,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -6677,12 +6718,14 @@ int libfwevt_xml_document_get_utf16_xml_string(
 	}
 	internal_xml_document = (libfwevt_internal_xml_document_t *) xml_document;
 
+/* TODO pass codepage */
 	if( libfwevt_xml_tag_get_utf16_xml_string_with_index(
 	     internal_xml_document->root_xml_tag,
 	     0,
 	     utf16_string,
 	     utf16_string_size,
 	     &utf16_string_index,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -6722,9 +6765,11 @@ int libfwevt_xml_document_debug_print(
 	}
 	internal_xml_document = (libfwevt_internal_xml_document_t *) xml_document;
 
+/* TODO pass codepage */
 	if( libfwevt_xml_tag_debug_print(
 	     internal_xml_document->root_xml_tag,
 	     0,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

@@ -1272,6 +1272,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
      libfwevt_data_segment_t *data_segment,
      size_t *utf8_string_size,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	static char *function        = "libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size";
@@ -1347,11 +1348,10 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
 			}
 			else
 			{
-/* TODO pass codepage */
 				result = libuna_utf8_string_size_from_byte_stream(
 				          data_segment->data,
 				          data_segment->data_size,
-				          LIBUNA_CODEPAGE_WINDOWS_1252,
+				          ascii_codepage,
 				          &safe_utf8_string_size,
 				          error );
 			}
@@ -1494,6 +1494,21 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
 			result = 1;
 			break;
 
+		case LIBFWEVT_VALUE_TYPE_SIZE:
+			if( data_segment->data_size == 4 )
+			{
+				safe_utf8_string_size = 11;
+
+				result = 1;
+			}
+			else if( data_segment->data_size == 8 )
+			{
+				safe_utf8_string_size = 19;
+
+				result = 1;
+			}
+			break;
+
 		default:
 			break;
 	}
@@ -1525,6 +1540,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
      size_t utf8_string_size,
      size_t *utf8_string_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	static char *function         = "libfwevt_internal_xml_value_get_data_segment_as_utf8_string";
@@ -1621,14 +1637,13 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_STRING_BYTE_STREAM:
-/* TODO pass codepage */
 			result = libuna_utf8_string_with_index_copy_from_byte_stream(
 			          utf8_string,
 			          utf8_string_size,
 			          utf8_string_index,
 			          data_segment->data,
 			          data_segment->data_size,
-			          LIBUNA_CODEPAGE_WINDOWS_1252,
+			          ascii_codepage,
 			          error );
 /* TODO add support for escape_characters */
 			break;
@@ -1828,6 +1843,29 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 			          error );
 			break;
 
+		case LIBFWEVT_VALUE_TYPE_SIZE:
+			if( data_segment->data_size == 4 )
+			{
+				result = libfwevt_integer_as_hexadecimal_copy_to_utf8_string_with_index(
+				          data_segment->value_64bit,
+				          32,
+				          utf8_string,
+				          utf8_string_size,
+				          utf8_string_index,
+				          error );
+			}
+			else if( data_segment->data_size == 8 )
+			{
+				result = libfwevt_integer_as_hexadecimal_copy_to_utf8_string_with_index(
+				          data_segment->value_64bit,
+				          64,
+				          utf8_string,
+				          utf8_string_size,
+				          utf8_string_index,
+				          error );
+			}
+			break;
+
 		default:
 			break;
 	}
@@ -1854,6 +1892,7 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_size(
      libfwevt_internal_xml_value_t *internal_xml_value,
      size_t *utf8_string_size,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment = NULL;
@@ -1925,6 +1964,7 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_size(
 		     data_segment,
 		     &data_segment_size,
 		     escape_characters,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -1974,6 +2014,7 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
      size_t utf8_string_size,
      size_t *utf8_string_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment = NULL;
@@ -2070,6 +2111,7 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
 		     utf8_string_size,
 		     &safe_utf8_string_index,
 		     escape_characters,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -2142,6 +2184,7 @@ int libfwevt_xml_value_get_utf8_string_size(
 	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf8_string_size,
 	     0,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -2207,10 +2250,12 @@ int libfwevt_xml_value_get_data_as_utf8_string_size(
 
 		return( -1 );
 	}
+/* TODO pass codepage */
 	if( libfwevt_internal_xml_value_get_data_as_utf8_string_size(
 	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf8_string_size,
 	     0,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -2249,12 +2294,14 @@ int libfwevt_xml_value_get_data_as_utf8_string(
 
 		return( -1 );
 	}
+/* TODO pass codepage */
 	if( libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
 	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf8_string,
 	     utf8_string_size,
 	     &utf8_string_index,
 	     0,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -2279,6 +2326,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
      libfwevt_data_segment_t *data_segment,
      size_t *utf16_string_size,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	static char *function         = "libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size";
@@ -2354,11 +2402,10 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
 			}
 			else
 			{
-/* TODO pass codepage */
 				result = libuna_utf16_string_size_from_byte_stream(
 				          data_segment->data,
 				          data_segment->data_size,
-				          LIBUNA_CODEPAGE_WINDOWS_1252,
+				          ascii_codepage,
 				          &safe_utf16_string_size,
 				          error );
 			}
@@ -2506,6 +2553,21 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string_size(
 			result = 1;
 			break;
 
+		case LIBFWEVT_VALUE_TYPE_SIZE:
+			if( data_segment->data_size == 4 )
+			{
+				safe_utf16_string_size = 11;
+
+				result = 1;
+			}
+			else if( data_segment->data_size == 8 )
+			{
+				safe_utf16_string_size = 19;
+
+				result = 1;
+			}
+			break;
+
 		default:
 			break;
 	}
@@ -2537,6 +2599,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
      size_t utf16_string_size,
      size_t *utf16_string_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	static char *function          = "libfwevt_internal_xml_value_get_data_segment_as_utf16_string";
@@ -2649,14 +2712,13 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_STRING_BYTE_STREAM:
-/* TODO pass codepage */
 			result = libuna_utf16_string_with_index_copy_from_byte_stream(
 			          utf16_string,
 			          utf16_string_size,
 			          utf16_string_index,
 			          data_segment->data,
 			          data_segment->data_size,
-			          LIBUNA_CODEPAGE_WINDOWS_1252,
+			          ascii_codepage,
 			          error );
 /* TODO add support for escape_characters */
 			break;
@@ -2862,6 +2924,29 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
 			          error );
 			break;
 
+		case LIBFWEVT_VALUE_TYPE_SIZE:
+			if( data_segment->data_size == 4 )
+			{
+				result = libfwevt_integer_as_hexadecimal_copy_to_utf16_string_with_index(
+				          data_segment->value_64bit,
+				          32,
+				          utf16_string,
+				          utf16_string_size,
+				          utf16_string_index,
+				          error );
+			}
+			else if( data_segment->data_size == 8 )
+			{
+				result = libfwevt_integer_as_hexadecimal_copy_to_utf16_string_with_index(
+				          data_segment->value_64bit,
+				          64,
+				          utf16_string,
+				          utf16_string_size,
+				          utf16_string_index,
+				          error );
+			}
+			break;
+
 		default:
 			break;
 	}
@@ -2888,6 +2973,7 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_size(
      libfwevt_internal_xml_value_t *internal_xml_value,
      size_t *utf16_string_size,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment = NULL;
@@ -2959,6 +3045,7 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_size(
 		     data_segment,
 		     &data_segment_size,
 		     escape_characters,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -3008,6 +3095,7 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
      size_t utf16_string_size,
      size_t *utf16_string_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment = NULL;
@@ -3104,6 +3192,7 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
 		     utf16_string_size,
 		     &safe_utf16_string_index,
 		     escape_characters,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -3176,6 +3265,7 @@ int libfwevt_xml_value_get_utf16_string_size(
 	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf16_string_size,
 	     0,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3241,10 +3331,12 @@ int libfwevt_xml_value_get_data_as_utf16_string_size(
 
 		return( -1 );
 	}
+/* TODO pass codepage */
 	if( libfwevt_internal_xml_value_get_data_as_utf16_string_size(
 	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf16_string_size,
 	     0,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3283,12 +3375,14 @@ int libfwevt_xml_value_get_data_as_utf16_string(
 
 		return( -1 );
 	}
+/* TODO pass codepage */
 	if( libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
 	     (libfwevt_internal_xml_value_t *) xml_value,
 	     utf16_string,
 	     utf16_string_size,
 	     &utf16_string_index,
 	     0,
+	     LIBUNA_CODEPAGE_WINDOWS_1252,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -3311,6 +3405,7 @@ int libfwevt_xml_value_get_data_as_utf16_string(
 int libfwevt_xml_value_debug_print(
      libfwevt_xml_value_t *xml_value,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	system_character_t *value_string                  = NULL;
@@ -3338,12 +3433,14 @@ int libfwevt_xml_value_debug_print(
 		  internal_xml_value,
 		  &value_string_size,
 		  escape_characters,
+	          ascii_codepage,
 		  error );
 #else
 	result = libfwevt_internal_xml_value_get_data_as_utf8_string_size(
 		  internal_xml_value,
 		  &value_string_size,
 		  escape_characters,
+	          ascii_codepage,
 		  error );
 #endif
 	if( result != 1 )
@@ -3391,6 +3488,7 @@ int libfwevt_xml_value_debug_print(
 			  value_string_size,
 			  &value_string_index,
 			  escape_characters,
+		          ascii_codepage,
 			  error );
 #else
 		result = libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
@@ -3399,6 +3497,7 @@ int libfwevt_xml_value_debug_print(
 			  value_string_size,
 			  &value_string_index,
 			  escape_characters,
+		          ascii_codepage,
 			  error );
 #endif
 		if( result != 1 )
@@ -3437,6 +3536,7 @@ int libfwevt_xml_value_debug_print_data_segment(
      libfwevt_xml_value_t *xml_value,
      int data_segment_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	libfwevt_data_segment_t *data_segment             = NULL;
@@ -3483,6 +3583,7 @@ int libfwevt_xml_value_debug_print_data_segment(
 	          data_segment,
 		  &value_string_size,
 		  escape_characters,
+		  ascii_codepage,
 		  error );
 #else
 	result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
@@ -3491,6 +3592,7 @@ int libfwevt_xml_value_debug_print_data_segment(
 	          data_segment,
 		  &value_string_size,
 		  escape_characters,
+		  ascii_codepage,
 		  error );
 #endif
 	if( result != 1 )
@@ -3541,6 +3643,7 @@ int libfwevt_xml_value_debug_print_data_segment(
 			  value_string_size,
 			  &value_string_index,
 		          escape_characters,
+		          ascii_codepage,
 			  error );
 #else
 		result = libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
@@ -3551,6 +3654,7 @@ int libfwevt_xml_value_debug_print_data_segment(
 			  value_string_size,
 			  &value_string_index,
 		          escape_characters,
+		          ascii_codepage,
 			  error );
 #endif
 		if( result != 1 )

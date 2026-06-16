@@ -106,6 +106,7 @@ int libfwevt_xml_document_read_cdata_section(
      size_t binary_data_size,
      size_t binary_data_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_document_read_character_reference(
@@ -115,6 +116,7 @@ int libfwevt_xml_document_read_character_reference(
      size_t binary_data_size,
      size_t binary_data_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_document_read_element(
@@ -139,6 +141,7 @@ int libfwevt_xml_document_read_entity_reference(
      size_t binary_data_offset,
      uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_document_read_fragment(
@@ -210,6 +213,7 @@ int libfwevt_xml_document_read_pi_data(
      size_t binary_data_size,
      size_t binary_data_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_document_read_pi_target(
@@ -220,6 +224,7 @@ int libfwevt_xml_document_read_pi_target(
      size_t binary_data_offset,
      uint8_t flags,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_document_read_template_instance(
@@ -251,6 +256,7 @@ int libfwevt_xml_document_read_value(
      size_t binary_data_size,
      size_t binary_data_offset,
      libfwevt_xml_tag_t *xml_tag,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_document_substitute_template_value(

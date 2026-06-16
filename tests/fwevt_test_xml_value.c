@@ -604,6 +604,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf8_string_with_index(
 	          32,
 	          &utf8_string_index,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -623,6 +624,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf8_string_with_index(
 	          32,
 	          &utf8_string_index,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -643,6 +645,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf8_string_with_index(
 	          32,
 	          &utf8_string_index,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -663,6 +666,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf8_string_with_index(
 	          (size_t) SSIZE_MAX + 1,
 	          &utf8_string_index,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -683,6 +687,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf8_string_with_index(
 	          32,
 	          NULL,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -801,6 +806,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf16_string_with_index(
 	          32,
 	          &utf16_string_index,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -820,6 +826,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf16_string_with_index(
 	          32,
 	          &utf16_string_index,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -840,6 +847,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf16_string_with_index(
 	          32,
 	          &utf16_string_index,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -860,6 +868,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf16_string_with_index(
 	          (size_t) SSIZE_MAX + 1,
 	          &utf16_string_index,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
@@ -880,6 +889,7 @@ int fwevt_test_internal_xml_value_get_data_as_utf16_string_with_index(
 	          32,
 	          NULL,
 	          0,
+	          LIBUNA_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(

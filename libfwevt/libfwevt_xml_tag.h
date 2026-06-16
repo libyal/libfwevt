@@ -250,6 +250,7 @@ int libfwevt_xml_tag_get_utf8_xml_string_size(
      libfwevt_xml_tag_t *xml_tag,
      int xml_tag_level,
      size_t *utf8_string_size,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_get_utf8_xml_string_with_index(
@@ -258,12 +259,14 @@ int libfwevt_xml_tag_get_utf8_xml_string_with_index(
      uint8_t *utf8_string,
      size_t utf8_string_size,
      size_t *utf8_string_index,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_get_utf16_xml_string_size(
      libfwevt_xml_tag_t *xml_tag,
      int xml_tag_level,
      size_t *utf16_string_size,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_get_utf16_xml_string_with_index(
@@ -272,6 +275,7 @@ int libfwevt_xml_tag_get_utf16_xml_string_with_index(
      uint16_t *utf16_string,
      size_t utf16_string_size,
      size_t *utf16_string_index,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 #if defined( HAVE_DEBUG_OUTPUT )
@@ -283,6 +287,7 @@ int libfwevt_xml_tag_debug_print_name_string(
 int libfwevt_xml_tag_debug_print(
      libfwevt_xml_tag_t *xml_tag,
      int xml_tag_level,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libfwevt_xml_tag_name_debug_print(
@@ -293,6 +298,7 @@ int libfwevt_xml_tag_debug_print_value_data_segment(
      libfwevt_xml_tag_t *xml_tag,
      int data_segment_index,
      uint8_t escape_characters,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
