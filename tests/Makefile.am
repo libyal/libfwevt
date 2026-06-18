@@ -12,8 +12,6 @@ AM_CPPFLAGS = \
 	@PTHREAD_CPPFLAGS@ \
 	@LIBFWEVT_DLL_IMPORT@
 
-check_PYTHONdir = $(abs_top_builddir)
-
 BUILT_SOURCES = package.m4
 
 check_AUTOTESTS = \
@@ -24,7 +22,7 @@ if HAVE_PYTHON_TESTS
 check_AUTOTESTS += test_python_module
 endif
 
-check_PYTHON_SCRIPTS = \
+check_SCRIPTS = \
 	pyfwevt_test_event.py \
 	pyfwevt_test_manifest.py \
 	pyfwevt_test_provider.py \
@@ -377,7 +375,7 @@ test_python_module: \
 
 EXTRA_DIST = \
 	$(check_AUTOTESTS:=.at) \
-	$(check_PYTHON_SCRIPTS) \
+	$(check_SCRIPTS) \
 	package.m4 \
 	test_macros.at
 
