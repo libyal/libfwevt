@@ -2,7 +2,7 @@ AC_PREREQ([2.71])
 
 AC_INIT(
   [libfwevt],
-  [20260618],
+  [20260623],
   [https://github.com/libyal/libfwevt/issues])
 
 AC_CONFIG_SRCDIR(
