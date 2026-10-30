@@ -270,6 +270,10 @@ int libfwevt_xml_document_read_with_template_values(
 	}
 	internal_xml_document = (libfwevt_internal_xml_document_t *) xml_document;
 
+	/* The total number of template instance recursions is limited per read
+	 */
+	internal_xml_document->template_instance_recursions = 0;
+
 	if( internal_xml_document->root_xml_tag != NULL )
 	{
 		libcerror_error_set(
@@ -4755,6 +4759,19 @@ int libfwevt_xml_document_read_template_instance(
 
 		return( -1 );
 	}
+	if( internal_xml_document->template_instance_recursions > LIBFWEVT_XML_DOCUMENT_TEMPLATE_INSTANCE_MAXIMUM_RECURSIONS )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid template instance recursions value exceeds maximum.",
+		 function );
+
+		return( -1 );
+	}
+	internal_xml_document->template_instance_recursions += 1;
+
 	xml_document_data      = &( binary_data[ binary_data_offset ] );
 	xml_document_data_size = binary_data_size - binary_data_offset;
 

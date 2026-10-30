@@ -81,7 +81,7 @@ static int fuzzer_read_xml_document(
 	          xml_document,
 	          &utf8_string_size,
 	          NULL );
-       
+
 	if( ( result == 1 )
 	 && ( utf8_string_size > 0 )
 	 && ( utf8_string_size < MAXIMUM_STRING_SIZE ) )
@@ -105,7 +105,7 @@ static int fuzzer_read_xml_document(
 	          xml_document,
 	          &utf16_string_size,
 	          NULL );
-       
+
 	if( ( result == 1 )
 	 && ( utf16_string_size > 0 )
 	 && ( utf16_string_size < MAXIMUM_STRING_SIZE ) )

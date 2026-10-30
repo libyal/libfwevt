@@ -44,6 +44,10 @@ struct libfwevt_internal_xml_document
 	 */
 	libfwevt_xml_tag_t *root_xml_tag;
 
+	/* The number of template instance recursions performed during read
+	 */
+	size_t template_instance_recursions;
+
 	/* The size
 	 */
 	size_t size;

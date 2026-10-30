@@ -1977,27 +1977,23 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_size(
 
 			return( -1 );
 		}
-		if( data_segment_size > 1 )
-		{
-			safe_utf8_string_size += data_segment_size - 1;
-		}
+		safe_utf8_string_size += data_segment_size;
 	}
-	if( ( number_of_data_segments == 1 )
-	 && ( data_segment != NULL )
-	 && ( safe_utf8_string_size == 1 ) )
+	/* The size of:
+	 *   the data segments formatted as strings (each segment size excluding its end of string character)
+	 *   1 x end of string character
+	 *
+	 * If the sum of the data segment sizes is smaller than the number of
+	 * data segments the value is empty.
+	 */
+	if( ( number_of_data_segments > 0 )
+	 && ( safe_utf8_string_size >= (size_t) number_of_data_segments ) )
 	{
-		if( ( data_segment->data_size >= 2 )
-		 && ( data_segment->data[ 0 ] == '\n' )
-		 && ( data_segment->data[ 1 ] == 0 ) )
-		{
-			/* The value data consists of a single linefeed consider it empty
-			 */
-			safe_utf8_string_size = 0;
-		}
+		safe_utf8_string_size -= ( (size_t) number_of_data_segments ) - 1;
 	}
-	if( safe_utf8_string_size > 0 )
+	else
 	{
-		safe_utf8_string_size++;
+		safe_utf8_string_size = 0;
 	}
 	*utf8_string_size = safe_utf8_string_size;
 
@@ -3058,27 +3054,23 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_size(
 
 			return( -1 );
 		}
-		if( data_segment_size > 1 )
-		{
-			safe_utf16_string_size += data_segment_size - 1;
-		}
+		safe_utf16_string_size += data_segment_size;
 	}
-	if( ( number_of_data_segments == 1 )
-	 && ( data_segment != NULL )
-	 && ( safe_utf16_string_size == 1 ) )
+	/* The size of:
+	 *   the data segments formatted as strings (each segment size excluding its end of string character)
+	 *   1 x end of string character
+	 *
+	 * If the sum of the data segment sizes is smaller than the number of
+	 * data segments the value is empty.
+	 */
+	if( ( number_of_data_segments > 0 )
+	 && ( safe_utf16_string_size >= (size_t) number_of_data_segments ) )
 	{
-		if( ( data_segment->data_size >= 2 )
-		 && ( data_segment->data[ 0 ] == '\n' )
-		 && ( data_segment->data[ 1 ] == 0 ) )
-		{
-			/* The value data consists of a single linefeed consider it empty
-			 */
-			safe_utf16_string_size = 0;
-		}
+		safe_utf16_string_size -= ( (size_t) number_of_data_segments ) - 1;
 	}
-	if( safe_utf16_string_size > 0 )
+	else
 	{
-		safe_utf16_string_size++;
+		safe_utf16_string_size = 0;
 	}
 	*utf16_string_size = safe_utf16_string_size;
 
