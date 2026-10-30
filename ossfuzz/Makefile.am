@@ -5,6 +5,7 @@ AM_CPPFLAGS = \
 
 bin_PROGRAMS = \
 	manifest_fuzzer \
+	template_fuzzer \
 	xml_document_fuzzer
 
 manifest_fuzzer_SOURCES = \
@@ -12,6 +13,14 @@ manifest_fuzzer_SOURCES = \
 	ossfuzz_libfwevt.h
 
 manifest_fuzzer_LDADD = \
+	@LIB_FUZZING_ENGINE@ \
+	../libfwevt/libfwevt.la
+
+template_fuzzer_SOURCES = \
+	ossfuzz_libfwevt.h \
+	template_fuzzer.cc
+
+template_fuzzer_LDADD = \
 	@LIB_FUZZING_ENGINE@ \
 	../libfwevt/libfwevt.la
 
@@ -31,6 +40,8 @@ DISTCLEANFILES = \
 splint-local:
 	@echo "Running splint on manifest_fuzzer ..."
 	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(manifest_fuzzer_SOURCES)
+	@echo "Running splint on template_fuzzer ..."
+	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(template_fuzzer_SOURCES)
 	@echo "Running splint on xml_document_fuzzer ..."
 	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(xml_document_fuzzer_SOURCES)
 
