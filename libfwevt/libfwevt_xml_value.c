@@ -466,6 +466,10 @@ int libfwevt_internal_xml_value_get_data_segment_with_cached_value(
 					 "%s: unable to copy byte stream to GUID.",
 					 function );
 
+					libfguid_identifier_free(
+					 &( safe_data_segment->guid ),
+					 NULL );
+
 					return( -1 );
 				}
 				break;
@@ -497,6 +501,10 @@ int libfwevt_internal_xml_value_get_data_segment_with_cached_value(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy byte stream to FILETIME.",
 					 function );
+
+					libfdatetime_filetime_free(
+					 &( safe_data_segment->filetime ),
+					 NULL );
 
 					return( -1 );
 				}
@@ -530,6 +538,10 @@ int libfwevt_internal_xml_value_get_data_segment_with_cached_value(
 					 "%s: unable to copy byte stream to SYSTEMTIME.",
 					 function );
 
+					libfdatetime_systemtime_free(
+					 &( safe_data_segment->systemtime ),
+					 NULL );
+
 					return( -1 );
 				}
 				break;
@@ -561,6 +573,10 @@ int libfwevt_internal_xml_value_get_data_segment_with_cached_value(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy byte stream to NT security identifier.",
 					 function );
+
+					libfwnt_security_identifier_free(
+					 &( safe_data_segment->security_identifier ),
+					 NULL );
 
 					return( -1 );
 				}
@@ -1434,7 +1450,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
 			}
 			else
 			{
-				format_flags = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE;
+				format_flags = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE | LIBUNA_BASE16_VARIANT_ENCODING_BYTE_STREAM;
 
 				result = libuna_base16_stream_size_from_byte_stream(
 				          data_segment->data,
@@ -1766,7 +1782,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 
 		case LIBFWEVT_VALUE_TYPE_BINARY_DATA:
 			base16_stream_index = *utf8_string_index;
-			format_flags        = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE;
+			format_flags        = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE | LIBUNA_BASE16_VARIANT_ENCODING_BYTE_STREAM;
 
 			result = libuna_base16_stream_with_index_copy_from_byte_stream(
 			          (uint8_t *) utf8_string,
