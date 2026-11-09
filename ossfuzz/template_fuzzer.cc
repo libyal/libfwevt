@@ -38,10 +38,9 @@ static const int codepages[ 3 ] = {
 
 static const size_t max_string_size = 8 * 1024 * 1024;
 
-static int fuzzer_read_template(
+int LLVMFuzzerTestOneInput(
      const uint8_t *data,
-     size_t size,
-     int ascii_codepage )
+     size_t size )
 {
 	libfwevt_template_item_t *item        = NULL;
 	libfwevt_template_t *wevt_template    = NULL;
@@ -50,139 +49,10 @@ static int fuzzer_read_template(
 	uint8_t *utf8_string                  = NULL;
 	uint8_t guid_data[ 16 ]               = { 0 };
 	uint8_t input_data_type               = 0;
+	size_t codepage_index                 = 0;
 	size_t utf8_name_size                 = 0;
 	size_t utf8_string_size               = 0;
 	int number_of_items                   = 0;
-
-	if( libfwevt_template_initialize(
-	     &wevt_template,
-	     NULL ) != 1 )
-	{
-		return( 0 );
-	}
-	if( libfwevt_template_set_ascii_codepage(
-	     wevt_template,
-	     ascii_codepage,
-	     NULL ) != 1 )
-	{
-		goto on_error;
-	}
-	if( libfwevt_template_read(
-	     wevt_template,
-	     data,
-	     size,
-	     0,
-	     NULL ) != 1 )
-	{
-		goto on_error;
-	}
-	if( libfwevt_xml_document_initialize(
-	     &xml_document,
-	     NULL ) == 1 )
-	{
-		if( libfwevt_template_read_xml_document(
-		     wevt_template,
-		     xml_document,
-		     NULL ) == 1 )
-		{
-			if( libfwevt_xml_document_get_utf8_xml_string_size(
-			     xml_document,
-			     &utf8_string_size,
-			     NULL ) == 1
-			 && ( utf8_string_size > 0 )
-			 && ( utf8_string_size < max_string_size ) )
-			{
-				utf8_string = (uint8_t *) malloc( utf8_string_size );
-
-				if( utf8_string != NULL )
-				{
-					libfwevt_xml_document_get_utf8_xml_string(
-					 xml_document,
-					 utf8_string,
-					 utf8_string_size,
-					 NULL );
-					free( utf8_string );
-
-					utf8_string = NULL;
-				}
-			}
-		}
-	}
-	if( libfwevt_template_get_number_of_items(
-	     wevt_template,
-	     &number_of_items,
-	     NULL ) == 1
-	 && ( number_of_items > 0 ) )
-	{
-		if( libfwevt_template_get_item_by_index(
-		     wevt_template,
-		     0,
-		     &item,
-		     NULL ) == 1 )
-		{
-			libfwevt_template_item_get_input_data_type(
-			 item,
-			 &input_data_type,
-			 NULL );
-
-			if( libfwevt_template_item_get_utf8_name_size(
-			     item,
-			     &utf8_name_size,
-			     NULL ) == 1
-			 && ( utf8_name_size > 0 )
-			 && ( utf8_name_size < max_string_size ) )
-			{
-				utf8_name = (uint8_t *) malloc( utf8_name_size );
-
-				if( utf8_name != NULL )
-				{
-					libfwevt_template_item_get_utf8_name(
-					 item,
-					 utf8_name,
-					 utf8_name_size,
-					 NULL );
-					free( utf8_name );
-
-					utf8_name = NULL;
-				}
-			}
-		}
-	}
-	libfwevt_template_get_identifier(
-	 wevt_template,
-	 guid_data,
-	 16,
-	 NULL );
-
-on_error:
-	if( utf8_string != NULL )
-	{
-		free( utf8_string );
-	}
-	if( utf8_name != NULL )
-	{
-		free( utf8_name );
-	}
-	if( xml_document != NULL )
-	{
-		libfwevt_xml_document_free(
-		 &xml_document,
-		 NULL );
-	}
-	if( wevt_template != NULL )
-	{
-		libfwevt_template_free(
-		 &wevt_template,
-		 NULL );
-	}
-	return( 0 );
-}
-
-int LLVMFuzzerTestOneInput(
-     const uint8_t *data,
-     size_t size )
-{
-	size_t codepage_index = 0;
 
 	/* Note the template read function can only be applied once
 	 * therefore a separate template instance is used per codepage
@@ -191,10 +61,121 @@ int LLVMFuzzerTestOneInput(
 	     codepage_index < ( sizeof( codepages ) / sizeof( codepages[ 0 ] ) );
 	     codepage_index++ )
 	{
-		fuzzer_read_template(
-		 data,
-		 size,
-		 codepages[ codepage_index ] );
+		if( libfwevt_template_initialize(
+		     &wevt_template,
+		     NULL ) != 1 )
+		{
+			continue;
+		}
+		if( libfwevt_template_set_ascii_codepage(
+		     wevt_template,
+		     codepages[ codepage_index ],
+		     NULL ) != 1
+		 || libfwevt_template_read(
+		     wevt_template,
+		     data,
+		     size,
+		     0,
+		     NULL ) != 1 )
+		{
+			goto on_error_wevt_template;
+		}
+		if( libfwevt_xml_document_initialize(
+		     &xml_document,
+		     NULL ) == 1 )
+		{
+			if( libfwevt_template_read_xml_document(
+			     wevt_template,
+			     xml_document,
+			     NULL ) == 1 )
+			{
+				if( libfwevt_xml_document_get_utf8_xml_string_size(
+				     xml_document,
+				     &utf8_string_size,
+				     NULL ) == 1
+				 && ( utf8_string_size > 0 )
+				 && ( utf8_string_size < max_string_size ) )
+				{
+					utf8_string = (uint8_t *) malloc( utf8_string_size );
+
+					if( utf8_string != NULL )
+					{
+						libfwevt_xml_document_get_utf8_xml_string(
+						 xml_document,
+						 utf8_string,
+						 utf8_string_size,
+						 NULL );
+						free( utf8_string );
+
+						utf8_string = NULL;
+					}
+				}
+			}
+			if( libfwevt_template_get_number_of_items(
+			     wevt_template,
+			     &number_of_items,
+			     NULL ) == 1
+			 && ( number_of_items > 0 ) )
+			{
+				if( libfwevt_template_get_item_by_index(
+				     wevt_template,
+				     0,
+				     &item,
+				     NULL ) == 1 )
+				{
+					libfwevt_template_item_get_input_data_type(
+					 item,
+					 &input_data_type,
+					 NULL );
+
+					if( libfwevt_template_item_get_utf8_name_size(
+					     item,
+					     &utf8_name_size,
+					     NULL ) == 1
+					 && ( utf8_name_size > 0 )
+					 && ( utf8_name_size < max_string_size ) )
+					{
+						utf8_name = (uint8_t *) malloc( utf8_name_size );
+
+						if( utf8_name != NULL )
+						{
+							libfwevt_template_item_get_utf8_name(
+							 item,
+							 utf8_name,
+							 utf8_name_size,
+							 NULL );
+							free( utf8_name );
+
+							utf8_name = NULL;
+						}
+					}
+				}
+			}
+			if( libfwevt_template_get_identifier(
+			     wevt_template,
+			     guid_data,
+			     16,
+			     NULL ) != 1 )
+			{
+				goto on_error_xml_document;
+			}
+		}
+		goto on_error_wevt_template;
+
+ on_error_xml_document:
+		if( xml_document != NULL )
+		{
+			libfwevt_xml_document_free(
+			 &xml_document,
+			 NULL );
+		}
+ on_error_wevt_template:
+		if( wevt_template != NULL )
+		{
+			libfwevt_template_free(
+			 &wevt_template,
+			 NULL );
+		}
 	}
 	return( 0 );
 }

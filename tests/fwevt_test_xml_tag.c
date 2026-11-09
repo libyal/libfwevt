@@ -1121,7 +1121,7 @@ int fwevt_test_xml_tag_get_utf16_name(
 	result = memory_compare(
 	          expected_utf16_name,
 	          utf16_name,
-	          5 );
+	          (size_t) 5 * sizeof( uint16_t ) );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -1653,7 +1653,7 @@ int fwevt_test_xml_tag_get_utf16_value(
 	result = memory_compare(
 	          expected_utf16_value,
 	          utf16_value,
-	          9 );
+	          (size_t) 9 * sizeof( uint16_t ) );
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -3329,7 +3329,7 @@ int fwevt_test_xml_tag_get_xml_string_size_linefeed_value(
 		'<', '!', '[', 'C', 'D', 'A', 'T', 'A', '[', '\n', ']', ']', '>', '\n', 0 };
 
 	uint16_t expected_utf16_cdata_nul_string[ 14 ] = {
-		'<', '!', '[', 'C', 'D', 'A', 'T', 'A', '[', 0, ']', ']', '>', '\n', 0 };
+		'<', '!', '[', 'C', 'D', 'A', 'T', 'A', '[', ']', ']', '>', '\n', 0 };
 
 	uint16_t expected_utf16_pi_string[ 12 ] = {
 		'<', '?', 'T', 'e', 's', 't', ' ', '\n', '?', '>', '\n', 0 };

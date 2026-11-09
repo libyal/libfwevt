@@ -466,6 +466,10 @@ int libfwevt_internal_xml_value_get_data_segment_with_cached_value(
 					 "%s: unable to copy byte stream to GUID.",
 					 function );
 
+					libfguid_identifier_free(
+					 &( safe_data_segment->guid ),
+					 NULL );
+
 					return( -1 );
 				}
 				break;
@@ -497,6 +501,10 @@ int libfwevt_internal_xml_value_get_data_segment_with_cached_value(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy byte stream to FILETIME.",
 					 function );
+
+					libfdatetime_filetime_free(
+					 &( safe_data_segment->filetime ),
+					 NULL );
 
 					return( -1 );
 				}
@@ -530,6 +538,10 @@ int libfwevt_internal_xml_value_get_data_segment_with_cached_value(
 					 "%s: unable to copy byte stream to SYSTEMTIME.",
 					 function );
 
+					libfdatetime_systemtime_free(
+					 &( safe_data_segment->systemtime ),
+					 NULL );
+
 					return( -1 );
 				}
 				break;
@@ -561,6 +573,10 @@ int libfwevt_internal_xml_value_get_data_segment_with_cached_value(
 					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
 					 "%s: unable to copy byte stream to NT security identifier.",
 					 function );
+
+					libfwnt_security_identifier_free(
+					 &( safe_data_segment->security_identifier ),
+					 NULL );
 
 					return( -1 );
 				}
@@ -1434,7 +1450,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string_size(
 			}
 			else
 			{
-				format_flags = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE;
+				format_flags = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE | LIBUNA_BASE16_VARIANT_ENCODING_BYTE_STREAM;
 
 				result = libuna_base16_stream_size_from_byte_stream(
 				          data_segment->data,
@@ -1637,14 +1653,21 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_STRING_BYTE_STREAM:
-			result = libuna_utf8_string_with_index_copy_from_byte_stream(
-			          utf8_string,
-			          utf8_string_size,
-			          utf8_string_index,
-			          data_segment->data,
-			          data_segment->data_size,
-			          ascii_codepage,
-			          error );
+			if( data_segment->data_size == 0 )
+			{
+				result = 1;
+			}
+			else
+			{
+				result = libuna_utf8_string_with_index_copy_from_byte_stream(
+				          utf8_string,
+				          utf8_string_size,
+				          utf8_string_index,
+				          data_segment->data,
+				          data_segment->data_size,
+				          ascii_codepage,
+				          error );
+			}
 /* TODO add support for escape_characters */
 			break;
 
@@ -1766,7 +1789,7 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 
 		case LIBFWEVT_VALUE_TYPE_BINARY_DATA:
 			base16_stream_index = *utf8_string_index;
-			format_flags        = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE;
+			format_flags        = LIBUNA_BASE16_VARIANT_CASE_UPPER | LIBUNA_BASE16_VARIANT_CHARACTER_LIMIT_NONE | LIBUNA_BASE16_VARIANT_ENCODING_BYTE_STREAM;
 
 			result = libuna_base16_stream_with_index_copy_from_byte_stream(
 			          (uint8_t *) utf8_string,
@@ -1901,6 +1924,7 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_size(
 	size_t safe_utf8_string_size          = 0;
 	int data_segment_index                = 0;
 	int number_of_data_segments           = 0;
+	int number_of_non_empty_data_segments    = 0;
 
 	if( internal_xml_value == NULL )
 	{
@@ -1978,18 +2002,22 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_size(
 			return( -1 );
 		}
 		safe_utf8_string_size += data_segment_size;
+
+		if( data_segment_size > 0 )
+		{
+			number_of_non_empty_data_segments++;
+		}
 	}
 	/* The size of:
 	 *   the data segments formatted as strings (each segment size excluding its end of string character)
 	 *   1 x end of string character
 	 *
-	 * If the sum of the data segment sizes is smaller than the number of
-	 * data segments the value is empty.
+	 * Data segments with a size of 0 (for example empty strings)
+	 * do not contribute to the string of the value.
 	 */
-	if( ( number_of_data_segments > 0 )
-	 && ( safe_utf8_string_size >= (size_t) number_of_data_segments ) )
+	if( number_of_non_empty_data_segments > 0 )
 	{
-		safe_utf8_string_size -= ( (size_t) number_of_data_segments ) - 1;
+		safe_utf8_string_size -= ( (size_t) number_of_non_empty_data_segments ) - 1;
 	}
 	else
 	{
@@ -2015,9 +2043,11 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
 {
 	libfwevt_data_segment_t *data_segment = NULL;
 	static char *function                 = "libfwevt_internal_xml_value_get_data_as_utf8_string_with_index";
+	size_t data_segment_copy_index        = 0;
 	size_t safe_utf8_string_index         = 0;
 	int data_segment_index                = 0;
 	int number_of_data_segments           = 0;
+	int number_of_non_empty_data_segments    = 0;
 
 	if( internal_xml_value == NULL )
 	{
@@ -2099,6 +2129,8 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
 
 			return( -1 );
 		}
+		data_segment_copy_index = safe_utf8_string_index;
+
 		if( libfwevt_internal_xml_value_get_data_segment_as_utf8_string(
 		     internal_xml_value,
 		     data_segment_index,
@@ -2120,22 +2152,17 @@ int libfwevt_internal_xml_value_get_data_as_utf8_string_with_index(
 
 			return( -1 );
 		}
-		safe_utf8_string_index--;
-	}
-	if( ( number_of_data_segments == 1 )
-	 && ( data_segment != NULL )
-	 && ( safe_utf8_string_index == 1 ) )
-	{
-		if( ( data_segment->data_size >= 2 )
-		 && ( data_segment->data[ 0 ] == '\n' )
-		 && ( data_segment->data[ 1 ] == 0 ) )
+		if( safe_utf8_string_index > data_segment_copy_index )
 		{
-			/* The value data consists of a single linefeed consider it empty
+			/* The string of a value consists of a single end of string character,
+			 * remove the one written by the non-empty data segment copy
 			 */
-			safe_utf8_string_index = 0;
+			safe_utf8_string_index--;
+			number_of_non_empty_data_segments++;
 		}
 	}
-	if( safe_utf8_string_index > 0 )
+	if( ( number_of_non_empty_data_segments > 0 )
+	 || ( safe_utf8_string_index > 0 ) )
 	{
 		if( safe_utf8_string_index >= utf8_string_size  )
 		{
@@ -2708,14 +2735,21 @@ int libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
 			break;
 
 		case LIBFWEVT_VALUE_TYPE_STRING_BYTE_STREAM:
-			result = libuna_utf16_string_with_index_copy_from_byte_stream(
-			          utf16_string,
-			          utf16_string_size,
-			          utf16_string_index,
-			          data_segment->data,
-			          data_segment->data_size,
-			          ascii_codepage,
-			          error );
+			if( data_segment->data_size == 0 )
+			{
+				result = 1;
+			}
+			else
+			{
+				result = libuna_utf16_string_with_index_copy_from_byte_stream(
+				          utf16_string,
+				          utf16_string_size,
+				          utf16_string_index,
+				          data_segment->data,
+				          data_segment->data_size,
+				          ascii_codepage,
+				          error );
+			}
 /* TODO add support for escape_characters */
 			break;
 
@@ -2978,6 +3012,7 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_size(
 	size_t safe_utf16_string_size         = 0;
 	int data_segment_index                = 0;
 	int number_of_data_segments           = 0;
+	int number_of_non_empty_data_segments    = 0;
 
 	if( internal_xml_value == NULL )
 	{
@@ -3055,18 +3090,22 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_size(
 			return( -1 );
 		}
 		safe_utf16_string_size += data_segment_size;
+
+		if( data_segment_size > 0 )
+		{
+			number_of_non_empty_data_segments++;
+		}
 	}
 	/* The size of:
 	 *   the data segments formatted as strings (each segment size excluding its end of string character)
 	 *   1 x end of string character
 	 *
-	 * If the sum of the data segment sizes is smaller than the number of
-	 * data segments the value is empty.
+	 * Data segments with a size of 0 (for example empty strings)
+	 * do not contribute to the string of the value.
 	 */
-	if( ( number_of_data_segments > 0 )
-	 && ( safe_utf16_string_size >= (size_t) number_of_data_segments ) )
+	if( number_of_non_empty_data_segments > 0 )
 	{
-		safe_utf16_string_size -= ( (size_t) number_of_data_segments ) - 1;
+		safe_utf16_string_size -= ( (size_t) number_of_non_empty_data_segments ) - 1;
 	}
 	else
 	{
@@ -3092,9 +3131,11 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
 {
 	libfwevt_data_segment_t *data_segment = NULL;
 	static char *function                 = "libfwevt_internal_xml_value_get_data_as_utf16_string_with_index";
+	size_t data_segment_copy_index        = 0;
 	size_t safe_utf16_string_index        = 0;
 	int data_segment_index                = 0;
 	int number_of_data_segments           = 0;
+	int number_of_non_empty_data_segments    = 0;
 
 	if( internal_xml_value == NULL )
 	{
@@ -3176,6 +3217,8 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
 
 			return( -1 );
 		}
+		data_segment_copy_index = safe_utf16_string_index;
+
 		if( libfwevt_internal_xml_value_get_data_segment_as_utf16_string(
 		     internal_xml_value,
 		     data_segment_index,
@@ -3197,22 +3240,17 @@ int libfwevt_internal_xml_value_get_data_as_utf16_string_with_index(
 
 			return( -1 );
 		}
-		safe_utf16_string_index--;
-	}
-	if( ( number_of_data_segments == 1 )
-	 && ( data_segment != NULL )
-	 && ( safe_utf16_string_index == 1 ) )
-	{
-		if( ( data_segment->data_size >= 2 )
-		 && ( data_segment->data[ 0 ] == '\n' )
-		 && ( data_segment->data[ 1 ] == 0 ) )
+		if( safe_utf16_string_index > data_segment_copy_index )
 		{
-			/* The value data consists of a single linefeed consider it empty
+			/* The string of a value consists of a single end of string character,
+			 * remove the one written by the non-empty data segment copy
 			 */
-			safe_utf16_string_index = 0;
+			safe_utf16_string_index--;
+			number_of_non_empty_data_segments++;
 		}
 	}
-	if( safe_utf16_string_index > 0 )
+	if( ( number_of_non_empty_data_segments > 0 )
+	 || ( safe_utf16_string_index > 0 ) )
 	{
 		if( safe_utf16_string_index >= utf16_string_size  )
 		{
