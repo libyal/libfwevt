@@ -5378,6 +5378,866 @@ on_error:
 	return( 0 );
 }
 
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+
+#include "../libfwevt/libfwevt_xml_template_value.h"
+
+/* Tests internal binary XML token reader functions: CDATA, character reference,
+ * entity reference, PI target/data, normal/optional substitution, and template value substitution
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_xml_document_internal_readers(
+     void )
+{
+	uint8_t cdata_data[ 8 ]       = { 0x07, 0x02, 0x00, 'a', 0, 'b', 0, 0x00 };
+	uint8_t char_ref_data[ 4 ]    = { 0x08, 0x41, 0x00, 0x00 };
+	uint8_t entity_gt[ 11 ]       = { 0x09, 0x00, 0x00, 0x02, 0x00, 'g', 0, 't', 0, 0, 0 };
+	uint8_t entity_lt[ 11 ]       = { 0x09, 0x00, 0x00, 0x02, 0x00, 'l', 0, 't', 0, 0, 0 };
+	uint8_t entity_amp[ 13 ]      = { 0x09, 0x00, 0x00, 0x03, 0x00, 'a', 0, 'm', 0, 'p', 0, 0, 0 };
+	uint8_t entity_apos[ 15 ]     = { 0x09, 0x00, 0x00, 0x04, 0x00, 'a', 0, 'p', 0, 'o', 0, 's', 0, 0, 0 };
+	uint8_t entity_quot[ 15 ]     = { 0x09, 0x00, 0x00, 0x04, 0x00, 'q', 0, 'u', 0, 'o', 0, 't', 0, 0, 0 };
+	uint8_t entity_bad[ 11 ]      = { 0x09, 0x00, 0x00, 0x02, 0x00, 'x', 0, 'x', 0, 0, 0 };
+	uint8_t entity_off[ 19 ]      = {
+		0x09, 0x05, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 'g', 0, 't', 0, 0, 0 };
+	uint8_t pi_data_buf[ 8 ]      = { 0x0b, 0x02, 0x00, 'o', 0, 'k', 0, 0x00 };
+	uint8_t pi_target_buf[ 25 ]   = {
+		0x0a, 0x05, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 'p', 0, 'i', 0, 0, 0,
+		0x0b, 0x01, 0x00, 'x', 0, 0x00 };
+	uint8_t norm_sub_buf[ 4 ]     = { 0x0d, 0x00, 0x00, LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT };
+	uint8_t opt_sub_buf[ 4 ]      = { 0x0e, 0x00, 0x00, LIBFWEVT_VALUE_TYPE_NULL };
+	uint8_t val_buf[ 64 ]         = {
+		0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+		0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,
+		'a', 0, 'b', 0, 0, 0, 'c', 0, 0, 0,
+		'x', 'y', 0, 'z', 0, 0,
+		/* Embedded minimal binary XML element at offset 32 (empty tag <a/>) */
+		0x01, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 'a', 0, 0, 0, 0x03, 0x00,
+		/* Embedded minimal binary XML fragment at offset 47 */
+		0x0f, 0x01, 0x01, 0x00, 0x01, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 'b', 0, 0, 0
+	};
+	uint8_t frag_binxml[ 20 ]     = {
+		0x0f, 0x01, 0x01, 0x00, 0x01, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 'b', 0, 0, 0, 0x03, 0x00, 0x00 };
+
+	libcerror_error_t *error                      = NULL;
+	libcdata_array_t *template_values_array       = NULL;
+	libfwevt_xml_document_t *xml_document         = NULL;
+	libfwevt_xml_tag_t *xml_tag                   = NULL;
+	libfwevt_xml_template_value_t *template_value = NULL;
+	libfwevt_xml_token_t *xml_token               = NULL;
+	size_t template_value_offset                  = 0;
+	int entry_index                               = 0;
+	int result                                    = 0;
+
+	result = libfwevt_xml_document_initialize( &xml_document, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_token_initialize( &xml_token, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_initialize( &xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	/* 1. Test libfwevt_xml_document_read_cdata_section
+	 */
+	xml_token->type = LIBFWEVT_XML_TOKEN_CDATA_SECTION;
+	result = libfwevt_xml_document_read_cdata_section(
+	          (libfwevt_internal_xml_document_t *) xml_document, xml_token, cdata_data, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "cdata", result, 1 );
+
+	result = libfwevt_xml_document_read_cdata_section( NULL, xml_token, cdata_data, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_cdata_section( (libfwevt_internal_xml_document_t *) xml_document, NULL, cdata_data, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_cdata_section( (libfwevt_internal_xml_document_t *) xml_document, xml_token, cdata_data, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_CDATA_SECTION;
+	result = libfwevt_xml_document_read_cdata_section( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_cdata_section( (libfwevt_internal_xml_document_t *) xml_document, xml_token, cdata_data, (size_t) SSIZE_MAX + 1, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_cdata_section( (libfwevt_internal_xml_document_t *) xml_document, xml_token, cdata_data, 8, 8, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_cdata_section( (libfwevt_internal_xml_document_t *) xml_document, xml_token, cdata_data, 8, 0, NULL, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_cdata_section( (libfwevt_internal_xml_document_t *) xml_document, xml_token, cdata_data, 2, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_cdata_section( (libfwevt_internal_xml_document_t *) xml_document, xml_token, cdata_data, 5, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 2. Test libfwevt_xml_document_read_character_reference
+	 */
+	xml_token->type = LIBFWEVT_XML_TOKEN_ENTITY_REFERENCE;
+	result = libfwevt_xml_document_read_character_reference(
+	          (libfwevt_internal_xml_document_t *) xml_document, xml_token, char_ref_data, 4, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_character_reference( NULL, xml_token, char_ref_data, 4, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_character_reference( (libfwevt_internal_xml_document_t *) xml_document, NULL, char_ref_data, 4, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_character_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, char_ref_data, 4, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_ENTITY_REFERENCE;
+	result = libfwevt_xml_document_read_character_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 4, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_character_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, char_ref_data, (size_t) SSIZE_MAX + 1, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_character_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, char_ref_data, 4, 4, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_character_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, char_ref_data, 4, 0, NULL, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_character_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, char_ref_data, 2, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 3. Test libfwevt_xml_document_read_entity_reference (gt, lt, amp, apos, quot, offsets, bad, errors)
+	 */
+	xml_token->type = LIBFWEVT_XML_TOKEN_ENTITY_REFERENCE;
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_gt, 11, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "entity_gt", result, 1 );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_lt, 11, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "entity_lt", result, 1 );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_amp, 13, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "entity_amp", result, 1 );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_apos, 15, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "entity_apos", result, 1 );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_quot, 15, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "entity_quot", result, 1 );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_off, 19, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "entity_off", result, 1 );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_bad, 11, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "entity_bad", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_entity_reference( NULL, xml_token, entity_gt, 11, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, NULL, entity_gt, 11, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_gt, 11, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_ENTITY_REFERENCE;
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 11, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_gt, (size_t) SSIZE_MAX + 1, 0, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_gt, 11, 11, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_gt, 11, 0, 0, NULL, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_entity_reference( (libfwevt_internal_xml_document_t *) xml_document, xml_token, entity_off, 4, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 4. Test libfwevt_xml_document_read_pi_data & read_pi_target
+	 */
+	result = libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_initialize( &xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	xml_token->type = LIBFWEVT_XML_TOKEN_PI_DATA;
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_data_buf, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "pi_data", result, 1 );
+	result = libfwevt_xml_document_read_pi_data( NULL, xml_token, pi_data_buf, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, NULL, pi_data_buf, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_data_buf, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_PI_DATA;
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 8, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_data_buf, (size_t) SSIZE_MAX + 1, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_data_buf, 8, 8, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_data_buf, 8, 0, NULL, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_data_buf, 2, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_data( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_data_buf, 5, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	xml_token->type = LIBFWEVT_XML_TOKEN_PI_TARGET;
+	result = libfwevt_xml_document_read_pi_target(
+	          (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_target_buf, 25, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "pi_target", result, 1 );
+	result = libfwevt_xml_document_read_pi_target( NULL, xml_token, pi_target_buf, 25, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_target( (libfwevt_internal_xml_document_t *) xml_document, NULL, pi_target_buf, 25, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_pi_target( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_target_buf, 25, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_PI_TARGET;
+	result = libfwevt_xml_document_read_pi_target( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 25, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_target( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_target_buf, (size_t) SSIZE_MAX + 1, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_target( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_target_buf, 25, 25, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_target( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_target_buf, 25, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, NULL, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_pi_target( (libfwevt_internal_xml_document_t *) xml_document, xml_token, pi_target_buf, 4, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 5. Test normal_substitution, optional_substitution, and substitute_template_value across value & array types
+	 */
+	result = libcdata_array_initialize( &template_values_array, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_template_value_initialize( &template_value, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_template_value_set_offset( template_value, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_template_value_set_size( template_value, 4, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libcdata_array_append_entry( template_values_array, &entry_index, (intptr_t *) template_value, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	result = libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_initialize( &xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	xml_token->type = LIBFWEVT_XML_TOKEN_NORMAL_SUBSTITUTION;
+	template_value_offset = 0;
+	result = libfwevt_xml_document_read_normal_substitution(
+	          (libfwevt_internal_xml_document_t *) xml_document, xml_token, norm_sub_buf, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "norm_sub", result, 1 );
+
+	/* Error cases for read_normal_substitution & read_optional_substitution
+	 */
+	result = libfwevt_xml_document_read_normal_substitution( NULL, xml_token, norm_sub_buf, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_normal_substitution( (libfwevt_internal_xml_document_t *) xml_document, NULL, norm_sub_buf, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_normal_substitution( (libfwevt_internal_xml_document_t *) xml_document, xml_token, norm_sub_buf, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_NORMAL_SUBSTITUTION;
+	result = libfwevt_xml_document_read_normal_substitution( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_normal_substitution( (libfwevt_internal_xml_document_t *) xml_document, xml_token, norm_sub_buf, (size_t) SSIZE_MAX + 1, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_normal_substitution( (libfwevt_internal_xml_document_t *) xml_document, xml_token, norm_sub_buf, 4, 4, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_normal_substitution( (libfwevt_internal_xml_document_t *) xml_document, xml_token, norm_sub_buf, 3, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* Exercise substitute_template_value across all scalar & array types
+	 */
+	{
+		struct { uint8_t type; size_t off; uint16_t sz; } sub_cases[] = {
+			{ LIBFWEVT_VALUE_TYPE_STRING_UTF16, 16, 6 },
+			{ LIBFWEVT_VALUE_TYPE_STRING_BYTE_STREAM, 26, 3 },
+			{ LIBFWEVT_VALUE_TYPE_INTEGER_8BIT, 0, 1 },
+			{ LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_8BIT, 0, 1 },
+			{ LIBFWEVT_VALUE_TYPE_INTEGER_16BIT, 0, 2 },
+			{ LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_16BIT, 0, 2 },
+			{ LIBFWEVT_VALUE_TYPE_INTEGER_32BIT, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_HEXADECIMAL_INTEGER_32BIT, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_INTEGER_64BIT, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_64BIT, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_HEXADECIMAL_INTEGER_64BIT, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_FLOATING_POINT_32BIT, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_FLOATING_POINT_64BIT, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_BOOLEAN, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_BINARY_DATA, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_GUID, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_SIZE, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_SIZE, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_FILETIME, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_SYSTEMTIME, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_NT_SECURITY_IDENTIFIER, 0, 12 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_BYTE_STREAM, 26, 5 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_STRING_UTF16, 16, 10 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_INTEGER_8BIT, 0, 2 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_UNSIGNED_INTEGER_8BIT, 0, 2 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_INTEGER_16BIT, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_UNSIGNED_INTEGER_16BIT, 0, 4 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_INTEGER_32BIT, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_UNSIGNED_INTEGER_32BIT, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_HEXADECIMAL_INTEGER_32BIT, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_INTEGER_64BIT, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_UNSIGNED_INTEGER_64BIT, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_HEXADECIMAL_INTEGER_64BIT, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_FLOATING_POINT_32BIT, 0, 8 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_FLOATING_POINT_64BIT, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_GUID, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_FILETIME, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_ARRAY_OF_SYSTEMTIME, 0, 16 },
+			{ LIBFWEVT_VALUE_TYPE_BINARY_XML, 32, 15 }
+		};
+		size_t c_idx = 0;
+
+		for( c_idx = 0; c_idx < ( sizeof( sub_cases ) / sizeof( sub_cases[ 0 ] ) ); c_idx++ )
+		{
+			libfwevt_xml_tag_t *sub_tag = NULL;
+
+			result = libfwevt_xml_tag_initialize( &sub_tag, &error );
+			FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+			libfwevt_xml_template_value_set_type( template_value, sub_cases[ c_idx ].type, &error );
+			libfwevt_xml_template_value_set_offset( template_value, sub_cases[ c_idx ].off, &error );
+			libfwevt_xml_template_value_set_size( template_value, sub_cases[ c_idx ].sz, &error );
+
+			template_value_offset = 0;
+			result = libfwevt_xml_document_substitute_template_value(
+			          (libfwevt_internal_xml_document_t *) xml_document, val_buf, 64, LIBUNA_CODEPAGE_WINDOWS_1252, 0,
+			          template_values_array, 0, sub_cases[ c_idx ].type, &template_value_offset, sub_tag, 0, 0, &error );
+			FWEVT_TEST_ASSERT_EQUAL_INT( "sub_case", result, 1 );
+			FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+			libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &sub_tag, &error );
+		}
+	}
+	/* BINARY_XML with FRAGMENT_HEADER
+	 */
+	{
+		libfwevt_xml_tag_t *sub_tag = NULL;
+
+		result = libfwevt_xml_tag_initialize( &sub_tag, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_BINARY_XML, &error );
+		libfwevt_xml_template_value_set_offset( template_value, 0, &error );
+		libfwevt_xml_template_value_set_size( template_value, 20, &error );
+		template_value_offset = 0;
+		result = libfwevt_xml_document_substitute_template_value(
+		          (libfwevt_internal_xml_document_t *) xml_document, frag_binxml, 20, LIBUNA_CODEPAGE_WINDOWS_1252, 0,
+		          template_values_array, 0, LIBFWEVT_VALUE_TYPE_BINARY_XML, &template_value_offset, sub_tag, 0, 0, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "binxml_frag", result, 1 );
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &sub_tag, &error );
+	}
+	/* NULL type returns 0 via optional_substitution, and errors on invalid size / unsupported type
+	 */
+	libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_NULL, &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_OPTIONAL_SUBSTITUTION;
+	template_value_offset = 0;
+	result = libfwevt_xml_document_read_optional_substitution(
+	          (libfwevt_internal_xml_document_t *) xml_document, xml_token, opt_sub_buf, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "opt_sub_null", result, 0 );
+
+	libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_SIZE, &error );
+	libfwevt_xml_template_value_set_size( template_value, 2, &error );
+	result = libfwevt_xml_document_substitute_template_value(
+	          (libfwevt_internal_xml_document_t *) xml_document, val_buf, 64, LIBUNA_CODEPAGE_WINDOWS_1252, 0,
+	          template_values_array, 0, LIBFWEVT_VALUE_TYPE_SIZE, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "bad_size", result, -1 );
+	libcerror_error_free( &error );
+
+	libfwevt_xml_template_value_set_type( template_value, 0x7f, &error );
+	result = libfwevt_xml_document_substitute_template_value(
+	          (libfwevt_internal_xml_document_t *) xml_document, val_buf, 64, LIBUNA_CODEPAGE_WINDOWS_1252, 0,
+	          template_values_array, 0, 0x7f, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "bad_type", result, -1 );
+	libcerror_error_free( &error );
+
+	libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_INTEGER_32BIT, &error );
+	libfwevt_xml_template_value_set_size( template_value, 2, &error );
+	result = libfwevt_xml_document_substitute_template_value(
+	          (libfwevt_internal_xml_document_t *) xml_document, val_buf, 64, LIBUNA_CODEPAGE_WINDOWS_1252, 0,
+	          template_values_array, 0, LIBFWEVT_VALUE_TYPE_INTEGER_32BIT, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "size_mismatch", result, -1 );
+	libcerror_error_free( &error );
+
+	libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+	libfwevt_xml_template_value_set_size( template_value, 3, &error );
+	result = libfwevt_xml_document_substitute_template_value(
+	          (libfwevt_internal_xml_document_t *) xml_document, val_buf, 64, LIBUNA_CODEPAGE_WINDOWS_1252, 0,
+	          template_values_array, 0, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "odd_utf16", result, -1 );
+	libcerror_error_free( &error );
+
+	/* Error cases for substitute_template_value NULL args
+	 */
+	result = libfwevt_xml_document_substitute_template_value( NULL, val_buf, 64, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, 0, 0, &template_value_offset, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_substitute_template_value( (libfwevt_internal_xml_document_t *) xml_document, val_buf, 64, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, 0, 0, NULL, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_substitute_template_value( (libfwevt_internal_xml_document_t *) xml_document, val_buf, 64, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, 0, 0, &template_value_offset, NULL, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	libcdata_array_free( &template_values_array, (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_xml_template_value_free, &error );
+	libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &xml_tag, &error );
+	libfwevt_xml_token_free( &xml_token, &error );
+	libfwevt_xml_document_free( &xml_document, &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free( &error );
+	}
+	if( template_values_array != NULL )
+	{
+		libcdata_array_free( &template_values_array, (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_xml_template_value_free, NULL );
+	}
+	if( xml_tag != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &xml_tag, NULL );
+	}
+	if( xml_token != NULL )
+	{
+		libfwevt_xml_token_free( &xml_token, NULL );
+	}
+	if( xml_document != NULL )
+	{
+		libfwevt_xml_document_free( &xml_document, NULL );
+	}
+	return( 0 );
+}
+
+/* Tests internal binary XML element, attribute, fragment, name, value, and template instance readers
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_xml_document_internal_element_and_fragment(
+     void )
+{
+	uint8_t frag_hdr[ 6 ]       = { 0x0f, 0x01, 0x01, 0x00, 0x00, 0x00 };
+	uint8_t frag_bad_tok[ 6 ]   = { 0x0f, 0x01, 0x01, 0x00, 0x07, 0x00 };
+	uint8_t name_inline[ 10 ]   = { 0x00, 0x00, 0x01, 0x00, 'n', 0, 0, 0, 0, 0 };
+	uint8_t name_offsets[ 14 ]  = { 0, 0, 0, 0, 0x00, 0x00, 0x01, 0x00, 'n', 0, 0, 0, 0, 0 };
+	uint8_t val_utf16[ 10 ]     = { 0x05, LIBFWEVT_VALUE_TYPE_STRING_UTF16, 0x02, 0x00, 'o', 0, 'k', 0, 0, 0 };
+	uint8_t val_bad_type[ 10 ]  = { 0x05, 0x7f, 0x02, 0x00, 'o', 0, 'k', 0, 0, 0 };
+	/* Attribute with NORMAL_SUBSTITUTION: 0x06 + name(8) + 0x0d, 0, 0, uint32 */
+	uint8_t attr_sub[ 16 ]      = {
+		0x06,
+		0x00, 0x00, 0x01, 0x00, 'a', 0, 0, 0,
+		0x0d, 0x00, 0x00, LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT,
+		0, 0, 0 };
+	/* Attribute with OPTIONAL_SUBSTITUTION (NULL -> 0) */
+	uint8_t attr_opt[ 16 ]      = {
+		0x06,
+		0x00, 0x00, 0x01, 0x00, 'a', 0, 0, 0,
+		0x0e, 0x00, 0x00, LIBFWEVT_VALUE_TYPE_NULL,
+		0, 0, 0 };
+	/* Attribute with unsupported sub-token 0x07 */
+	uint8_t attr_bad[ 12 ]      = {
+		0x06,
+		0x00, 0x00, 0x01, 0x00, 'a', 0, 0, 0,
+		0x07, 0, 0 };
+	/* Element containing CDATA + VALUE + ENTITY_REFERENCE + END_ELEMENT_TAG:
+	 * 0x01 + size(4) + name(8) + close_start(1) + cdata(7) + value(8) + entity(11) + end_tag(1)
+	 * element_size = 8 + 1 + 7 + 8 + 11 + 1 = 36 (0x24)
+	 */
+	uint8_t elem_rich[ 44 ]     = {
+		0x01, 0x24, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x01, 0x00, 'e', 0, 0, 0,
+		0x02,
+		0x07, 0x02, 0x00, 'c', 0, 'd', 0,
+		0x05, LIBFWEVT_VALUE_TYPE_STRING_UTF16, 0x02, 0x00, 'v', 0, '1', 0,
+		0x09, 0x00, 0x00, 0x02, 0x00, 'g', 0, 't', 0, 0, 0,
+		0x04,
+		0, 0, 0 };
+	/* Element containing NORMAL_SUBSTITUTION: 8 + 1 + 4 + 1 = 14 (0x0e) */
+	uint8_t elem_nsub[ 22 ]     = {
+		0x01, 0x0e, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x01, 0x00, 'e', 0, 0, 0,
+		0x02,
+		0x0d, 0x00, 0x00, LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT,
+		0x04, 0, 0, 0 };
+	/* Element containing OPTIONAL_SUBSTITUTION: 8 + 1 + 4 + 1 = 14 (0x0e) */
+	uint8_t elem_osub[ 22 ]     = {
+		0x01, 0x0e, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x01, 0x00, 'e', 0, 0, 0,
+		0x02,
+		0x0e, 0x00, 0x00, LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT,
+		0x04, 0, 0, 0 };
+	/* Element with bad close tag (0x07 instead of 0x02/0x03) */
+	uint8_t elem_bad_close[ 16 ] = {
+		0x01, 0x09, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x01, 0x00, 'e', 0, 0, 0,
+		0x07, 0, 0 };
+	/* Element with bad child sub-token (0x06 inside body) */
+	uint8_t elem_bad_sub[ 18 ]   = {
+		0x01, 0x0b, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x01, 0x00, 'e', 0, 0, 0,
+		0x02, 0x06, 0x04, 0, 0 };
+	/* Element with trailing leftover element_size */
+	uint8_t elem_bad_sz[ 18 ]    = {
+		0x01, 0x0c, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x01, 0x00, 'e', 0, 0, 0,
+		0x03, 0, 0, 0, 0 };
+	/* Template instance values buffer: count=1, size=4, type=uint32, pad=0, data=4 bytes */
+	uint8_t tpl_vals_buf[ 16 ]   = {
+		0x01, 0x00, 0x00, 0x00,
+		0x04, 0x00, LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT, 0x00,
+		0x11, 0x22, 0x33, 0x44, 0, 0, 0, 0 };
+
+	libcerror_error_t *error                      = NULL;
+	libcdata_array_t *template_values_array       = NULL;
+	libcdata_array_t *parsed_values_array         = NULL;
+	libfwevt_xml_document_t *xml_document         = NULL;
+	libfwevt_xml_tag_t *xml_tag                   = NULL;
+	libfwevt_xml_template_value_t *template_value = NULL;
+	libfwevt_xml_token_t *xml_token               = NULL;
+	size_t parsed_values_size                     = 0;
+	uint32_t name_size                            = 0;
+	int entry_index                               = 0;
+	int result                                    = 0;
+
+	result = libfwevt_xml_document_initialize( &xml_document, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_token_initialize( &xml_token, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_initialize( &xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	result = libcdata_array_initialize( &template_values_array, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_template_value_initialize( &template_value, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT, &error );
+	libfwevt_xml_template_value_set_offset( template_value, 0, &error );
+	libfwevt_xml_template_value_set_size( template_value, 4, &error );
+	result = libcdata_array_append_entry( template_values_array, &entry_index, (intptr_t *) template_value, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	/* 1. read_fragment_header & read_fragment error/regular cases
+	 */
+	xml_token->type = LIBFWEVT_XML_TOKEN_FRAGMENT_HEADER;
+	result = libfwevt_xml_document_read_fragment_header( (libfwevt_internal_xml_document_t *) xml_document, xml_token, frag_hdr, 6, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "frag_hdr", result, 1 );
+
+	result = libfwevt_xml_document_read_fragment_header( NULL, xml_token, frag_hdr, 6, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_fragment_header( (libfwevt_internal_xml_document_t *) xml_document, NULL, frag_hdr, 6, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_fragment_header( (libfwevt_internal_xml_document_t *) xml_document, xml_token, frag_hdr, 6, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_FRAGMENT_HEADER;
+	result = libfwevt_xml_document_read_fragment_header( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 6, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_fragment_header( (libfwevt_internal_xml_document_t *) xml_document, xml_token, frag_hdr, (size_t) SSIZE_MAX + 1, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_fragment_header( (libfwevt_internal_xml_document_t *) xml_document, xml_token, frag_hdr, 6, 6, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_fragment_header( (libfwevt_internal_xml_document_t *) xml_document, xml_token, frag_hdr, 3, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_xml_document_read_fragment( NULL, xml_token, frag_bad_tok, 6, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, NULL, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_fragment( (libfwevt_internal_xml_document_t *) xml_document, NULL, frag_bad_tok, 6, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, NULL, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_fragment( (libfwevt_internal_xml_document_t *) xml_document, xml_token, frag_bad_tok, 3, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, NULL, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_fragment( (libfwevt_internal_xml_document_t *) xml_document, xml_token, frag_bad_tok, 6, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, NULL, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 2. read_name regular & error cases
+	 */
+	result = libfwevt_xml_document_read_name( (libfwevt_internal_xml_document_t *) xml_document, name_inline, 10, 0, 0, &name_size, xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "name_inline", result, 1 );
+	result = libfwevt_xml_document_read_name( NULL, name_inline, 10, 0, 0, &name_size, xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_name( (libfwevt_internal_xml_document_t *) xml_document, NULL, 10, 0, 0, &name_size, xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_name( (libfwevt_internal_xml_document_t *) xml_document, name_inline, (size_t) SSIZE_MAX + 1, 0, 0, &name_size, xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_name( (libfwevt_internal_xml_document_t *) xml_document, name_inline, 10, 10, 0, &name_size, xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_name( (libfwevt_internal_xml_document_t *) xml_document, name_inline, 10, 0, 0, NULL, xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_name( (libfwevt_internal_xml_document_t *) xml_document, name_inline, 10, 0, 0, &name_size, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_name( (libfwevt_internal_xml_document_t *) xml_document, name_inline, 3, 0, 0, &name_size, xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_name( (libfwevt_internal_xml_document_t *) xml_document, name_offsets, 7, 0, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, &name_size, xml_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 3. read_value regular & error cases
+	 */
+	xml_token->type = LIBFWEVT_XML_TOKEN_VALUE;
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, val_utf16, 10, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "read_val", result, 1 );
+	result = libfwevt_xml_document_read_value( NULL, xml_token, val_utf16, 10, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, NULL, val_utf16, 10, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, val_utf16, 10, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_VALUE;
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 10, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, val_utf16, (size_t) SSIZE_MAX + 1, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, val_utf16, 10, 10, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, val_utf16, 10, 0, NULL, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, val_utf16, 3, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, val_utf16, 6, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_value( (libfwevt_internal_xml_document_t *) xml_document, xml_token, val_bad_type, 10, 0, xml_tag, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 4. read_attribute with NORMAL_SUBSTITUTION, OPTIONAL_SUBSTITUTION, unsupported sub-token, and error cases
+	 */
+	xml_token->type = LIBFWEVT_XML_TOKEN_ATTRIBUTE;
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, attr_sub, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "attr_sub", result, 1 );
+	libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_NULL, &error );
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, attr_opt, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "attr_opt", result, 1 );
+	libfwevt_xml_template_value_set_type( template_value, LIBFWEVT_VALUE_TYPE_UNSIGNED_INTEGER_32BIT, &error );
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, attr_bad, 12, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "attr_bad", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_xml_document_read_attribute( NULL, xml_token, attr_sub, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, NULL, attr_sub, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, attr_sub, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_ATTRIBUTE;
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, attr_sub, (size_t) SSIZE_MAX + 1, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, attr_sub, 16, 16, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, attr_sub, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, NULL, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_attribute( (libfwevt_internal_xml_document_t *) xml_document, xml_token, attr_sub, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, LIBFWEVT_XML_DOCUMENT_READ_FLAG_HAS_DATA_OFFSETS, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 5. read_element with rich body (CDATA, VALUE, ENTITY_REFERENCE, NORMAL_SUBSTITUTION, OPTIONAL_SUBSTITUTION) & errors
+	 */
+	xml_token->type = LIBFWEVT_XML_TOKEN_OPEN_START_ELEMENT_TAG;
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_rich, 44, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "elem_rich", result, 1 );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_nsub, 22, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "elem_nsub", result, 1 );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_osub, 22, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "elem_osub", result, 1 );
+
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_bad_close, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "elem_bad_close", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_bad_sub, 18, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "elem_bad_sub", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_bad_sz, 18, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "elem_bad_sz", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_rich, 44, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 1000, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "elem_depth", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_element( NULL, xml_token, elem_rich, 44, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, NULL, elem_rich, 44, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_rich, 44, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_OPEN_START_ELEMENT_TAG;
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 44, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_rich, (size_t) SSIZE_MAX + 1, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_rich, 44, 44, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_element( (libfwevt_internal_xml_document_t *) xml_document, xml_token, elem_rich, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, template_values_array, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* 6. read_template_instance & read_template_instance_values error/regular cases
+	 */
+	result = libfwevt_xml_document_read_template_instance_values( (libfwevt_internal_xml_document_t *) xml_document, tpl_vals_buf, 16, 0, &parsed_values_array, &parsed_values_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "tpl_vals", result, 1 );
+	libcdata_array_free( &parsed_values_array, (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_xml_template_value_free, &error );
+
+	result = libfwevt_xml_document_read_template_instance_values( NULL, tpl_vals_buf, 16, 0, &parsed_values_array, &parsed_values_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance_values( (libfwevt_internal_xml_document_t *) xml_document, tpl_vals_buf, 16, 16, &parsed_values_array, &parsed_values_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance_values( (libfwevt_internal_xml_document_t *) xml_document, tpl_vals_buf, 16, 0, NULL, &parsed_values_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance_values( (libfwevt_internal_xml_document_t *) xml_document, tpl_vals_buf, 16, 0, &parsed_values_array, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance_values( (libfwevt_internal_xml_document_t *) xml_document, tpl_vals_buf, 3, 0, &parsed_values_array, &parsed_values_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance_values( (libfwevt_internal_xml_document_t *) xml_document, tpl_vals_buf, 6, 0, &parsed_values_array, &parsed_values_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance_values( (libfwevt_internal_xml_document_t *) xml_document, tpl_vals_buf, 10, 0, &parsed_values_array, &parsed_values_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	xml_token->type = LIBFWEVT_XML_TOKEN_TEMPLATE_INSTANCE;
+	result = libfwevt_xml_document_read_template_instance( NULL, xml_token, tpl_vals_buf, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance( (libfwevt_internal_xml_document_t *) xml_document, NULL, tpl_vals_buf, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_END_OF_FILE;
+	result = libfwevt_xml_document_read_template_instance( (libfwevt_internal_xml_document_t *) xml_document, xml_token, tpl_vals_buf, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	xml_token->type = LIBFWEVT_XML_TOKEN_TEMPLATE_INSTANCE;
+	result = libfwevt_xml_document_read_template_instance( (libfwevt_internal_xml_document_t *) xml_document, xml_token, NULL, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance( (libfwevt_internal_xml_document_t *) xml_document, xml_token, tpl_vals_buf, (size_t) SSIZE_MAX + 1, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance( (libfwevt_internal_xml_document_t *) xml_document, xml_token, tpl_vals_buf, 16, 16, LIBUNA_CODEPAGE_WINDOWS_1252, 0, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance( (libfwevt_internal_xml_document_t *) xml_document, xml_token, tpl_vals_buf, 16, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, xml_tag, 0, 1000, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_document_read_template_instance( (libfwevt_internal_xml_document_t *) xml_document, xml_token, tpl_vals_buf, 4, 0, LIBUNA_CODEPAGE_WINDOWS_1252, 0, xml_tag, 0, 0, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	libcdata_array_free( &template_values_array, (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_xml_template_value_free, &error );
+	libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &xml_tag, &error );
+	libfwevt_xml_token_free( &xml_token, &error );
+	libfwevt_xml_document_free( &xml_document, &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free( &error );
+	}
+	if( parsed_values_array != NULL )
+	{
+		libcdata_array_free( &parsed_values_array, (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_xml_template_value_free, NULL );
+	}
+	if( template_values_array != NULL )
+	{
+		libcdata_array_free( &template_values_array, (int (*)(intptr_t **, libcerror_error_t **)) &libfwevt_xml_template_value_free, NULL );
+	}
+	if( xml_tag != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &xml_tag, NULL );
+	}
+	if( xml_token != NULL )
+	{
+		libfwevt_xml_token_free( &xml_token, NULL );
+	}
+	if( xml_document != NULL )
+	{
+		libfwevt_xml_document_free( &xml_document, NULL );
+	}
+	return( 0 );
+}
+
+#endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -5426,6 +6286,14 @@ int main(
 	FWEVT_TEST_RUN(
 	 "libfwevt_xml_document_read_with_template_values",
 	 fwevt_test_xml_document_read_with_template_values );
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_xml_document_internal_readers",
+	 fwevt_test_xml_document_internal_readers );
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_xml_document_internal_element_and_fragment",
+	 fwevt_test_xml_document_internal_element_and_fragment );
 
 	/* TODO: add tests for libfwevt_xml_document_read_attribute */
 

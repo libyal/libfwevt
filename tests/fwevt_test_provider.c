@@ -2677,11 +2677,41 @@ int fwevt_test_provider_compare_identifier(
 	 "error",
 	 error );
 
-	result = libfwevt_provider_compare_identifier(
+	/* Test libfwevt_provider_get_identifier
+	 */
+	result = libfwevt_provider_get_identifier(
 	          provider,
 	          identifier,
 	          16,
 	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+	result = libfwevt_provider_get_identifier( NULL, identifier, 16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_provider_get_identifier( provider, NULL, 16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_provider_get_identifier( provider, identifier, 15, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_provider_get_identifier( provider, identifier, (size_t) SSIZE_MAX + 1, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	{
+		uint8_t zero_id[ 16 ] = { 0 };
+		result = libfwevt_provider_compare_identifier(
+		          provider,
+		          zero_id,
+		          16,
+		          &error );
+	}
 
 	FWEVT_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -4987,6 +5017,151 @@ int main(
 	 "libfwevt_provider_get_template_by_offset",
 	 fwevt_test_provider_get_template_by_offset,
 	 provider );
+
+	/* Test matching lookups and reading populated channels, keywords, levels, maps, opcodes, tasks
+	 */
+	{
+		libfwevt_event_t *evt          = NULL;
+		libfwevt_template_t *tpl       = NULL;
+		libfwevt_provider_t *prov2     = NULL;
+		uint32_t event_id              = 0;
+		uint32_t tpl_offset            = 0;
+
+		/* Valid CHAN table at offset 4 (4-byte pad + 12-byte header + 16-byte channel entry + 4-byte pad) */
+		uint8_t chan_buf[ 36 ] = {
+			0, 0, 0, 0,
+			'C', 'H', 'A', 'N', 28, 0, 0, 0, 1, 0, 0, 0,
+			1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0 };
+		/* Valid KEYW table at offset 4 (4-byte pad + 12-byte header + 16-byte keyword entry + 4-byte pad) */
+		uint8_t keyw_buf[ 36 ] = {
+			0, 0, 0, 0,
+			'K', 'E', 'Y', 'W', 28, 0, 0, 0, 1, 0, 0, 0,
+			1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0 };
+		/* Valid LEVL table at offset 4 (4-byte pad + 12-byte header + 12-byte level entry + 4-byte pad) */
+		uint8_t levl_buf[ 32 ] = {
+			0, 0, 0, 0,
+			'L', 'E', 'V', 'L', 24, 0, 0, 0, 1, 0, 0, 0,
+			1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0 };
+		/* Valid OPCO table at offset 4 (4-byte pad + 12-byte header + 12-byte opcode entry + 4-byte pad) */
+		uint8_t opco_buf[ 32 ] = {
+			0, 0, 0, 0,
+			'O', 'P', 'C', 'O', 24, 0, 0, 0, 1, 0, 0, 0,
+			1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0 };
+		/* Valid TASK table at offset 4 (4-byte pad + 12-byte header + 28-byte task entry + 20-byte pad) */
+		uint8_t task_buf[ 64 ] = {
+			0, 0, 0, 0,
+			'T', 'A', 'S', 'K', 56, 0, 0, 0, 1, 0, 0, 0,
+			1, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0 };
+		/* Valid MAPS table at offset 4 with 2 maps: 4-byte pad + 16-byte header + 4-byte offset2 + 2x4-byte MAPS + 12-byte pad */
+		uint8_t maps_buf[ 44 ] = {
+			0, 0, 0, 0,
+			'M', 'A', 'P', 'S', 32, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0,
+			28, 0, 0, 0,
+			'M', 'A', 'P', 'S', 'M', 'A', 'P', 'S',
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		uint8_t bad_sig[ 36 ] = { 0, 0, 0, 0, 'X', 'X', 'X', 'X', 28, 0, 0, 0, 1, 0, 0, 0 };
+
+		if( libfwevt_provider_get_event_by_index( provider, 0, &evt, &error ) == 1 )
+		{
+			if( libfwevt_event_get_identifier( evt, &event_id, &error ) == 1 )
+			{
+				libfwevt_event_t *evt_found = NULL;
+				result = libfwevt_provider_get_event_by_identifier( provider, event_id, &evt_found, &error );
+				FWEVT_TEST_ASSERT_EQUAL_INT( "evt_by_id", result, 1 );
+				FWEVT_TEST_ASSERT_IS_NOT_NULL( "evt_found", evt_found );
+				libfwevt_event_free( &evt_found, &error );
+			}
+			libfwevt_event_free( &evt, &error );
+		}
+		if( libfwevt_provider_get_template_by_index( provider, 0, &tpl, &error ) == 1 )
+		{
+			if( libfwevt_template_get_offset( tpl, &tpl_offset, &error ) == 1 )
+			{
+				libfwevt_template_t *tpl_found = NULL;
+				result = libfwevt_provider_get_template_by_offset( provider, tpl_offset, &tpl_found, &error );
+				FWEVT_TEST_ASSERT_EQUAL_INT( "tpl_by_off", result, 1 );
+				FWEVT_TEST_ASSERT_IS_NOT_NULL( "tpl_found", tpl_found );
+				libfwevt_template_free( &tpl_found, &error );
+			}
+			libfwevt_template_free( &tpl, &error );
+		}
+		result = libfwevt_provider_initialize( &prov2, fwevt_test_provider_identifier_data1, 16, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+		( (libfwevt_internal_provider_t *) prov2 )->channels_offset = 4;
+		result = libfwevt_provider_read_channels( prov2, chan_buf, 36, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "read_chan", result, 1 );
+		result = libfwevt_provider_read_channels( prov2, bad_sig, 36, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_chan", result, -1 );
+		libcerror_error_free( &error );
+		chan_buf[ 8 ] = 4; /* channels_data_size < header size */
+		result = libfwevt_provider_read_channels( prov2, chan_buf, 36, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_chan_sz", result, -1 );
+		libcerror_error_free( &error );
+
+		( (libfwevt_internal_provider_t *) prov2 )->keywords_offset = 4;
+		result = libfwevt_provider_read_keywords( prov2, keyw_buf, 36, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "read_keyw", result, 1 );
+		result = libfwevt_provider_read_keywords( prov2, bad_sig, 36, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_keyw", result, -1 );
+		libcerror_error_free( &error );
+		keyw_buf[ 8 ] = 4;
+		result = libfwevt_provider_read_keywords( prov2, keyw_buf, 36, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_keyw_sz", result, -1 );
+		libcerror_error_free( &error );
+
+		( (libfwevt_internal_provider_t *) prov2 )->levels_offset = 4;
+		result = libfwevt_provider_read_levels( prov2, levl_buf, 32, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "read_levl", result, 1 );
+		result = libfwevt_provider_read_levels( prov2, bad_sig, 32, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_levl", result, -1 );
+		libcerror_error_free( &error );
+		levl_buf[ 8 ] = 4;
+		result = libfwevt_provider_read_levels( prov2, levl_buf, 32, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_levl_sz", result, -1 );
+		libcerror_error_free( &error );
+
+		( (libfwevt_internal_provider_t *) prov2 )->opcodes_offset = 4;
+		result = libfwevt_provider_read_opcodes( prov2, opco_buf, 32, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "read_opco", result, 1 );
+		result = libfwevt_provider_read_opcodes( prov2, bad_sig, 32, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_opco", result, -1 );
+		libcerror_error_free( &error );
+		opco_buf[ 8 ] = 4;
+		result = libfwevt_provider_read_opcodes( prov2, opco_buf, 32, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_opco_sz", result, -1 );
+		libcerror_error_free( &error );
+
+		( (libfwevt_internal_provider_t *) prov2 )->tasks_offset = 4;
+		result = libfwevt_provider_read_tasks( prov2, task_buf, 64, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "read_task", result, 1 );
+		result = libfwevt_provider_read_tasks( prov2, bad_sig, 36, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_task", result, -1 );
+		libcerror_error_free( &error );
+		task_buf[ 8 ] = 4;
+		result = libfwevt_provider_read_tasks( prov2, task_buf, 64, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_task_sz", result, -1 );
+		libcerror_error_free( &error );
+
+		( (libfwevt_internal_provider_t *) prov2 )->maps_offset = 4;
+		result = libfwevt_provider_read_maps( prov2, maps_buf, 44, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "read_maps", result, 1 );
+		result = libfwevt_provider_read_maps( prov2, bad_sig, 36, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_maps", result, -1 );
+		libcerror_error_free( &error );
+		maps_buf[ 8 ] = 4;
+		result = libfwevt_provider_read_maps( prov2, maps_buf, 44, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "bad_maps_sz", result, -1 );
+		libcerror_error_free( &error );
+
+		libfwevt_internal_provider_free( (libfwevt_internal_provider_t **) &prov2, &error );
+	}
 
 	/* Clean up
 	 */

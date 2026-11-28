@@ -565,6 +565,596 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_channel_get_identifier function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_channel_get_identifier(
+     libfwevt_channel_t *channel )
+{
+	libcerror_error_t *error = NULL;
+	uint32_t identifier      = 0;
+	int result               = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_channel_get_identifier(
+	          channel,
+	          &identifier,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_UINT32(
+	 "identifier",
+	 identifier,
+	 (uint32_t) 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libfwevt_channel_get_identifier(
+	          NULL,
+	          &identifier,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_channel_get_identifier(
+	          channel,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_channel_get_utf8_name_size function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_channel_get_utf8_name_size(
+     libfwevt_channel_t *channel )
+{
+	libcerror_error_t *error        = NULL;
+	libfwevt_channel_t *empty_chan  = NULL;
+	size_t utf8_string_size         = 0;
+	int result                      = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_channel_get_utf8_name_size(
+	          channel,
+	          &utf8_string_size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_SIZE(
+	 "utf8_string_size",
+	 utf8_string_size,
+	 (size_t) 9 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test empty channel (name not available)
+	 */
+	result = libfwevt_channel_initialize(
+	          &empty_chan,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	result = libfwevt_channel_get_utf8_name_size(
+	          empty_chan,
+	          &utf8_string_size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libfwevt_internal_channel_free(
+	          (libfwevt_internal_channel_t **) &empty_chan,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	/* Test error cases
+	 */
+	result = libfwevt_channel_get_utf8_name_size(
+	          NULL,
+	          &utf8_string_size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_channel_get_utf8_name_size(
+	          channel,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( empty_chan != NULL )
+	{
+		libfwevt_internal_channel_free(
+		 (libfwevt_internal_channel_t **) &empty_chan,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_channel_get_utf8_name function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_channel_get_utf8_name(
+     libfwevt_channel_t *channel )
+{
+	uint8_t utf8_string[ 32 ];
+
+	libcerror_error_t *error        = NULL;
+	libfwevt_channel_t *empty_chan  = NULL;
+	int result                      = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_channel_get_utf8_name(
+	          channel,
+	          utf8_string,
+	          32,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test empty channel (name not available)
+	 */
+	result = libfwevt_channel_initialize(
+	          &empty_chan,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	result = libfwevt_channel_get_utf8_name(
+	          empty_chan,
+	          utf8_string,
+	          32,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libfwevt_internal_channel_free(
+	          (libfwevt_internal_channel_t **) &empty_chan,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	/* Test error cases
+	 */
+	result = libfwevt_channel_get_utf8_name(
+	          NULL,
+	          utf8_string,
+	          32,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_channel_get_utf8_name(
+	          channel,
+	          NULL,
+	          32,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_channel_get_utf8_name(
+	          channel,
+	          utf8_string,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( empty_chan != NULL )
+	{
+		libfwevt_internal_channel_free(
+		 (libfwevt_internal_channel_t **) &empty_chan,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_channel_get_utf16_name_size function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_channel_get_utf16_name_size(
+     libfwevt_channel_t *channel )
+{
+	libcerror_error_t *error        = NULL;
+	libfwevt_channel_t *empty_chan  = NULL;
+	size_t utf16_string_size        = 0;
+	int result                      = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_channel_get_utf16_name_size(
+	          channel,
+	          &utf16_string_size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_EQUAL_SIZE(
+	 "utf16_string_size",
+	 utf16_string_size,
+	 (size_t) 9 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test empty channel (name not available)
+	 */
+	result = libfwevt_channel_initialize(
+	          &empty_chan,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	result = libfwevt_channel_get_utf16_name_size(
+	          empty_chan,
+	          &utf16_string_size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libfwevt_internal_channel_free(
+	          (libfwevt_internal_channel_t **) &empty_chan,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	/* Test error cases
+	 */
+	result = libfwevt_channel_get_utf16_name_size(
+	          NULL,
+	          &utf16_string_size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_channel_get_utf16_name_size(
+	          channel,
+	          NULL,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( empty_chan != NULL )
+	{
+		libfwevt_internal_channel_free(
+		 (libfwevt_internal_channel_t **) &empty_chan,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_channel_get_utf16_name function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_channel_get_utf16_name(
+     libfwevt_channel_t *channel )
+{
+	uint16_t utf16_string[ 32 ];
+
+	libcerror_error_t *error        = NULL;
+	libfwevt_channel_t *empty_chan  = NULL;
+	int result                      = 0;
+
+	/* Test regular cases
+	 */
+	result = libfwevt_channel_get_utf16_name(
+	          channel,
+	          utf16_string,
+	          32,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test empty channel (name not available)
+	 */
+	result = libfwevt_channel_initialize(
+	          &empty_chan,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	result = libfwevt_channel_get_utf16_name(
+	          empty_chan,
+	          utf16_string,
+	          32,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libfwevt_internal_channel_free(
+	          (libfwevt_internal_channel_t **) &empty_chan,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	/* Test error cases
+	 */
+	result = libfwevt_channel_get_utf16_name(
+	          NULL,
+	          utf16_string,
+	          32,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_channel_get_utf16_name(
+	          channel,
+	          NULL,
+	          32,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_channel_get_utf16_name(
+	          channel,
+	          utf16_string,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( empty_chan != NULL )
+	{
+		libfwevt_internal_channel_free(
+		 (libfwevt_internal_channel_t **) &empty_chan,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
@@ -579,6 +1169,12 @@ int main(
      char * const argv[] FWEVT_TEST_ATTRIBUTE_UNUSED )
 #endif
 {
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+	libcerror_error_t *error    = NULL;
+	libfwevt_channel_t *channel = NULL;
+	int result                  = 0;
+#endif
+
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argc )
 	FWEVT_TEST_UNREFERENCED_PARAMETER( argv )
 
@@ -604,11 +1200,81 @@ int main(
 	 "libfwevt_channel_read_data",
 	 fwevt_test_channel_read_data );
 
+	/* Set up channel for getter tests
+	 */
+	result = libfwevt_channel_initialize(
+	          &channel,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	result = libfwevt_channel_read_data(
+	          channel,
+	          fwevt_test_channel_data1,
+	          40,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_channel_get_identifier",
+	 fwevt_test_channel_get_identifier,
+	 channel );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_channel_get_utf8_name_size",
+	 fwevt_test_channel_get_utf8_name_size,
+	 channel );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_channel_get_utf8_name",
+	 fwevt_test_channel_get_utf8_name,
+	 channel );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_channel_get_utf16_name_size",
+	 fwevt_test_channel_get_utf16_name_size,
+	 channel );
+
+	FWEVT_TEST_RUN_WITH_ARGS(
+	 "libfwevt_channel_get_utf16_name",
+	 fwevt_test_channel_get_utf16_name,
+	 channel );
+
+	result = libfwevt_internal_channel_free(
+	          (libfwevt_internal_channel_t **) &channel,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 
 on_error:
+#if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( channel != NULL )
+	{
+		libfwevt_internal_channel_free(
+		 (libfwevt_internal_channel_t **) &channel,
+		 NULL );
+	}
+#endif
 	return( EXIT_FAILURE );
 }
 

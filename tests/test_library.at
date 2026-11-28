@@ -31,4 +31,4 @@ SETUP_HELPER_FUNCTIONS
 
 RUN_TEST_BINARIES(
   [SKIP_LIBRARY_TESTS],
-  [channel data_segment date_time error event floating_point integer keyword level manifest map notify opcode provider support task template xml_document xml_tag xml_template_value xml_token xml_value])
+  [channel data_segment date_time error event floating_point integer keyword level manifest map notify opcode provider support task template template_item xml_document xml_tag xml_template_value xml_token xml_value])

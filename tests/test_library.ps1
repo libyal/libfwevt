@@ -1,6 +1,6 @@
 # Tests library functions and types.
 
-$LibraryTests = "channel data_segment date_time error event floating_point integer keyword level manifest map notify opcode provider support task template xml_document xml_tag xml_template_value xml_token xml_value"
+$LibraryTests = "channel data_segment date_time error event floating_point integer keyword level manifest map notify opcode provider support task template template_item xml_document xml_tag xml_template_value xml_token xml_value"
 $LibraryTestsWithInput = ""
 $OptionSets = "" -split " "
 

@@ -270,6 +270,7 @@ fwevt_test_xml_document_SOURCES = \
 
 fwevt_test_xml_document_LDADD = \
 	../libfwevt/libfwevt.la \
+	@LIBCDATA_LIBADD@ \
 	@LIBCERROR_LIBADD@
 
 fwevt_test_xml_tag_SOURCES = \

@@ -30,8 +30,8 @@ extern "C" {
 
 #if defined( HAVE_MEMORY_TESTS )
 
-/* Memory tests only support x86 or x86-64 architectures */
-#if defined( __x86__ ) || defined( __x86_64__ )
+/* Memory tests only support aarch64, x86 or x86-64 architectures */
+#if defined( __aarch64__ ) || defined( __x86__ ) || defined( __x86_64__ )
 
 /* Memory tests cannot be used in combination with DLLs or CygWin */
 #if !defined( LIBFWEVT_DLL_IMPORT ) && !defined( __CYGWIN__ )
@@ -43,7 +43,7 @@ extern "C" {
 
 #endif /* defined( HAVE_GNU_DL_DLSYM ) && defined( __GNUC__ ) */
 #endif /* !defined( LIBFWEVT_DLL_IMPORT ) && !defined( __CYGWIN__ ) */
-#endif /* defined( __x86__ ) || defined( __x86_64__ ) */
+#endif /* defined( __aarch64__ ) || defined( __x86__ ) || defined( __x86_64__ ) */
 #endif /* defined( HAVE_MEMORY_TESTS ) */
 
 #if defined( HAVE_FWEVT_TEST_MEMORY )

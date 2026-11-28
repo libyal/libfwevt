@@ -35,6 +35,11 @@
 
 #include "../libfwevt/libfwevt_template_item.h"
 
+uint8_t fwevt_test_template_item_data1[ 36 ] = {
+	0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x04, 0x00,
+	0x14, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x6e, 0x00, 0x61, 0x00, 0x6d, 0x00, 0x65, 0x00,
+	0x00, 0x00, 0x00, 0x00 };
+
 #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT )
 
 /* Tests the libfwevt_template_item_initialize function
@@ -334,6 +339,585 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libfwevt_template_item_read_data function
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_template_item_read_data(
+     void )
+{
+	uint8_t invalid_name_size_data[ 24 ] = {
+		0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x04, 0x00,
+		0x14, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00 };
+	libcerror_error_t *error                = NULL;
+	libfwevt_template_item_t *template_item = NULL;
+	int result                              = 0;
+
+	/* Initialize test
+	 */
+	result = libfwevt_template_item_initialize(
+	          &template_item,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	/* Test regular cases
+	 */
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          36,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	FWEVT_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error case where name is already set
+	 */
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          36,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_internal_template_item_free(
+	          (libfwevt_internal_template_item_t **) &template_item,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	result = libfwevt_template_item_initialize(
+	          &template_item,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	/* Test error cases
+	 */
+	result = libfwevt_template_item_read_data(
+	          NULL,
+	          fwevt_test_template_item_data1,
+	          36,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          NULL,
+	          36,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          (size_t) SSIZE_MAX + 1,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          36,
+	          36,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          19,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test name_offset < template_data_offset
+	 */
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          36,
+	          0,
+	          0x20,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test name_offset >= data_size - 4
+	 */
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          24,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test name_size out of bounds
+	 */
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          35,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test name_size == 4 (zero after header)
+	 */
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          invalid_name_size_data,
+	          24,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	FWEVT_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+#if defined( HAVE_FWEVT_TEST_MEMORY )
+	fwevt_test_malloc_attempts_before_fail = 0;
+
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          36,
+	          0,
+	          0,
+	          &error );
+
+	if( fwevt_test_malloc_attempts_before_fail != -1 )
+	{
+		fwevt_test_malloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		FWEVT_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#if defined( OPTIMIZATION_DISABLED )
+	fwevt_test_memcpy_attempts_before_fail = 0;
+
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          36,
+	          0,
+	          0,
+	          &error );
+
+	if( fwevt_test_memcpy_attempts_before_fail != -1 )
+	{
+		fwevt_test_memcpy_attempts_before_fail = -1;
+	}
+	else
+	{
+		FWEVT_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		FWEVT_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif
+#endif
+
+	result = libfwevt_internal_template_item_free(
+	          (libfwevt_internal_template_item_t **) &template_item,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( template_item != NULL )
+	{
+		libfwevt_internal_template_item_free(
+		 (libfwevt_internal_template_item_t **) &template_item,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libfwevt_template_item getter functions
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_template_item_getters(
+     void )
+{
+	uint8_t utf8_string[ 32 ];
+	uint16_t utf16_string[ 32 ];
+
+	libcerror_error_t *error                = NULL;
+	libfwevt_template_item_t *empty_item    = NULL;
+	libfwevt_template_item_t *template_item = NULL;
+	size_t string_size                      = 0;
+	uint16_t number_of_values               = 0;
+	uint16_t value_data_size                = 0;
+	uint8_t input_data_type                 = 0;
+	uint8_t output_data_type                = 0;
+	int result                              = 0;
+
+	result = libfwevt_template_item_initialize(
+	          &template_item,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	result = libfwevt_template_item_read_data(
+	          template_item,
+	          fwevt_test_template_item_data1,
+	          36,
+	          0,
+	          0,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	result = libfwevt_template_item_initialize(
+	          &empty_item,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	/* Test input_data_type
+	 */
+	result = libfwevt_template_item_get_input_data_type(
+	          template_item,
+	          &input_data_type,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_EQUAL_UINT8( "input_data_type", input_data_type, 1 );
+
+	result = libfwevt_template_item_get_input_data_type( NULL, &input_data_type, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_input_data_type( template_item, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* Test output_data_type
+	 */
+	result = libfwevt_template_item_get_output_data_type(
+	          template_item,
+	          &output_data_type,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_EQUAL_UINT8( "output_data_type", output_data_type, 1 );
+
+	result = libfwevt_template_item_get_output_data_type( NULL, &output_data_type, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_output_data_type( template_item, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* Test number_of_values
+	 */
+	result = libfwevt_template_item_get_number_of_values(
+	          template_item,
+	          &number_of_values,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_EQUAL_UINT16( "number_of_values", number_of_values, 1 );
+
+	result = libfwevt_template_item_get_number_of_values( NULL, &number_of_values, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_number_of_values( template_item, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* Test value_data_size
+	 */
+	result = libfwevt_template_item_get_value_data_size(
+	          template_item,
+	          &value_data_size,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_EQUAL_UINT16( "value_data_size", value_data_size, 4 );
+
+	result = libfwevt_template_item_get_value_data_size( NULL, &value_data_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_value_data_size( template_item, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* Test UTF-8 name size and name
+	 */
+	result = libfwevt_template_item_get_utf8_name_size( template_item, &string_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_EQUAL_SIZE( "string_size", string_size, (size_t) 5 );
+
+	result = libfwevt_template_item_get_utf8_name_size( empty_item, &string_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 0 );
+
+	result = libfwevt_template_item_get_utf8_name_size( NULL, &string_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_utf8_name_size( template_item, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_utf8_name( template_item, utf8_string, 32, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	result = libfwevt_template_item_get_utf8_name( empty_item, utf8_string, 32, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 0 );
+
+	result = libfwevt_template_item_get_utf8_name( NULL, utf8_string, 32, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_utf8_name( template_item, NULL, 32, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* Test UTF-16 name size and name
+	 */
+	result = libfwevt_template_item_get_utf16_name_size( template_item, &string_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_EQUAL_SIZE( "string_size", string_size, (size_t) 5 );
+
+	result = libfwevt_template_item_get_utf16_name_size( empty_item, &string_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 0 );
+
+	result = libfwevt_template_item_get_utf16_name_size( NULL, &string_size, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_utf16_name_size( template_item, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_utf16_name( template_item, utf16_string, 32, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	result = libfwevt_template_item_get_utf16_name( empty_item, utf16_string, 32, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 0 );
+
+	result = libfwevt_template_item_get_utf16_name( NULL, utf16_string, 32, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_template_item_get_utf16_name( template_item, NULL, 32, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	result = libfwevt_internal_template_item_free(
+	          (libfwevt_internal_template_item_t **) &empty_item,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	result = libfwevt_internal_template_item_free(
+	          (libfwevt_internal_template_item_t **) &template_item,
+	          &error );
+
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( empty_item != NULL )
+	{
+		libfwevt_internal_template_item_free(
+		 (libfwevt_internal_template_item_t **) &empty_item,
+		 NULL );
+	}
+	if( template_item != NULL )
+	{
+		libfwevt_internal_template_item_free(
+		 (libfwevt_internal_template_item_t **) &template_item,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
@@ -369,7 +953,13 @@ int main(
 	 "libfwevt_internal_template_item_free",
 	 fwevt_test_internal_template_item_free );
 
-	/* TODO add test for libfwevt_template_item_read_data */
+	FWEVT_TEST_RUN(
+	 "libfwevt_template_item_read_data",
+	 fwevt_test_template_item_read_data );
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_template_item_getters",
+	 fwevt_test_template_item_getters );
 
 #endif /* defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 

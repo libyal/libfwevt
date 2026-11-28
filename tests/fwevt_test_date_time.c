@@ -101,6 +101,47 @@ int fwevt_test_filetime_copy_from_utf16_stream(
 	 "error",
 	 error );
 
+	/* Test leap year (2000-02-29) and month 12 (2024-12-31) and month 4 (2023-04-30)
+	 */
+	{
+		uint8_t utf16_leap_feb[ 62 ] = {
+			'2', 0, '0', 0, '0', 0, '0', 0, '-', 0, '0', 0, '2', 0, '-', 0,
+			'2', 0, '9', 0, 'T', 0, '2', 0, '3', 0, ':', 0, '5', 0, '9', 0,
+			':', 0, '5', 0, '9', 0, '.', 0, '0', 0, '0', 0, '0', 0, '0', 0,
+			'0', 0, '0', 0, '0', 0, '0', 0, '0', 0, 'Z', 0, 0, 0 };
+		uint8_t utf16_nonleap_feb[ 62 ] = {
+			'2', 0, '0', 0, '2', 0, '3', 0, '-', 0, '0', 0, '2', 0, '-', 0,
+			'2', 0, '8', 0, 'T', 0, '0', 0, '0', 0, ':', 0, '0', 0, '0', 0,
+			':', 0, '0', 0, '0', 0, '.', 0, '0', 0, '0', 0, '0', 0, '0', 0,
+			'0', 0, '0', 0, '0', 0, '0', 0, '0', 0, 'Z', 0, 0, 0 };
+		uint8_t utf16_leap_dec[ 62 ] = {
+			'2', 0, '0', 0, '2', 0, '4', 0, '-', 0, '1', 0, '2', 0, '-', 0,
+			'3', 0, '1', 0, 'T', 0, '0', 0, '0', 0, ':', 0, '0', 0, '0', 0,
+			':', 0, '0', 0, '0', 0, '.', 0, '0', 0, '0', 0, '0', 0, '0', 0,
+			'0', 0, '0', 0, '0', 0, '0', 0, '0', 0, 'Z', 0, 0, 0 };
+		uint8_t utf16_apr[ 62 ] = {
+			'2', 0, '0', 0, '2', 0, '3', 0, '-', 0, '0', 0, '4', 0, '-', 0,
+			'3', 0, '0', 0, 'T', 0, '0', 0, '0', 0, ':', 0, '0', 0, '0', 0,
+			':', 0, '0', 0, '0', 0, '.', 0, '0', 0, '0', 0, '0', 0, '0', 0,
+			'0', 0, '0', 0, '0', 0, '0', 0, '0', 0, 'Z', 0, 0, 0 };
+
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, utf16_leap_feb, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, utf16_nonleap_feb, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, utf16_leap_dec, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, utf16_apr, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+	}
+
 	/* Test error cases
 	 */
 	result = libfwevt_filetime_copy_from_utf16_stream(
@@ -193,6 +234,110 @@ int fwevt_test_filetime_copy_from_utf16_stream(
 	libcerror_error_free(
 	 &error );
 
+	/* Test malformed date-time streams covering all validation branches
+	 */
+	{
+		uint8_t bad[ 62 ];
+		size_t idx = 0;
+
+		/* Bad separator */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 8 ] = 'X';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Bad year digit */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 0 ] = 'A';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Bad month digit */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 10 ] = 'A';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Bad day digit */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 16 ] = 'A';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Bad hour digit */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 22 ] = 'A';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Bad minute digit */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 28 ] = 'A';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Bad second digit */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 34 ] = 'A';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Bad fraction digit */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 40 ] = 'A';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Year < 1600 */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 0 ] = '1'; bad[ 2 ] = '5'; bad[ 4 ] = '9'; bad[ 6 ] = '9';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Month out of range (13) */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 10 ] = '1'; bad[ 12 ] = '3';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Day out of range (32) */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 16 ] = '3'; bad[ 18 ] = '2';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Hours out of range (24) */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 22 ] = '2'; bad[ 24 ] = '4';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Minutes out of range (60) */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 28 ] = '6'; bad[ 30 ] = '0';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		/* Seconds out of range (60) */
+		for( idx = 0; idx < 62; idx++ ) bad[ idx ] = utf16_stream2[ idx ];
+		bad[ 34 ] = '6'; bad[ 36 ] = '0';
+		result = libfwevt_filetime_copy_from_utf16_stream( &filetime, bad, 62, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+	}
 	return( 1 );
 
 on_error:

@@ -160,7 +160,7 @@ int LLVMFuzzerTestOneInput(
 				goto on_error_xml_document;
 			}
 		}
-		goto on_error_wevt_template;
+		goto on_error_xml_document;
 
  on_error_xml_document:
 		if( xml_document != NULL )

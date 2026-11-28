@@ -4180,6 +4180,348 @@ on_error:
 	return( 0 );
 }
 
+/* Tests xml_tag attributes, elements, flags, types (NODE/CDATA/PI), and XML serialization
+ * Returns 1 if successful or 0 if not
+ */
+int fwevt_test_xml_tag_comprehensive(
+     void )
+{
+	uint8_t root_name[ 10 ]   = { 'R', 0, 'o', 0, 'o', 0, 't', 0, 0, 0 };
+	uint8_t attr1_name[ 12 ]  = { 'A', 0, 't', 0, 't', 0, 'r', 0, '1', 0, 0, 0 };
+	uint8_t attr2_name[ 12 ]  = { 'A', 0, 't', 0, 't', 0, 'r', 0, '2', 0, 0, 0 };
+	uint8_t attr_val[ 8 ]     = { 'V', 0, 'a', 0, 'l', 0, 0, 0 };
+	uint8_t child1_name[ 14 ] = { 'C', 0, 'h', 0, 'i', 0, 'l', 0, 'd', 0, '1', 0, 0, 0 };
+	uint8_t child2_name[ 14 ] = { 'C', 0, 'h', 0, 'i', 0, 'l', 0, 'd', 0, '2', 0, 0, 0 };
+	uint8_t grand_name[ 12 ]  = { 'G', 0, 'r', 0, 'a', 0, 'n', 0, 'd', 0, 0, 0 };
+	uint8_t pi_name[ 8 ]      = { 'x', 0, 'm', 0, 'l', 0, 0, 0 };
+	uint8_t utf16_val[ 8 ]    = { 'H', 0, 'i', 0, '!', 0, 0, 0 };
+	uint16_t u16_attr2[ 6 ]   = { 'A', 't', 't', 'r', '2', 0 };
+	uint16_t u16_child2[ 7 ]  = { 'C', 'h', 'i', 'l', 'd', '2', 0 };
+	uint16_t u16_nope[ 5 ]    = { 'N', 'o', 'p', 'e', 0 };
+	uint8_t utf8_buf[ 512 ];
+	uint16_t utf16_buf[ 512 ];
+
+	libcerror_error_t *error         = NULL;
+	libfwevt_xml_tag_t *root_tag     = NULL;
+	libfwevt_xml_tag_t *attr1        = NULL;
+	libfwevt_xml_tag_t *attr2        = NULL;
+	libfwevt_xml_tag_t *child1       = NULL;
+	libfwevt_xml_tag_t *child2       = NULL;
+	libfwevt_xml_tag_t *grand        = NULL;
+	libfwevt_xml_tag_t *cdata_tag    = NULL;
+	libfwevt_xml_tag_t *pi_tag       = NULL;
+	libfwevt_xml_tag_t *found_tag    = NULL;
+	size_t string_size               = 0;
+	size_t string_index              = 0;
+	int seg_idx                      = 0;
+	int result                       = 0;
+
+	/* Initialize root tag
+	 */
+	result = libfwevt_xml_tag_initialize( &root_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_name_data( root_tag, root_name, 10, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	/* Error cases for setters/appenders
+	 */
+	result = libfwevt_xml_tag_set_name_data( NULL, root_name, 10, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_tag_set_name_data( root_tag, root_name, 10, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_tag_set_flags( NULL, LIBFWEVT_XML_TAG_FLAG_IS_TEMPLATE_DEFINITION, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_tag_set_value_type( NULL, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_tag_append_value_data( NULL, utf16_val, 8, &seg_idx, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_tag_append_attribute( NULL, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+	result = libfwevt_xml_tag_append_element( NULL, NULL, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+	libcerror_error_free( &error );
+
+	/* Add 2 attributes
+	 */
+	result = libfwevt_xml_tag_initialize( &attr1, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_name_data( attr1, attr1_name, 12, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_type( attr1, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_data( attr1, attr_val, 8, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_append_attribute( root_tag, attr1, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	attr1 = NULL;
+
+	result = libfwevt_xml_tag_initialize( &attr2, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_name_data( attr2, attr2_name, 12, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_type( attr2, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_data( attr2, attr_val, 8, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_flags( attr2, LIBFWEVT_XML_TAG_FLAG_IS_TEMPLATE_DEFINITION, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_append_attribute( root_tag, attr2, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	attr2 = NULL;
+
+	/* Add child elements: empty node, nested node with value, CDATA, PI
+	 */
+	result = libfwevt_xml_tag_initialize( &child1, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_name_data( child1, child1_name, 14, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_append_element( root_tag, child1, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	child1 = NULL;
+
+	result = libfwevt_xml_tag_initialize( &child2, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_name_data( child2, child2_name, 14, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_type( child2, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_append_value_data( child2, utf16_val, 8, &seg_idx, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	result = libfwevt_xml_tag_initialize( &grand, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_name_data( grand, grand_name, 12, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_type( grand, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_data( grand, utf16_val, 8, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_flags( grand, LIBFWEVT_XML_TAG_FLAG_IS_TEMPLATE_DEFINITION, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_append_element( child2, grand, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	grand = NULL;
+
+	result = libfwevt_xml_tag_append_element( root_tag, child2, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	child2 = NULL;
+
+	/* Test attribute lookup by index, UTF-8 name, UTF-16 name (match & no-match)
+	 */
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_attribute_by_index( root_tag, 0, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL( "found_tag", found_tag );
+
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_attribute_by_utf8_name( root_tag, (uint8_t *) "Attr2", 5, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL( "found_tag", found_tag );
+
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_attribute_by_utf8_name( root_tag, (uint8_t *) "Nope", 4, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 0 );
+
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_attribute_by_utf16_name( root_tag, u16_attr2, 5, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL( "found_tag", found_tag );
+
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_attribute_by_utf16_name( root_tag, u16_nope, 4, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 0 );
+
+	/* Test element lookup by index, UTF-8 name, UTF-16 name (match & no-match)
+	 */
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_element_by_index( root_tag, 1, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL( "found_tag", found_tag );
+
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_element_by_utf8_name( root_tag, (uint8_t *) "Child2", 6, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL( "found_tag", found_tag );
+
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_element_by_utf8_name( root_tag, (uint8_t *) "Nope", 4, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 0 );
+
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_element_by_utf16_name( root_tag, u16_child2, 6, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NOT_NULL( "found_tag", found_tag );
+
+	found_tag = NULL;
+	result = libfwevt_xml_tag_get_element_by_utf16_name( root_tag, u16_nope, 4, &found_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 0 );
+
+	result = libfwevt_xml_tag_initialize( &cdata_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_type( cdata_tag, LIBFWEVT_XML_TAG_TYPE_CDATA, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_type( cdata_tag, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_data( cdata_tag, utf16_val, 8, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_append_element( root_tag, cdata_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	cdata_tag = NULL;
+
+	result = libfwevt_xml_tag_initialize( &pi_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_type( pi_tag, LIBFWEVT_XML_TAG_TYPE_PI, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_name_data( pi_tag, pi_name, 8, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_type( pi_tag, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_set_value_data( pi_tag, utf16_val, 8, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	result = libfwevt_xml_tag_append_element( root_tag, pi_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	pi_tag = NULL;
+
+	/* Test UTF-8 and UTF-16 XML string formatting of the full tree
+	 */
+	result = libfwevt_xml_tag_get_utf8_xml_string_size( root_tag, 0, &string_size, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+	string_index = 0;
+	result = libfwevt_xml_tag_get_utf8_xml_string_with_index( root_tag, 0, utf8_buf, 512, &string_index, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_EQUAL_SIZE( "string_index", string_index, string_size );
+	FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+	/* Test buffer too small errors across every incremental size boundary
+	 */
+	{
+		size_t test_sz = 0;
+
+		for( test_sz = 1; test_sz < string_size; test_sz++ )
+		{
+			string_index = 0;
+			result = libfwevt_xml_tag_get_utf8_xml_string_with_index( root_tag, 0, utf8_buf, test_sz, &string_index, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+			FWEVT_TEST_ASSERT_EQUAL_INT( "utf8_small", result, -1 );
+			libcerror_error_free( &error );
+		}
+	}
+
+	result = libfwevt_xml_tag_get_utf16_xml_string_size( root_tag, 0, &string_size, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+	string_index = 0;
+	result = libfwevt_xml_tag_get_utf16_xml_string_with_index( root_tag, 0, utf16_buf, 512, &string_index, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+	FWEVT_TEST_ASSERT_EQUAL_SIZE( "string_index", string_index, string_size );
+	FWEVT_TEST_ASSERT_IS_NULL( "error", error );
+
+	{
+		size_t test_sz = 0;
+
+		for( test_sz = 1; test_sz < string_size; test_sz++ )
+		{
+			string_index = 0;
+			result = libfwevt_xml_tag_get_utf16_xml_string_with_index( root_tag, 0, utf16_buf, test_sz, &string_index, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+			FWEVT_TEST_ASSERT_EQUAL_INT( "utf16_small", result, -1 );
+			libcerror_error_free( &error );
+		}
+	}
+
+	/* Test tag with empty value and tag with unsupported type
+	 */
+	{
+		libfwevt_xml_tag_t *empty_val_tag = NULL;
+
+		result = libfwevt_xml_tag_initialize( &empty_val_tag, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		result = libfwevt_xml_tag_set_name_data( empty_val_tag, NULL, 10, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+		result = libfwevt_xml_tag_set_name_data( empty_val_tag, root_name, (size_t) SSIZE_MAX + 1, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+		result = libfwevt_xml_tag_set_name_data( empty_val_tag, root_name, 10, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		result = libfwevt_xml_tag_set_value_type( empty_val_tag, LIBFWEVT_VALUE_TYPE_STRING_UTF16, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+		result = libfwevt_xml_tag_get_utf8_xml_string_size( empty_val_tag, 1, &string_size, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		string_index = 0;
+		result = libfwevt_xml_tag_get_utf8_xml_string_with_index( empty_val_tag, 1, utf8_buf, 512, &string_index, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		string_index = 0;
+		result = libfwevt_xml_tag_get_utf8_xml_string_with_index( empty_val_tag, 1, utf8_buf, string_size - 2, &string_index, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		result = libfwevt_xml_tag_get_utf16_xml_string_size( empty_val_tag, 1, &string_size, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		string_index = 0;
+		result = libfwevt_xml_tag_get_utf16_xml_string_with_index( empty_val_tag, 1, utf16_buf, 512, &string_index, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+		string_index = 0;
+		result = libfwevt_xml_tag_get_utf16_xml_string_with_index( empty_val_tag, 1, utf16_buf, string_size - 2, &string_index, LIBUNA_CODEPAGE_WINDOWS_1252, &error );
+		FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, -1 );
+		libcerror_error_free( &error );
+
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &empty_val_tag, &error );
+	}
+
+	result = libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &root_tag, &error );
+	FWEVT_TEST_ASSERT_EQUAL_INT( "result", result, 1 );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free( &error );
+	}
+	if( pi_tag != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &pi_tag, NULL );
+	}
+	if( cdata_tag != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &cdata_tag, NULL );
+	}
+	if( grand != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &grand, NULL );
+	}
+	if( child2 != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &child2, NULL );
+	}
+	if( child1 != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &child1, NULL );
+	}
+	if( attr2 != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &attr2, NULL );
+	}
+	if( attr1 != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &attr1, NULL );
+	}
+	if( root_tag != NULL )
+	{
+		libfwevt_internal_xml_tag_free( (libfwevt_internal_xml_tag_t **) &root_tag, NULL );
+	}
+	return( 0 );
+}
+
 #endif /* #if defined( __GNUC__ ) && !defined( LIBFWEVT_DLL_IMPORT ) */
 
 /* The main program
@@ -4420,6 +4762,10 @@ int main(
 	FWEVT_TEST_RUN(
 	 "libfwevt_xml_tag_get_xml_string_size_linefeed_value",
 	 fwevt_test_xml_tag_get_xml_string_size_linefeed_value );
+
+	FWEVT_TEST_RUN(
+	 "libfwevt_xml_tag_comprehensive",
+	 fwevt_test_xml_tag_comprehensive );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 

@@ -68,10 +68,8 @@ void VARARGS(
 
 	char error_string[ PYFWEVT_ERROR_STRING_SIZE ];
 
-        PyObject *exception_traceback = NULL;
-        PyObject *exception_type      = NULL;
-        PyObject *exception_value     = NULL;
-        PyObject *string_object       = NULL;
+	PyObject *exception_value     = NULL;
+	PyObject *string_object       = NULL;
 	static char *function         = "pyfwevt_error_fetch";
 	char *exception_string        = NULL;
 	size_t error_string_length    = 0;
@@ -79,6 +77,10 @@ void VARARGS(
 
 #if PY_MAJOR_VERSION >= 3
 	PyObject *utf8_string_object  = NULL;
+#endif
+#if PY_VERSION_HEX < 0x030C0000
+	PyObject *exception_traceback = NULL;
+	PyObject *exception_type      = NULL;
 #endif
 
 	if( format_string == NULL )
@@ -121,27 +123,33 @@ void VARARGS(
 	{
 		error_string[ error_string_length - 1 ] = 0;
 	}
+#if PY_VERSION_HEX < 0x030C0000
 	PyErr_Fetch(
 	 &exception_type,
 	 &exception_value,
 	 &exception_traceback );
-
-	string_object = PyObject_Repr(
-	                 exception_value );
+#else
+	exception_value = PyErr_GetRaisedException();
+#endif
+	if( exception_value != NULL )
+	{
+		string_object = PyObject_Repr(
+		                 exception_value );
 
 #if PY_MAJOR_VERSION >= 3
-	utf8_string_object = PyUnicode_AsUTF8String(
-	                      string_object );
+		utf8_string_object = PyUnicode_AsUTF8String(
+		                      string_object );
 
-	if( utf8_string_object != NULL )
-	{
-		exception_string = PyBytes_AsString(
-		                    utf8_string_object );
-	}
+		if( utf8_string_object != NULL )
+		{
+			exception_string = PyBytes_AsString(
+			                    utf8_string_object );
+		}
 #else
-	exception_string = PyString_AsString(
-	                    string_object );
+		exception_string = PyString_AsString(
+		                    string_object );
 #endif
+	}
 	if( exception_string != NULL )
 	{
 		libcerror_error_set(
@@ -168,9 +176,28 @@ void VARARGS(
 		 utf8_string_object );
 	}
 #endif
-	Py_DecRef(
-	 string_object );
-
+	if( string_object != NULL )
+	{
+		Py_DecRef(
+		 string_object );
+	}
+#if PY_VERSION_HEX < 0x030C0000
+	if( exception_traceback != NULL )
+	{
+		Py_DecRef(
+		 exception_traceback );
+	}
+	if( exception_type != NULL )
+	{
+		Py_DecRef(
+		 exception_type );
+	}
+#endif
+	if( exception_value != NULL )
+	{
+		Py_DecRef(
+		 exception_value );
+	}
 	return;
 }
 
@@ -208,8 +235,6 @@ void VARARGS(
 
 	char error_string[ PYFWEVT_ERROR_STRING_SIZE ];
 
-	PyObject *exception_traceback = NULL;
-	PyObject *exception_type      = NULL;
 	PyObject *exception_value     = NULL;
 	PyObject *string_object       = NULL;
 	static char *function         = "pyfwevt_error_fetch_and_raise";
@@ -219,6 +244,10 @@ void VARARGS(
 
 #if PY_MAJOR_VERSION >= 3
 	PyObject *utf8_string_object  = NULL;
+#endif
+#if PY_VERSION_HEX < 0x030C0000
+	PyObject *exception_traceback = NULL;
+	PyObject *exception_type      = NULL;
 #endif
 
 	if( format_string == NULL )
@@ -261,27 +290,33 @@ void VARARGS(
 	{
 		error_string[ error_string_length - 1 ] = 0;
 	}
+#if PY_VERSION_HEX < 0x030C0000
 	PyErr_Fetch(
 	 &exception_type,
 	 &exception_value,
 	 &exception_traceback );
-
-	string_object = PyObject_Repr(
-	                 exception_value );
+#else
+	exception_value = PyErr_GetRaisedException();
+#endif
+	if( exception_value != NULL )
+	{
+		string_object = PyObject_Repr(
+		                 exception_value );
 
 #if PY_MAJOR_VERSION >= 3
-	utf8_string_object = PyUnicode_AsUTF8String(
-	                      string_object );
+		utf8_string_object = PyUnicode_AsUTF8String(
+		                      string_object );
 
-	if( utf8_string_object != NULL )
-	{
-		exception_string = PyBytes_AsString(
-		                    utf8_string_object );
-	}
+		if( utf8_string_object != NULL )
+		{
+			exception_string = PyBytes_AsString(
+			                    utf8_string_object );
+		}
 #else
-	exception_string = PyString_AsString(
-	                    string_object );
+		exception_string = PyString_AsString(
+		                    string_object );
 #endif
+	}
 	if( exception_string != NULL )
 	{
 		PyErr_Format(
@@ -297,9 +332,35 @@ void VARARGS(
 		 "%s.",
 		 error_string );
 	}
-	Py_DecRef(
-	 string_object );
-
+#if PY_MAJOR_VERSION >= 3
+	if( utf8_string_object != NULL )
+	{
+		Py_DecRef(
+		 utf8_string_object );
+	}
+#endif
+	if( string_object != NULL )
+	{
+		Py_DecRef(
+		 string_object );
+	}
+#if PY_VERSION_HEX < 0x030C0000
+	if( exception_traceback != NULL )
+	{
+		Py_DecRef(
+		 exception_traceback );
+	}
+	if( exception_type != NULL )
+	{
+		Py_DecRef(
+		 exception_type );
+	}
+#endif
+	if( exception_value != NULL )
+	{
+		Py_DecRef(
+		 exception_value );
+	}
 	return;
 }
 
